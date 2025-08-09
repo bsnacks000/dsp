@@ -1,0 +1,34 @@
+/**
+ * @file constants.h
+ * @author bsnacks000
+ * @brief Useful constants
+ * @version 0.1
+ * @date 2025-02-12
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+#ifndef DSP_CONSTANTS_H
+#define DSP_CONSTANTS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// sometimes not in math.h
+#define DSP_PI 3.14159265358979323846
+
+#define SQRT_TWO 1.4142135623730951
+
+#define E 2.718281828459
+
+static const float TWO_PI = DSP_PI * 2.0;
+
+static const float TANGENT_THRESHOLD = 0.95 * DSP_PI / 2.0;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

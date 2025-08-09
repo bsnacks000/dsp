@@ -1,0 +1,35 @@
+/**
+ * @brief windowing maths. Based on csound gen20.
+ *  - wt should be pow2
+ *
+ */
+
+#ifndef DSP_WT_WINDOW_H
+#define DSP_WT_WINDOW_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <dsp/wavetable/wavetable.h>
+
+typedef enum {
+    WINDOW_HAMMING,
+    WINDOW_HANNING,
+    WINDOW_BLACKMAN,
+    WINDOW_BLACKMAN_HARRIS,
+    WINDOW_GAUSS,
+    WINDOW_SINC
+} wt_window_type;
+
+typedef struct {
+    wt_window_type type;
+} wt_window_args;
+
+dsp_err wt_window(wavetable* wt, void* args);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
