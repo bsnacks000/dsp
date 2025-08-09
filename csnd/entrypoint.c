@@ -21,6 +21,7 @@
 #include "ddelay.h"
 #include "maths.h"
 #include "oscil.h"
+#include "phasor.h"
 #include "rc.h"
 #include "svf.h"
 
@@ -46,6 +47,7 @@ static OENTRY localops[] = {
      (SUBR) ftoscil3_vector, NULL, NULL},
     {"oftoscil3", sizeof(oftoscil3), 0, "a", "aiio", (SUBR) oftoscil3_init,
      (SUBR) oftoscil3_vector, NULL, NULL},
-};
+    {"dphasor", sizeof(dphasor), 0, "a", "a", (SUBR) dphasor_init,
+     (SUBR) dphasor_vector, NULL, NULL}};
 
 LINKAGE
