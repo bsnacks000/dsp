@@ -19,6 +19,7 @@
 
 #include "bq.h"
 #include "ddelay.h"
+#include "follow.h"
 #include "maths.h"
 #include "oscil.h"
 #include "phasor.h"
@@ -48,6 +49,10 @@ static OENTRY localops[] = {
     {"oftoscil3", sizeof(oftoscil3), 0, "a", "aiio", (SUBR) oftoscil3_init,
      (SUBR) oftoscil3_vector, NULL, NULL},
     {"dphasor", sizeof(dphasor), 0, "a", "a", (SUBR) dphasor_init,
-     (SUBR) dphasor_vector, NULL, NULL}};
+     (SUBR) dphasor_vector, NULL, NULL},
+    {"envfol", sizeof(envfol), 0, "a", "aaa", (SUBR) envfol_init, (SUBR) envfol_vector,
+     NULL, NULL},
+
+};
 
 LINKAGE
