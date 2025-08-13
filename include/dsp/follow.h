@@ -11,14 +11,23 @@ extern "C" {
 
 #include <stdint.h>
 
+/**
+ * @brief envelope follower with atk and rel in ms
+ */
 typedef struct {
     float atk_ms, rel_ms, sr;
     // private
     float last_envelope_, atk_time_, rel_time_;
 } follow;
 
+/**
+ * @brief initialize follow state.
+ */
 void follow_init(follow* self, float atk_ms, float rel_ms, float sr);
 
+/**
+ * @brief tick one block based on the rms of the input signal.
+ */
 void follow_rms_tick_block(follow* self,
                            float* out,
                            float* in,
@@ -26,6 +35,9 @@ void follow_rms_tick_block(follow* self,
                            float* rel_ms,
                            uint32_t nsmps);
 
+/**
+ * @brief tick one block based on the peak of the input signal.
+ */
 void follow_peak_tick_block(follow* self,
                             float* out,
                             float* in,

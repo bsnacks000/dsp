@@ -11,6 +11,7 @@ extern "C" {
 
 /**
  * @brief envelope follower
+ * TODO: add an RMS / PEAK mode switch (assign fptr at init time)
  */
 typedef struct {
     OPDS h;
