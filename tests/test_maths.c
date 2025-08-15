@@ -71,3 +71,81 @@ MunitResult test_div(const MunitParameter params[], void* data) {
 
     return MUNIT_OK;
 }
+
+MunitResult test_qsinf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_qsinf(0.0), 0.0, 6);
+    munit_assert_double_equal(fast_qsinf(0.5), 0.4795828785982852, 6);
+    munit_assert_double_equal(fast_qsinf(1.0), 0.8402181198803792, 6);
+    munit_assert_double_equal(fast_qsinf(-0.5), -0.5144291038666055, 6);
+    munit_assert_double_equal(fast_qsinf(-1.0), -1.0053264518366392, 6);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_qcosf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_qcosf(0.0), 1.0, 6);
+    munit_assert_double_equal(fast_qcosf(0.5), 0.8764773848407118, 6);
+    munit_assert_double_equal(fast_qcosf(1.0), 0.5400016582481239, 6);
+    munit_assert_double_equal(fast_qcosf(-0.5), 0.8764773848407118, 6);
+    munit_assert_double_equal(fast_qcosf(-1.0), 0.5400016582481239, 6);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_hsinf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_hsinf(0.0), 0.0, 6);
+    munit_assert_double_equal(fast_hsinf(0.5), 1.0, 6);
+    munit_assert_double_equal(fast_hsinf(1.0), 0.0, 6);
+    munit_assert_double_equal(fast_hsinf(-0.5), 1.0, 6);
+    munit_assert_double_equal(fast_hsinf(-1.0), 0.0, 6);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_hcosf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_hcosf(0.0), 1.0, 6);
+    munit_assert_double_equal(fast_hcosf(0.5), 0.0, 6);
+    munit_assert_double_equal(fast_hcosf(1.0), 1.0, 6);
+    munit_assert_double_equal(fast_hcosf(-0.5), 0.0, 6);
+    munit_assert_double_equal(fast_hcosf(-1.0), 1.0, 6);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_sinf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_sinf(0.0), 0.0, 5);
+    munit_assert_double_equal(fast_sinf(0.5), 0.0, 6);
+    munit_assert_double_equal(fast_sinf(1.0), 0.0, 6);
+    munit_assert_double_equal(fast_sinf(-0.5), 0.0, 6);
+    munit_assert_double_equal(fast_sinf(-1.0), 0.0, 6);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_cosf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    munit_assert_double_equal(fast_cosf(0.0), 1.0, 5);
+    munit_assert_double_equal(fast_cosf(0.5), -1.0, 6);
+    munit_assert_double_equal(fast_cosf(1.0), 1.0, 6);
+    munit_assert_double_equal(fast_cosf(-0.5), -1.0, 6);
+    munit_assert_double_equal(fast_cosf(-1.0), 1.0, 6);
+
+    return MUNIT_OK;
+}

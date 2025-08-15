@@ -25,6 +25,10 @@ extern "C" {
 
 static const float TWO_PI = DSP_PI * 2.0;
 
+static const float HALF_PI = DSP_PI * 0.5;
+
+static const float DSP_PI_SQUARED = DSP_PI * DSP_PI;
+
 static const float TANGENT_THRESHOLD = 0.95 * DSP_PI / 2.0;
 
 #ifdef __cplusplus
