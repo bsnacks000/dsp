@@ -26,6 +26,18 @@
 #include "rc.h"
 #include "svf.h"
 
+// called once when the lib loads
+int csoundModuleInit(CSOUND* csound) {
+    (void) csound;
+    return OK;
+}
+
+// called once before the lib is destroyed.
+int csoundModuleDestroy(CSOUND* csound) {
+    (void) csound;
+    return OK;
+}
+
 static OENTRY localops[] = {
     {"mult", sizeof(mult), 0, "a", "aa", NULL, (SUBR) mult_vector, NULL, NULL},
     {"ddelay2", sizeof(ddelay2), 0, "a", "aaai", (SUBR) ddelay2_init,

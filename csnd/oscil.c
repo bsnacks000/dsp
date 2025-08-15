@@ -5,6 +5,7 @@
 #include <dsp/resample.h>
 #include <dsp/utils.h>
 #include <stdint.h>
+#include "dsp/wavetable/sinesum.h"
 
 int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
     (void) csound;
@@ -198,6 +199,29 @@ int oftoscil3_vector(CSOUND* csound, oftoscil3* obj) {
 //
 //
 
-int blsaw_init(CSOUND* csound, blsaw* obj);
+// memory for 7 bands;
+// static const size_t n_frames = 7;
+// static const size_t wt_buf_sz = 8194;
+// static const size_t blsaw_mem_block_sz = wt_buf_sz * n_frames;
+// static const uint32_t harms[7] = {64, 32, 16, 8, 4, 2, 1};
 
-int blsaw_vector(CSOUND* csound, blsaw* obj);
+int blsaw_deck_init(CSOUND* csound) {
+    (void) csound;
+    return OK;
+}
+int blsaw_deck_destroy(CSOUND* csound) {
+    (void) csound;
+    return OK;
+}
+
+int blsaw_init(CSOUND* csound, blsaw* obj) {
+    (void) csound;
+    (void) obj;
+    return OK;
+}
+
+int blsaw_vector(CSOUND* csound, blsaw* obj) {
+    (void) csound;
+    (void) obj;
+    return OK;
+}

@@ -53,15 +53,6 @@ typedef struct {
     OPDS h;
     MYFLT *a_out, *a_freq, *i_phase;
 
-    // mem block
-    AUXCH mem;
-    size_t mem_sz;
-
-    // deck components
-    wavetable** frames;
-    size_t frames_sz;
-    wt_deck deck;
-
     // blxoscil components
     oscil left;
     oscil right;
@@ -69,6 +60,8 @@ typedef struct {
 
 } blsaw;
 
+int blsaw_deck_init(CSOUND* csound);
+int blsaw_deck_destroy(CSOUND* csound);
 int blsaw_init(CSOUND* csound, blsaw* obj);
 int blsaw_vector(CSOUND* csound, blsaw* obj);
 
