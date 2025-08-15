@@ -33,7 +33,7 @@ build:
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
 
-unittest:
+test:
 	./build/tests/dsp_unit_tests
 
 all: clean build
