@@ -52,7 +52,8 @@ static OENTRY localops[] = {
      (SUBR) dphasor_vector, NULL, NULL},
     {"envfol", sizeof(envfol), 0, "a", "aaa", (SUBR) envfol_init, (SUBR) envfol_vector,
      NULL, NULL},
-
+    {"blsaw", sizeof(blsaw), 0, "a", "aii", (SUBR) blsaw_init, (SUBR) blsaw_vector,
+     NULL, NULL},
 };
 
 LINKAGE

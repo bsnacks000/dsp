@@ -193,3 +193,11 @@ int oftoscil3_vector(CSOUND* csound, oftoscil3* obj) {
 
     return OK;
 }
+
+// blsaw
+//
+//
+
+int blsaw_init(CSOUND* csound, blsaw* obj);
+
+int blsaw_vector(CSOUND* csound, blsaw* obj);
