@@ -5,6 +5,7 @@
 #include <dsp/resample.h>
 #include <dsp/utils.h>
 #include <stdint.h>
+#include "dsp/wavetable/sinesum.h"
 
 int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
     (void) csound;
@@ -51,7 +52,7 @@ int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
     dsp_err err;
 
     if ((err = oscil_init(&obj->state, &obj->wt, 440.0, phase, sr)) != DSP_OK) {
-        csound->InitError(csound, "oscil_init: err\n");
+        return csound->InitError(csound, "oscil_init: err\n");
     }
     return OK;
 }

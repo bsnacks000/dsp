@@ -46,6 +46,25 @@ typedef struct {
 int oftoscil3_init(CSOUND* csound, oftoscil3* obj);
 int oftoscil3_vector(CSOUND* csound, oftoscil3* obj);
 
+/**
+ * @brief band limited saw impl
+ */
+typedef struct {
+    OPDS h;
+    MYFLT *a_out, *a_freq, *i_phase;
+
+    // blxoscil components
+    oscil left;
+    oscil right;
+    blxoscil saw;
+
+} blsaw;
+
+int blsaw_deck_init(CSOUND* csound);
+int blsaw_deck_destroy(CSOUND* csound);
+int blsaw_init(CSOUND* csound, blsaw* obj);
+int blsaw_vector(CSOUND* csound, blsaw* obj);
+
 #ifdef __cplusplus
 }
 #endif

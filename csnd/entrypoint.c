@@ -26,6 +26,25 @@
 #include "rc.h"
 #include "svf.h"
 
+#include <stdio.h>
+// called once when the lib loads
+PUBLIC int csoundModuleCreate(CSOUND* csound) {
+    printf("ModuleCreate called!\n");
+    fflush(stdout);
+    int err;
+    if ((err = blsaw_deck_init(csound)) != OK) {
+        return csound->InitError(csound, "blsaw_dec_init: %d", err);
+    }
+    return OK;
+}
+
+// called once before the lib is destroyed.
+PUBLIC int csoundModuleDestroy(CSOUND* csound) {
+    printf("ModuleDestroy called!\n");
+    blsaw_deck_destroy(csound);
+    return OK;
+}
+
 static OENTRY localops[] = {
     {"mult", sizeof(mult), 0, "a", "aa", NULL, (SUBR) mult_vector, NULL, NULL},
     {"ddelay2", sizeof(ddelay2), 0, "a", "aaai", (SUBR) ddelay2_init,
@@ -52,7 +71,18 @@ static OENTRY localops[] = {
      (SUBR) dphasor_vector, NULL, NULL},
     {"envfol", sizeof(envfol), 0, "a", "aaa", (SUBR) envfol_init, (SUBR) envfol_vector,
      NULL, NULL},
-
+    {"blsaw", sizeof(blsaw), 0, "a", "ai", (SUBR) blsaw_init, (SUBR) blsaw_vector, NULL,
+     NULL},
+    {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
-LINKAGE
+// LINKAGE
+PUBLIC int32_t csoundModuleInit(CSOUND* csound) {
+    int32_t status = 0;
+    for (OENTRY* oentry = &localops[0]; oentry->opname; oentry++) {
+        status |= csound->AppendOpcode(csound, oentry->opname, oentry->dsblksiz,
+                                       oentry->flags, oentry->outypes, oentry->intypes,
+                                       oentry->init, oentry->perf, oentry->deinit);
+    }
+    return status;
+}
