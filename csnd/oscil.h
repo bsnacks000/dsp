@@ -65,6 +65,21 @@ int blsaw_deck_destroy(CSOUND* csound);
 int blsaw_init(CSOUND* csound, blsaw* obj);
 int blsaw_vector(CSOUND* csound, blsaw* obj);
 
+typedef struct {
+    OPDS h;
+    MYFLT *a_out, *a_freq, *a_pos, *i_phase;
+
+    // xoscil components
+    oscil left;
+    oscil right;
+    xoscil xosc;
+} smorph;
+
+int smorph_deck_init(CSOUND* csound);
+int smorph_deck_destroy(CSOUND* csound);
+int smorph_init(CSOUND* csound, smorph* obj);
+int smorph_vector(CSOUND* csound, smorph* obj);
+
 #ifdef __cplusplus
 }
 #endif
