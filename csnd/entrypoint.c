@@ -26,22 +26,29 @@
 #include "rc.h"
 #include "svf.h"
 
-#include <stdio.h>
-// called once when the lib loads
+// #include <stdio.h>
+
+//  called once when the lib loads
 PUBLIC int csoundModuleCreate(CSOUND* csound) {
-    printf("ModuleCreate called!\n");
-    fflush(stdout);
+    // printf("ModuleCreate called!\n");
+    // fflush(stdout);
     int err;
     if ((err = blsaw_deck_init(csound)) != OK) {
-        return csound->InitError(csound, "blsaw_dec_init: %d", err);
+        return csound->InitError(csound, "blsaw_deck_init: %d", err);
     }
+
+    if ((err = smorph_deck_init(csound)) != OK) {
+        return csound->InitError(csound, "smorph_deck_init: %d", err);
+    }
+
     return OK;
 }
 
 // called once before the lib is destroyed.
 PUBLIC int csoundModuleDestroy(CSOUND* csound) {
-    printf("ModuleDestroy called!\n");
+    // printf("ModuleDestroy called!\n");
     blsaw_deck_destroy(csound);
+    smorph_deck_destroy(csound);
     return OK;
 }
 
@@ -73,6 +80,8 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"blsaw", sizeof(blsaw), 0, "a", "ai", (SUBR) blsaw_init, (SUBR) blsaw_vector, NULL,
      NULL},
+    {"smorph", sizeof(blsaw), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
+     NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
