@@ -1,7 +1,7 @@
 
 #include "oscil.h"
 
-#include <dsp/nonlin.h>
+#include <dsp/maths.h>
 #include <dsp/resample.h>
 #include <dsp/utils.h>
 #include <stdint.h>
