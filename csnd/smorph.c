@@ -15,12 +15,12 @@
 /**
  * @brief fail fast on bad malloc.
  */
-static void check_malloc(void* p, const char* loc) {
-    if (p == NULL) {
-        fprintf(stderr, "malloc failed: %s\n", loc);
-        exit(EXIT_FAILURE);
-    }
-}
+// static void check_malloc(void* p, const char* loc) {
+//     if (p == NULL) {
+//         fprintf(stderr, "malloc failed: %s\n", loc);
+//         exit(EXIT_FAILURE);
+//     }
+// }
 
 // interpolated wavtabs for the deck.
 wavetable* wavtabs[INTERP_FRAME_SZ] = {0};
@@ -32,6 +32,8 @@ static void wavtabs_destroy(void) {
 // the main deck
 static wt_deck deck;
 
+// TODO: clean this up
+// break out logic into smaller pieces
 int smorph_deck_init(CSOUND* csound) {
 
     float sr = (float) csoundGetSr(csound);
@@ -124,8 +126,6 @@ int smorph_deck_init(CSOUND* csound) {
     matrix_transpose(&u, &tx);
 
     // new wavtabs - these are the bois that go to xoscil
-    // we write the data into the new buffer so we can free all the extra matrix memory.
-    wavetable* wavtabs[INTERP_FRAME_SZ];
     for (int i = 0; i < INTERP_FRAME_SZ; i++) {
         wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
         float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
@@ -136,6 +136,10 @@ int smorph_deck_init(CSOUND* csound) {
         wavetable_write(wt, row_ptr, WAVETABLE_BUF_SZ, 0);
         wavtabs[i] = wt;
     }
+
+    // set this on the static deck .. this is what is going into
+    // xoscil instances at runtime.
+    wt_deck_init(&deck, wavtabs, INTERP_FRAME_SZ);
 
     // free initial memory
     free(u_data);
