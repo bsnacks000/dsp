@@ -70,9 +70,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
-      - name: Install deps (Linux only)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y lcov
+      - name: Install deps
+        run: sudo apt-get install -y lcov
 
       - name: Set compilers
         run: |
@@ -82,7 +81,7 @@ jobs:
       - name: Build and Run coverage
         run: |
           make coverage
-          ./check_coverage
+          ./check_coverage.sh
 
       - uses: actions/upload-artifact@v4
         with:
