@@ -59,4 +59,7 @@ coverage:
        	llvm-cov report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
 	fi
 
+html-cov:
+	open ./coverage/index.html
+
 all: clean build

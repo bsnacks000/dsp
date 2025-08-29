@@ -41,6 +41,35 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
+      - name: Set compilers
+        run: |
+          echo "CC=${{ matrix.c_compiler }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.cpp_compiler }}" >> $GITHUB_ENV
+
+      - name: Build and Run Tests.
+        run: |
+          make build TESTS=1 BUILD_TYPE=${{ matrix.build_type }}
+          make test
+
+  coverage:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        build_type: [Debug]
+        c_compiler: [gcc]
+        include:
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
       - name: Install deps (Linux only)
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y lcov
@@ -50,22 +79,12 @@ jobs:
           echo "CC=${{ matrix.c_compiler }}" >> $GITHUB_ENV
           echo "CXX=${{ matrix.cpp_compiler }}" >> $GITHUB_ENV
 
-      - name: Build (library only)
-        run: make build BUILD_TYPE=${{ matrix.build_type }}
-
-      - name: Build + run tests (Release, no coverage)
-        if: matrix.build_type == 'Release'
+      - name: Build and Run coverage
         run: |
-          make build TESTS=1 BUILD_TYPE=Release
-          make test
+          make coverage
+          ./check_coverage
 
-      - name: Build + run tests (Debug with coverage)
-        if: matrix.build_type == 'Debug'
-        run: make coverage
-
-      # until we're further along .. needs to be installed cross platform one way or another!
-      # - name: Build csound plugin
-      #   run: make build CSOUND=1 BUILD_TYPE=${{ matrix.build_type }}
-
-      # - name: Build utils
-      #   run: make build UTILS=1 BUILD_TYPE=${{ matrix.build_type }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage
