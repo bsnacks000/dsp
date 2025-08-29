@@ -63,8 +63,9 @@ jobs:
         if: matrix.build_type == 'Debug'
         run: make coverage
 
-      - name: Build csound plugin
-        run: make build CSOUND=1 BUILD_TYPE=${{ matrix.build_type }}
+      # until we're further along .. needs to be installed cross platform one way or another!
+      # - name: Build csound plugin
+      #   run: make build CSOUND=1 BUILD_TYPE=${{ matrix.build_type }}
 
       - name: Build utils
         run: make build UTILS=1 BUILD_TYPE=${{ matrix.build_type }}

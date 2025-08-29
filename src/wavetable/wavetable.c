@@ -1,10 +1,6 @@
 #include <dsp/utils.h>
 #include <dsp/wavetable/wavetable.h>
 
-#include <endian.h>
-#include <stdint.h>
-#include <string.h>
-
 void wavetable_zero_buf(wavetable* self) {
     zero_buf(self->buf, self->buf_sz);
 }
