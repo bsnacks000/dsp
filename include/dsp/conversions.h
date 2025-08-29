@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 
+#include <dsp/assert.h>
 #include <math.h>
 #include <stdint.h>
 
@@ -19,7 +20,7 @@ extern "C" {
  *  per second.
  *
  */
-inline float samps_per_ms(float sr) {
+static inline float samps_per_ms(float sr) {
     return sr / 1000.0;
 }
 
@@ -27,7 +28,7 @@ inline float samps_per_ms(float sr) {
  * @brief Convert decibel gain to amplitude (linear)
  *
  */
-inline float db_to_amp(float db) {
+static inline float db_to_amp(float db) {
     return pow(10.0, db / 20.0);
 }
 
@@ -35,7 +36,7 @@ inline float db_to_amp(float db) {
  * @brief Convert decibel gain to power (linear)
  *
  */
-inline float db_to_power(float db) {
+static inline float db_to_power(float db) {
     return pow(10.0, db / 10.0);
 }
 
@@ -43,7 +44,8 @@ inline float db_to_power(float db) {
  * @brief Convert linear amplitude to decibels
  *
  */
-inline float amp_to_db(float lin) {
+static inline float amp_to_db(float lin) {
+    dsp_assert(lin > 0.0, "lin must be > 0.");
     return 20.0 * log10(lin);
 }
 
@@ -51,7 +53,8 @@ inline float amp_to_db(float lin) {
  * @brief Convert linear power to decibels
  *
  */
-inline float power_to_db(float power) {
+static inline float power_to_db(float power) {
+    dsp_assert(power > 0.0, "power must be > 0.");
     return 10.0 * log10(power);
 }
 
@@ -59,7 +62,7 @@ inline float power_to_db(float power) {
  * @brief calculate peak gain for q
  *
  */
-inline float peak_gain_for_q(float q) {
+static inline float peak_gain_for_q(float q) {
     if (q <= 0.707)
         return 1.0;
     return (q * q) / pow((q * q - 0.25), 0.5);
@@ -69,7 +72,7 @@ inline float peak_gain_for_q(float q) {
  * @brief calculate peak gain for q and convert from linamp to db.
  *
  */
-inline float db_peak_gain_for_q(float q) {
+static inline float db_peak_gain_for_q(float q) {
     q = peak_gain_for_q(q);
     return amp_to_db(q);
 }
@@ -78,7 +81,7 @@ inline float db_peak_gain_for_q(float q) {
  * @brief convert unipolar to bipolar.
  *
  */
-inline float unipolar_to_bipolar(float val) {
+static inline float unipolar_to_bipolar(float val) {
     return 2.0 * val - 1.0;
 }
 
@@ -86,7 +89,7 @@ inline float unipolar_to_bipolar(float val) {
  * @brief convert bipolar to unipolar.
  *
  */
-inline float bipolar_to_unipolar(float val) {
+static inline float bipolar_to_unipolar(float val) {
     return 0.5 * val + 0.5;
 }
 

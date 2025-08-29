@@ -8,10 +8,10 @@
 extern "C" {
 #endif
 
+#include <dsp/constants.h>
+#include <dsp/maths.h>
 #include <math.h>
 #include <stdint.h>
-#include "constants.h"
-#include "nonlin.h"
 
 /**
  * A left/right pair return value.

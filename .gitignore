@@ -17,6 +17,8 @@ data/
 .cache
 *.log
 _local/
+coverage/
+coverage.info
 
 # Compiled object files
 *.o

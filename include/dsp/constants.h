@@ -16,10 +16,16 @@
 extern "C" {
 #endif
 
-// sometimes not in math.h
-#define DSP_PI 3.14159265358979323846
+#include <math.h>
 
-#define SQRT_TWO 1.4142135623730951
+// sometimes not in math.h
+#ifdef M_PI
+#    define DSP_PI M_PI
+#else
+#    define DSP_PI 3.14159265358979323846
+#endif
+
+#define SQRT_TWO 1.41421356237309504880
 
 #define E 2.718281828459
 
