@@ -11,7 +11,12 @@ target_compile_options(${UNIT_TEST_NAME} PRIVATE
     -Wextra -Wall -Wpedantic -Werror
 )
 
+# coverage options are compiler specific
 if(COVERAGE)
-    target_compile_options(${UNIT_TEST_NAME} PRIVATE -O0 -g --coverage -fkeep-inline-functions -fkeep-static-functions)
-    target_link_options(${UNIT_TEST_NAME} PRIVATE --coverage)
+    if(CMAKE_C_COMPILER_ID MATCHES "^(GNU|Clang)$")
+        target_compile_options(${UNIT_TEST_NAME} PRIVATE -O0 -g --coverage -fkeep-inline-functions)
+        target_link_options(${UNIT_TEST_NAME} PRIVATE --coverage)
+    else()
+        message(FATAL_ERROR "Coverage not supported with this compiler: ${CMAKE_C_COMPILER_ID}")
+    endif()
 endif()

@@ -72,3 +72,77 @@ MunitResult test_has_fractional_part(const MunitParameter params[], void* data) 
 
     return MUNIT_OK;
 }
+
+MunitResult test_nsmps_dur(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    float sr = 48000.0f;
+    float dur = 1.5f;
+    float expected = sr * dur;
+
+    float result = nsmps_dur(sr, dur);
+    munit_assert_float(result, ==, expected);
+
+    // negative duration should yield same positive result
+    float result_neg = nsmps_dur(sr, -dur);
+    munit_assert_float(result_neg, ==, expected);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_copy_nsmps(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    uint32_t nsmps = 4;
+    float in[4];
+    for (uint32_t i = 0; i < nsmps; i++) {
+        in[i] = (float) (i + 1);
+    }
+    float out[4] = {0};
+
+    copy_nsmps(out, in, nsmps);
+
+    for (uint32_t i = 0; i < nsmps; i++) {
+        munit_assert_float(out[i], ==, in[i]);
+    }
+
+    return MUNIT_OK;
+}
+
+MunitResult test_set_nsmps(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    uint32_t nsmps = 5;
+    float buf[5];
+    float val = -3.25f;
+
+    set_nsmps(buf, val, nsmps);
+
+    for (uint32_t i = 0; i < nsmps; i++) {
+        munit_assert_float(buf[i], ==, val);
+    }
+
+    return MUNIT_OK;
+}
+
+MunitResult test_zero_buf(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    uint32_t sz = 6;
+    float buf[6];
+    for (uint32_t i = 0; i < sz; i++) {
+        buf[i] = (float) (i + 10);
+    }
+
+    zero_buf(buf, sz);
+
+    for (uint32_t i = 0; i < sz; i++) {
+        munit_assert_float(buf[i], ==, 0.0f);
+    }
+
+    return MUNIT_OK;
+}

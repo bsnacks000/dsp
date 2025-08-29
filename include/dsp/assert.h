@@ -14,9 +14,11 @@ extern "C" {
 #ifdef NDEBUG
 #    define dsp_assert(cond, msg) ((void) 0)
 #else
+
 #    include <stdio.h>
 #    include <stdlib.h>
 #    include <string.h>
+
 #    define dsp_assert(cond, msg)                                             \
         do {                                                                  \
             if (!(cond)) {                                                    \

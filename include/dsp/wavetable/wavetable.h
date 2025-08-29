@@ -12,11 +12,6 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
-// TODO: unify this API for all objects using tables
-//
-// TODO: support structs for building blwto here (decks)
-//       support a fill API that is polymorphic
-
 /**
  * @brief A general purpose wavetable. The buf_sz **should always include +2 slots** (8
  * bytes) for 2 guard points to support linear / cubic interpolation. buf_sz -2 is

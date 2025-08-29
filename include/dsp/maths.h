@@ -208,9 +208,9 @@ static inline float fast_cosf(float x) {
 }
 
 /**
- * @brief reverse the polarity giordi... returns 1 or -1 depending on xn
+ * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
  */
-static inline float flip(float xn) {
+static inline float sign_of(float xn) {
     return (float) ((float) (xn > 0) - (float) (xn < 0));
 }
 
@@ -229,7 +229,7 @@ static inline float hard_clip(float xn, float threshold) {
  * @brief soft clip with pre-gain - from Pirkle via Reiss(2014)
  */
 static inline float soft_clip(float xn, float amt) {
-    return flip(xn) * (1.0 - expf(-fabs(amt * xn)));
+    return sign_of(xn) * (1.0 - expf(-fabs(amt * xn)));
 }
 
 /**
