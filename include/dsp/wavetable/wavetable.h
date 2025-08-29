@@ -43,7 +43,7 @@ typedef dsp_err (*wt_f)(wavetable* wt, void* args);
 
 /**
  * @brief write nsmps at offset directly into the wavetable buffer
- * from an external buffer.
+ * from an external buffer. Does not respect guard point (last 2 indices of buf)
  */
 void wavetable_write(wavetable* self, float* in, uint32_t nsmps, uint32_t offset);
 

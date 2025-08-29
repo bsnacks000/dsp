@@ -33,7 +33,7 @@ dsp_err wavetable_shallow_copy(wavetable* self, wavetable* other) {
 dsp_err wavetable_deep_copy(wavetable* self, wavetable* other) {
     if (self->buf_sz != other->buf_sz)
         return DSP_ERR;
-    memset(self->buf, 0, self->buf_sz * sizeof(float));
+    copy_nsmps(self->buf, other->buf, self->buf_sz);
     return DSP_OK;
 }
 
