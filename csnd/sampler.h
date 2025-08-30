@@ -1,0 +1,35 @@
+#ifndef DSP_CSND_SAMPLER_H
+#define DSP_CSND_SAMPLER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <csdl.h>
+
+#include <dsp/phasor.h>
+#include <dsp/tabread.h>
+#include <dsp/wavetable/wavetable.h>
+
+/**
+ * simple looping sampler with speed control
+ */
+typedef struct {
+    OPDS h;
+    MYFLT *a_out, a_speed, i_skip, i_fn;
+    FUNC* ftp;  // the ftable pointer
+
+    wavetable wt;
+    phasor ph;
+    tabread tab;
+} sampler;
+
+int sampler_init(CSOUND* csound, sampler* obj);
+
+int sampler_vector(CSOUND* csound, sampler* obj);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
