@@ -4,7 +4,7 @@ int dphasor_init(CSOUND* csound, dphasor* obj) {
     (void) csound;
     MYFLT sr = GetLocalSr(&obj->h);
 
-    phasor_init(&obj->state, 1.0, sr);
+    phasor_init(&obj->state, 1.0, 0.0, sr);
     return OK;
 }
 

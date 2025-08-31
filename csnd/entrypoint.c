@@ -24,6 +24,7 @@
 #include "oscil.h"
 #include "phasor.h"
 #include "rc.h"
+#include "sampler.h"
 #include "svf.h"
 
 // #include <stdio.h>
@@ -82,6 +83,8 @@ static OENTRY localops[] = {
      NULL},
     {"smorph", sizeof(blsaw), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
      NULL, NULL},
+    {"sampler", sizeof(sampler), 0, "a", "aii", (SUBR) sampler_init,
+     (SUBR) sampler_vector, NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
