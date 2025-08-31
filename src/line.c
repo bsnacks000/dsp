@@ -2,16 +2,19 @@
 #include <dsp/line.h>
 #include <dsp/utils.h>
 
+#include <stdio.h>
+
 static inline void update_(line* self) {
     self->finished_ = false;
     self->nsmps_ = (uint32_t) nsmps_dur(self->sr, self->dur_sec);
-    // assure 1 sample
-    self->nsmps_ = self->nsmps_ ? self->nsmps_ > 0 : 1;
+
+    self->nsmps_ = self->nsmps_ <= 0 ? 1 : self->nsmps_;
     self->level_ = self->start;
-    self->step_ = fabsf(self->stop - self->start) / (float) self->nsmps_;
+    self->step_ = (self->stop - self->start) / (float) self->nsmps_;
 }
 
 static inline float tick_(line* self) {
+
     if (self->finished_)
         return self->level_;
 
