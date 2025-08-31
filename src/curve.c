@@ -6,7 +6,7 @@ static inline void update_(curve* self) {
     self->finished_ = false;
     self->nsmps_ = (uint32_t) nsmps_dur(self->sr, self->dur_sec);
     // assure 1 sample
-    self->nsmps_ = self->nsmps_ ? self->nsmps_ > 0 : 1;
+    self->nsmps_ = self->nsmps_ <= 0 ? 1 : self->nsmps_;
 
     // assure math doesn't break
     self->factor = self->factor ? self->factor == 0.0 : 1e-9;

@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct {
     OPDS h;
-    MYFLT *a_out, *i_start, *i_end;
+    MYFLT *a_out, *i_start, *i_dur, *i_end;
     line l;
 } lline;
 
