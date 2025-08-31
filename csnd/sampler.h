@@ -16,9 +16,14 @@ extern "C" {
  */
 typedef struct {
     OPDS h;
-    MYFLT *a_out, a_speed, i_skip, i_fn;
+    MYFLT *a_out, *a_speed, *i_skip, *i_fn;
     FUNC* ftp;  // the ftable pointer
 
+    // aux mem for internals
+    AUXCH freq;
+    AUXCH idxs;
+
+    float dur;  // the sample dur (buf_sz / sr)
     wavetable wt;
     phasor ph;
     tabread tab;

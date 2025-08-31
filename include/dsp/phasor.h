@@ -12,13 +12,19 @@ extern "C" {
 #include <stdint.h>
 
 typedef struct {
-    float freq, sr;
+    float freq, iphase, sr;
     // private
     double incr_, phase_;  // use double internally for better wrap around precision
 } phasor;
 
-void phasor_init(phasor* self, float freq, float sr);
+/**
+ * @brief init the phasor. iphs is guaranteed wrapped betwen 0 and 1
+ */
+void phasor_init(phasor* self, float freq, float iphs, float sr);
 
+/**
+ * @brief tick one block of phasor.
+ */
 void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t sz);
 
 #ifdef __cplusplus
