@@ -1,4 +1,4 @@
-#include <dsp/nonlin.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 #include <dsp/wavetable/ramp.h>
 #include <stdint.h>

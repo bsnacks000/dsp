@@ -16,6 +16,7 @@
 extern "C" {
 #endif
 
+#include <dsp/assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -54,8 +55,6 @@ static inline float interpolate_cubic(float a, float b, float c, float d, float 
 /**
  * @brief linear interpolation based on numpy.interp.
  */
-// NOTE: needs testing
-// consider using a guard point instead ..
 static inline void npinterp(float* out, size_t out_sz, const float* in, size_t in_sz) {
     float dx = 1.0f / (in_sz - 1);   // spacing between original points
     float dt = 1.0f / (out_sz - 1);  // spacing in target space
@@ -70,6 +69,7 @@ static inline void npinterp(float* out, size_t out_sz, const float* in, size_t i
             if (t <= 0.0f) {
                 out[i] = in[0];
                 continue;
+
             } else if (t >= 1.0f) {
                 out[i] = in[in_sz - 1];
                 continue;

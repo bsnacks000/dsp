@@ -1,6 +1,6 @@
 
 #include <dsp/assert.h>
-#include <dsp/nonlin.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 #include <dsp/wavetable/normalize.h>
 #include <dsp/wavetable/sinesum.h>

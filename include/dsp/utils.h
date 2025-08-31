@@ -121,6 +121,14 @@ static inline bool has_fractional_part(float x) {
     return modff(x, &int_part) != 0.0f;
 }
 
+/**
+ * @brief calculate the fractional number of samples given the duration
+ * and sample rate.
+ */
+static inline float nsmps_dur(float sr, float dur_sec) {
+    return sr * fabsf(dur_sec);
+}
+
 #ifdef __cpluplus
 }
 #endif

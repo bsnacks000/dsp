@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "csdl.h"
+#include <csdl.h>
 
 typedef struct {
     OPDS h;

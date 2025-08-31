@@ -16,14 +16,24 @@
 extern "C" {
 #endif
 
-// sometimes not in math.h
-#define DSP_PI 3.14159265358979323846
+#include <math.h>
 
-#define SQRT_TWO 1.4142135623730951
+// sometimes not in math.h
+#ifdef M_PI
+#    define DSP_PI M_PI
+#else
+#    define DSP_PI 3.14159265358979323846
+#endif
+
+#define SQRT_TWO 1.41421356237309504880
 
 #define E 2.718281828459
 
 static const float TWO_PI = DSP_PI * 2.0;
+
+static const float HALF_PI = DSP_PI * 0.5;
+
+static const float DSP_PI_SQUARED = DSP_PI * DSP_PI;
 
 static const float TANGENT_THRESHOLD = 0.95 * DSP_PI / 2.0;
 

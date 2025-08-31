@@ -24,6 +24,14 @@ MunitResult test_check_float_equal(const MunitParameter params[], void* data);
 
 MunitResult test_has_fractional_part(const MunitParameter params[], void* data);
 
+MunitResult test_nsmps_dur(const MunitParameter params[], void* data);
+
+MunitResult test_copy_nsmps(const MunitParameter params[], void* data);
+
+MunitResult test_set_nsmps(const MunitParameter params[], void* data);
+
+MunitResult test_zero_buf(const MunitParameter params[], void* data);
+
 // register tests
 static MunitTest test_utils_module[] = {
     {"/branchless_float_wrap_range", test_branchless_float_wrap_range, NULL, NULL,
@@ -37,6 +45,10 @@ static MunitTest test_utils_module[] = {
      NULL},
     {"/has_fractional_part", test_has_fractional_part, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
+    {"/nsmps_dur", test_nsmps_dur, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/copy_nsmps", test_copy_nsmps, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/set_nsmps", test_set_nsmps, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/zero_buf", test_zero_buf, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     // need this NULL stub or we segfault
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };

@@ -1,7 +1,7 @@
 
 #include "oscil.h"
 
-#include <dsp/nonlin.h>
+#include <dsp/maths.h>
 #include <dsp/resample.h>
 #include <dsp/utils.h>
 #include <stdint.h>
@@ -51,7 +51,7 @@ int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
     dsp_err err;
 
     if ((err = oscil_init(&obj->state, &obj->wt, 440.0, phase, sr)) != DSP_OK) {
-        csound->InitError(csound, "oscil_init: err\n");
+        return csound->InitError(csound, "oscil_init: err\n");
     }
     return OK;
 }

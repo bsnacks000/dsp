@@ -9,8 +9,11 @@
 extern "C" {
 #endif
 
+#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+#include <dsp/constants.h>
 
 /**
  * @brief add two blocks
@@ -143,6 +146,131 @@ static inline void matrix_transpose(matrix* b, matrix* a) {
 }
 
 // TODO: more matrix ops as needed?
+
+// bhaskara fast sin/cos ops - expect phase x (between 0 and 1)
+
+/**
+ * @brief fast quarter sin
+ */
+static inline float fast_qsinf(float x) {
+    float pi_m_x = DSP_PI - x;
+    return (16.0 * x * pi_m_x) / (5.0 * DSP_PI_SQUARED - 4.0 * x * pi_m_x);
+}
+
+/**
+ * @brief fast quarter cos
+ */
+static inline float fast_qcosf(float x) {
+    return fast_qsinf(HALF_PI - x);
+}
+
+/**
+ * @brief fast half sin
+ */
+static inline float fast_hsinf(float x) {
+    float theta = x * 2.0;
+    int q = (int) theta;
+    float qpos = theta - q;
+
+    qpos = (q & 1) ? 1.0 - qpos : qpos;
+    theta = qpos * HALF_PI;
+
+    return fast_qsinf(theta);
+}
+
+/**
+ * @brief fast half cos
+ */
+static inline float fast_hcosf(float x) {
+    return fast_hsinf(x + 0.5);
+}
+
+/**
+ * @brief fast sin
+ */
+static inline float fast_sinf(float x) {
+    float theta = x * 4.0;
+    int q = (int) theta;
+    float qpos = theta - q;
+
+    qpos = (q & 1) ? 1.0 - qpos : qpos;
+    theta = qpos * HALF_PI;
+
+    float sign = (q & 2) ? -1.0 : 1.0;
+    return sign * fast_qsinf(theta);
+}
+
+/**
+ * @brief fast cosf;
+ */
+static inline float fast_cosf(float x) {
+    return fast_sinf(x + 0.25);
+}
+
+/**
+ * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
+ */
+static inline float sign_of(float xn) {
+    return (float) ((float) (xn > 0) - (float) (xn < 0));
+}
+
+/**
+ * @brief hard clip to threshold
+ */
+static inline float hard_clip(float xn, float threshold) {
+    if (xn > threshold)
+        return threshold;
+    else if (xn < -threshold)
+        return -threshold;
+    return xn;
+}
+
+/**
+ * @brief soft clip with pre-gain - from Pirkle via Reiss(2014)
+ */
+static inline float soft_clip(float xn, float amt) {
+    return sign_of(xn) * (1.0 - expf(-fabs(amt * xn)));
+}
+
+/**
+ * @brief clamp xn between min and max
+ */
+static inline float clamp(float xn, float min, float max) {
+    if (xn > max)
+        return max;
+    else if (xn < min)
+        return min;
+    return xn;
+}
+
+/*
+ * Zavalishin monotonic saturators - amt related to drive in the circuit.
+ * - expensive bois but sound nice.
+ * - amt controls the drive of the circuit
+ */
+
+/**
+ * @brief hypertangent monotonic saturator
+ */
+static inline float hyptan_saturator(float xn, float amt) {
+    amt += 1e-9;
+    return tanh(amt * xn) / tanh(amt);
+}
+
+/**
+ * @brief arctangent monotonic saturator
+ */
+static inline float arctan_saturator(float xn, float amt) {
+    amt += 1e-9;
+    return atan(xn * amt) / atan(amt);
+}
+
+/**
+ * Cheap saturators (expander / compander curves)
+ * - amt drives pre-gain (NOTE: may change this to drive)
+ */
+
+// TODO: sin_arctan, parabolic, hyperbolic, hyperbolic_sin, inverse_hyperbolic
 
 #ifdef __cplusplus
 }

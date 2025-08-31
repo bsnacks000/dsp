@@ -19,10 +19,39 @@
 
 #include "bq.h"
 #include "ddelay.h"
+#include "follow.h"
 #include "maths.h"
 #include "oscil.h"
+#include "phasor.h"
 #include "rc.h"
+#include "sampler.h"
 #include "svf.h"
+
+// #include <stdio.h>
+
+//  called once when the lib loads
+PUBLIC int csoundModuleCreate(CSOUND* csound) {
+    // printf("ModuleCreate called!\n");
+    // fflush(stdout);
+    int err;
+    if ((err = blsaw_deck_init(csound)) != OK) {
+        return csound->InitError(csound, "blsaw_deck_init: %d", err);
+    }
+
+    if ((err = smorph_deck_init(csound)) != OK) {
+        return csound->InitError(csound, "smorph_deck_init: %d", err);
+    }
+
+    return OK;
+}
+
+// called once before the lib is destroyed.
+PUBLIC int csoundModuleDestroy(CSOUND* csound) {
+    // printf("ModuleDestroy called!\n");
+    blsaw_deck_destroy(csound);
+    smorph_deck_destroy(csound);
+    return OK;
+}
 
 static OENTRY localops[] = {
     {"mult", sizeof(mult), 0, "a", "aa", NULL, (SUBR) mult_vector, NULL, NULL},
@@ -46,6 +75,26 @@ static OENTRY localops[] = {
      (SUBR) ftoscil3_vector, NULL, NULL},
     {"oftoscil3", sizeof(oftoscil3), 0, "a", "aiio", (SUBR) oftoscil3_init,
      (SUBR) oftoscil3_vector, NULL, NULL},
+    {"dphasor", sizeof(dphasor), 0, "a", "a", (SUBR) dphasor_init,
+     (SUBR) dphasor_vector, NULL, NULL},
+    {"envfol", sizeof(envfol), 0, "a", "aaa", (SUBR) envfol_init, (SUBR) envfol_vector,
+     NULL, NULL},
+    {"blsaw", sizeof(blsaw), 0, "a", "ai", (SUBR) blsaw_init, (SUBR) blsaw_vector, NULL,
+     NULL},
+    {"smorph", sizeof(blsaw), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
+     NULL, NULL},
+    {"sampler", sizeof(sampler), 0, "a", "aii", (SUBR) sampler_init,
+     (SUBR) sampler_vector, NULL, NULL},
+    {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
-LINKAGE
+// LINKAGE
+PUBLIC int32_t csoundModuleInit(CSOUND* csound) {
+    int32_t status = 0;
+    for (OENTRY* oentry = &localops[0]; oentry->opname; oentry++) {
+        status |= csound->AppendOpcode(csound, oentry->opname, oentry->dsblksiz,
+                                       oentry->flags, oentry->outypes, oentry->intypes,
+                                       oentry->init, oentry->perf, oentry->deinit);
+    }
+    return status;
+}
