@@ -18,6 +18,7 @@
 #include <csdl.h>
 
 #include "bq.h"
+#include "curve.h"
 #include "ddelay.h"
 #include "follow.h"
 #include "line.h"
@@ -88,6 +89,8 @@ static OENTRY localops[] = {
      (SUBR) sampler_vector, NULL, NULL},
     {"lline", sizeof(sampler), 0, "a", "iii", (SUBR) lline_init, (SUBR) lline_vector,
      NULL, NULL},
+    {"ccurve", sizeof(sampler), 0, "a", "iiii", (SUBR) ccurve_init,
+     (SUBR) ccurve_vector, NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
