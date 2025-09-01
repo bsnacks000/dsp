@@ -14,8 +14,6 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
 #include <dsp/wavetable/wavetable.h>
 
 typedef struct {
