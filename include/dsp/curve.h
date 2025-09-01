@@ -19,8 +19,8 @@ typedef struct {
     // public
     float start, stop, dur_sec, factor, sr;
     // private
-    float level_, step_, a1_, a2_, b1_, grow_;  // state
-    uint32_t nsmps_;                            // counter
+    double level_, a1_, a2_, b1_, grow_;  // state
+    uint32_t nsmps_;                      // counter
     bool finished_;
 
 } curve;
