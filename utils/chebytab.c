@@ -1,5 +1,8 @@
 /**
- * @brief sinesum - choose from on the class waveforms and render a table.
+ * @brief chebytab -- generate an Nth order cheby polinomial and print to .wav
+ *
+ * NOTE: currently a POC / WIP
+ *  - this version calculates fixed coeff set.
  */
 
 #include <stdint.h>
