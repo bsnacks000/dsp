@@ -7,6 +7,7 @@
 
 #include <dsp/utils.h>
 #include <dsp/wavetable/cheby.h>
+#include <dsp/wavetable/ramp.h>
 #include <dsp/wavetable/wavetable.h>
 
 #include "cli.h"
@@ -26,14 +27,45 @@ app_err entrypoint(const char* outfile) {
         return APP_ERR_INVALID_PATH;
     }
 
+    dsp_err err;
+
+    // we use a straight line to compute the series though it could
+    // be any function really..
+
+    // remeber to add the plus 2 guard point
+    float wt_buf[WT_BUF_SZ + 2] = {0};
+    wavetable wt;
+    wavetable_init(&wt, wt_buf, WT_BUF_SZ + 2);
+
+    // calc a line between -1.0 -> 1.0
+    wt_ramp_args ramp_args = {
+        .start = -1.0,
+        .stop = 1.0,
+        .endpoint = true,
+    };
+
+    if ((err = wt_linspace(&wt, &ramp_args)) != DSP_OK) {
+        return APP_DSP_ERR;
+    }
+
+    float coeffs[4] = {1.0, 1.0, 0.5, 0.5};
+    float gain = 1.0;
+
+    wt_cheby_args cheby_args;
+    wt_cheby_args_init(&cheby_args, coeffs, 4, gain);
+
+    if ((err = wt_cheby(&wt, &cheby_args)) != DSP_OK) {
+        return APP_DSP_ERR + 1;
+    }
+
     // // open sf write .. set block size equal to wt buf sz
     // // this means we do not copy guard point
     // // sr = nharms for writing oscillator wavetables.
-    // wavio w;
-    // wavio_open_write(&w, malloc, outfile, nharms, 1, WT_BUF_SZ);
-    // wavio_fill_block(&w, wt.buf);
-    // wavio_write_block(&w);
-    // wavio_close(&w, free);
+    wavio w;
+    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, 1, WT_BUF_SZ);
+    wavio_fill_block(&w, wt.buf);
+    wavio_write_block(&w);
+    wavio_close(&w, free);
 
     return APP_OK;
 }

@@ -16,6 +16,9 @@ extern "C" {
 
 #include <dsp/wavetable/wavetable.h>
 
+/**
+ * @brief state for wt_cheby_args
+ */
 typedef struct {
     const float* coeffs;
     uint32_t coeffs_sz;
@@ -23,7 +26,15 @@ typedef struct {
 } wt_cheby_args;
 
 /**
- * @brief fill the wt with an nth order chebyshev polynomial.
+ * @brief init wt_cheby_args
+ */
+dsp_err wt_cheby_args_init(wt_cheby_args* self,
+                           const float* coeffs,
+                           uint32_t coeffs_sz,
+                           float gain);
+
+/**
+ * @brief fill the wt with an nth order chebyshev polynomial series.
  */
 dsp_err wt_cheby(wavetable* wt, void* args);
 
