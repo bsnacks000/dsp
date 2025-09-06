@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 #include <dsp/constants.h>
-#include <dsp/maths.h>
+#include <dsp/shape.h>
 #include <math.h>
 #include <stdint.h>
 
