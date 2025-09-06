@@ -1,4 +1,4 @@
-#include <dsp/maths.h>
+#include <dsp/shape.h>
 #include <dsp/wavetable/cheby.h>
 #include <dsp/wavetable/normalize.h>
 #include <math.h>
