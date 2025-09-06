@@ -4,6 +4,19 @@
 #include <math.h>
 #include <stdint.h>
 #include <sys/types.h>
+#include "dsp/conversions.h"
+
+// TODO: check : sz >= 2; sum of coeffs != 0.0
+dsp_err wt_cheby_args_init(wt_cheby_args* self,
+                           const float* coeffs,
+                           uint32_t coeffs_sz,
+                           float gain) {
+    self->coeffs = coeffs;
+    self->coeffs_sz = coeffs_sz;
+    self->gain = gain;
+
+    return DSP_OK;
+}
 
 /**
  * @brief computes the chebyshev series for a single sample of the waveform.
@@ -41,5 +54,11 @@ dsp_err wt_cheby(wavetable* wt, void* args) {
     }
 
     normalize(buf, len);
+    // NOTE: should make this a config option since default polynomials
+    // are unipolar ..
+    for (uint32_t i = 0; i < len; i++) {
+        buf[i] = unipolar_to_bipolar(buf[i]);
+    }
+
     return DSP_OK;
 }
