@@ -90,23 +90,3 @@ dsp_err wt_window(wavetable* wt, void* args) {
 
     return DSP_OK;
 }
-
-// case 6:                     /* Gaussian */
-//         arg = 12.0 / ff->flen;
-//         for (i = 0, x = -6.0 ; i < ((int32_t) ff->flen >> 1) ; i++, x += arg)
-//           ft[i] = (MYFLT)(xarg *
-//           (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
-//         for (x = 0.0 ; i <= (int32_t) ff->flen ; i++, x += arg)
-//           ft[i] = (MYFLT)(xarg *
-//           (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
-//         return OK;
-
-// case 9:                     /* Sinc */
-//         arg = TWOPI * varian / ff->flen;
-//         for (i = 0, x = -PI * varian; i < ((int32_t) ff->flen >> 1) ; i++, x +=
-//         arg)
-//           ft[i] = (MYFLT) (xarg * sin(x) / x);
-//         ft[i++] = (MYFLT) xarg;
-//         for (x = arg ; i <= (int32_t) ff->flen ; i++, x += arg)
-//           ft[i] = (MYFLT) (xarg * sin(x) / x);
-//         return OK;
