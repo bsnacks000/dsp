@@ -16,7 +16,7 @@ static inline float tick_(phasor* self) {
 void phasor_init(phasor* self, float freq, float iphs, float sr) {
     self->freq = freq;
     self->sr = sr;
-    self->phase_ = wrap_float_positive(iphs, 1.0);
+    self->phase_ = (double) wrap_float_positive(iphs, 1.0);
     self->incr_ = 0.0;
 
     update_(self);
