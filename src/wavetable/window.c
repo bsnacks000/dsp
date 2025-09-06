@@ -15,17 +15,17 @@ dsp_err wt_window(wavetable* wt, void* args) {
     uint32_t len = wt->len;
 
     // several windows just require us to set coeffs so we can store here.
-    float cf[4];
+    double cf[4];
 
     // simplfying from csnd for now... these can be controlled from caller but we
     // just set defaults for now. The windows can always be scaled outside of this
     // generator
-    float xarg = 1.0;
-    float varian = 1.0;
+    double xarg = 1.0;
+    double varian = 1.0;
 
     uint32_t i;  // index and accumulators need declare here
-    float arg = 0.0;
-    float x;
+    double arg = 0.0;
+    double x;
     switch (type) {
         case (WINDOW_HAMMING):
             cf[0] = 0.54;
@@ -84,8 +84,8 @@ dsp_err wt_window(wavetable* wt, void* args) {
     arg = TWO_PI / len;
 
     for (i = 0, x = 0.0; i < len; i++, x += arg) {
-        buf[i] = xarg *
-                 (cf[0] - cf[1] * cos(x) + cf[2] * cos(2.0 * x) - cf[3] * cos(3.0 * x));
+        buf[i] = (float) (xarg * (cf[0] - cf[1] * cos(x) + cf[2] * cos(2.0 * x) -
+                                  cf[3] * cos(3.0 * x)));
     }
 
     return DSP_OK;
@@ -94,14 +94,17 @@ dsp_err wt_window(wavetable* wt, void* args) {
 // case 6:                     /* Gaussian */
 //         arg = 12.0 / ff->flen;
 //         for (i = 0, x = -6.0 ; i < ((int32_t) ff->flen >> 1) ; i++, x += arg)
-//           ft[i] = (MYFLT)(xarg * (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
+//           ft[i] = (MYFLT)(xarg *
+//           (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
 //         for (x = 0.0 ; i <= (int32_t) ff->flen ; i++, x += arg)
-//           ft[i] = (MYFLT)(xarg * (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
+//           ft[i] = (MYFLT)(xarg *
+//           (pow(2.718281828459,-(x*x)/(2.0*varian*varian))));
 //         return OK;
 
 // case 9:                     /* Sinc */
 //         arg = TWOPI * varian / ff->flen;
-//         for (i = 0, x = -PI * varian; i < ((int32_t) ff->flen >> 1) ; i++, x += arg)
+//         for (i = 0, x = -PI * varian; i < ((int32_t) ff->flen >> 1) ; i++, x +=
+//         arg)
 //           ft[i] = (MYFLT) (xarg * sin(x) / x);
 //         ft[i++] = (MYFLT) xarg;
 //         for (x = arg ; i <= (int32_t) ff->flen ; i++, x += arg)
