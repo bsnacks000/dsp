@@ -6,6 +6,7 @@
 #include <dsp/utils.h>
 
 static inline void update_(lag* self) {
+    self->t_sec += 0.0001;  // guard div/0
     self->alpha_ = 1.0 - exp((-1.0 / (self->t_sec * self->sr)));
 }
 
