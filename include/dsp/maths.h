@@ -5,6 +5,7 @@
 #ifndef DSP_MATHS_H
 #define DSP_MATHS_H
 
+#include "dsp/utils.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,6 +74,127 @@ static inline void scale(float* out, float* x, float factor, uint32_t n) {
 static inline void dc_offset(float* out, float* x, float factor, uint32_t n) {
     for (uint32_t i = 0; i < n; i++) {
         out[i] = x[i] + factor;
+    }
+}
+
+/**
+ * @brief abs(*x)
+ */
+static inline void abs_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = fabs(x[i]);
+    }
+}
+
+// various logic gates
+//
+//
+
+/**
+ * @brief *x > *y
+ */
+static inline void gt_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] > y[i]);
+    }
+}
+
+/**
+ * @brief *x > y
+ */
+static inline void gt_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] > y);
+    }
+}
+
+/**
+ * @brief *x >= *y
+ */
+static inline void gte_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] >= y[i]);
+    }
+}
+
+/**
+ * @brief *x >= y
+ */
+static inline void gte_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] >= y);
+    }
+}
+
+/**
+ * @brief *x < *y
+ */
+static inline void lt_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] < y[i]);
+    }
+}
+
+/**
+ * @brief *x < y
+ */
+static inline void lt_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] < y);
+    }
+}
+
+/**
+ * @brief *x <= *y
+ */
+static inline void lte_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] <= y[i]);
+    }
+}
+
+/**
+ * @brief *x <= y
+ */
+static inline void lte_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] <= y);
+    }
+}
+
+/**
+ * @brief *x == *y
+ */
+static inline void ee_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) check_float_equal(x[i], y[i]);
+    }
+}
+
+/**
+ * @brief *x == y
+ */
+static inline void ee_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) check_float_equal(x[i], y);
+    }
+}
+
+/**
+ * @brief *x != *y
+ */
+static inline void ne_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) !check_float_equal(x[i], y[i]);
+    }
+}
+
+/**
+ * @brief *x != *y
+ */
+static inline void ne_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) !check_float_equal(x[i], y);
     }
 }
 
