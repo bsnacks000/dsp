@@ -1,4 +1,5 @@
 
+#include <dsp/maths.h>
 #include <dsp/phasor.h>
 #include <dsp/utils.h>
 
@@ -31,5 +32,42 @@ void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
             update_(self);
         }
         out[i] = tick_(self);
+    }
+}
+
+void impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        float freq_ = freq[i];
+        bool freq_eq = check_float_equal(freq_, self->freq);
+        if (!freq_eq) {
+            self->freq = freq_;
+            update_(self);
+        }
+        // invert phasor ramp to start impulse on 1st sample
+        float x = 1.0 - tick_(self);
+        out[i] = (x >= 1.0) ? 1.0 : 0.0;
+    }
+}
+
+void rand_impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        float freq_ = freq[i];
+        bool freq_eq = check_float_equal(freq_, self->freq);
+        if (!freq_eq) {
+            self->freq = freq_;
+            update_(self);
+        }
+
+        self->phase_ += self->incr_;
+
+        if (self->phase_ >= 1.0) {
+            // draw a new phase based on a quasi exponential dist.
+            double wait = -log(rand_unipolar()) * (self->sr / self->freq);
+            double next = 1.0 - (wait * self->incr_);
+            self->phase_ = (next < 0.0) ? 0.0 : next;
+            out[i] = 1.0;
+        } else {
+            out[i] = 0.0;
+        }
     }
 }

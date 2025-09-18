@@ -50,12 +50,20 @@ static inline void div_block(float* out, float* x, float* y, uint32_t n) {
     }
 }
 
+static inline float rand_unipolar(void) {
+    return (float) rand() / (float) RAND_MAX;
+}
+
+static inline float rand_bipolar(void) {
+    return ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+}
+
 /**
  * @brief random bipolar number (-1, 1)
  */
 static inline void noise_block(float* out, uint32_t n) {
     for (uint32_t i = 0; i < n; i++) {
-        out[i] = ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+        out[i] = rand_bipolar();
     }
 }
 
