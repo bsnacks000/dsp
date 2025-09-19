@@ -15,6 +15,8 @@ extern "C" {
 
 #include <dsp/constants.h>
 
+// TODO: add const correctness
+
 /**
  * @brief add two blocks
  */
@@ -50,12 +52,72 @@ static inline void div_block(float* out, float* x, float* y, uint32_t n) {
     }
 }
 
+/**
+ * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
+ */
+static inline float sign_of(float xn) {
+    return (float) ((float) (xn > 0) - (float) (xn < 0));
+}
+
 static inline float rand_unipolar(void) {
     return (float) rand() / (float) RAND_MAX;
 }
 
 static inline float rand_bipolar(void) {
     return ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+}
+
+// // inverversions for unipolar / bipolar signals
+
+/**
+ * @brief phase invert a single sample
+ */
+static inline float phase_invert(float x) {
+    return -x;
+}
+
+/**
+ * @brief phase invert a block
+ */
+static inline void phase_invert_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = phase_invert(x[i]);
+    }
+}
+
+/**
+ * @brief invert over linear range using (a+b) -x
+ */
+static inline float range_invert(float x, float a, float b) {
+    return (a + b) - x;
+}
+
+/**
+ * @brief invert a unipolar signal (0,1) -> (1,0)
+ */
+#define invert_unipolar(x) range_invert(x, 0.0, 1.0)
+
+/**
+ * @brief invert a bipolar signal (-1,1) -> (1,-1)
+ */
+#define invert_bipolar(x) range_invert(x, -1.0, 1.0)
+
+/**
+ * @brief invert a unipolar block
+ */
+static inline void invert_unipolar_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = invert_unipolar(x[i]);
+    }
+}
+
+/**
+ * @brief invert a bipolar block
+ */
+static inline void invert_bipolar_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = invert_bipolar(x[i]);
+    }
 }
 
 /**

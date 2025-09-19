@@ -12,13 +12,6 @@ extern "C" {
 #include <math.h>
 
 /**
- * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
- */
-static inline float sign_of(float xn) {
-    return (float) ((float) (xn > 0) - (float) (xn < 0));
-}
-
-/**
  * @brief hard clip to threshold
  */
 static inline float hard_clip(float xn, float threshold) {

@@ -44,7 +44,7 @@ void impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
             update_(self);
         }
         // invert phasor ramp to start impulse on 1st sample
-        float x = 1.0 - tick_(self);
+        float x = invert_unipolar(tick_(self));
         out[i] = (x >= 1.0) ? 1.0 : 0.0;
     }
 }
