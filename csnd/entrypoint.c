@@ -20,6 +20,7 @@
 #include "bq.h"
 #include "curve.h"
 #include "ddelay.h"
+#include "distort.h"
 #include "follow.h"
 #include "line.h"
 #include "maths.h"
@@ -44,6 +45,10 @@ PUBLIC int csoundModuleCreate(CSOUND* csound) {
         return csound->InitError(csound, "smorph_deck_init: %d", err);
     }
 
+    if ((err = cheby3_tab_init(csound)) != OK) {
+        return csound->InitError(csound, "cheby3_tab_init: %d", err);
+    }
+
     return OK;
 }
 
@@ -52,6 +57,7 @@ PUBLIC int csoundModuleDestroy(CSOUND* csound) {
     // printf("ModuleDestroy called!\n");
     blsaw_deck_destroy(csound);
     smorph_deck_destroy(csound);
+    cheby3_tab_destroy(csound);
     return OK;
 }
 
