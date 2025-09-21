@@ -1,0 +1,30 @@
+<CsoundSynthesizer>
+<CsOptions>
+    --opcode-lib=./build/csnd/libblpcsnd.so
+    --opcode-lib=./build/csnd/libblpcsnd.dylib
+    -t 60
+</CsOptions>
+<CsInstruments>
+sr      = 48000
+ksmps   = 64
+nchnls  = 1
+0dbfs   = 1
+
+
+instr 1;
+    asig oscili 0.5, 440, 1
+
+    adrive = 0.0
+    aamt = 0.0
+
+    adist cheby3 asig, adrive, aamt
+    out adist * 0.5
+endin;
+
+</CsInstruments>
+<CsScore>
+    f1 0 8192 10 1
+    i1 0 5
+
+</CsScore>
+</CsoundSynthesizer>

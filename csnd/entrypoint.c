@@ -57,7 +57,7 @@ PUBLIC int csoundModuleDestroy(CSOUND* csound) {
     // printf("ModuleDestroy called!\n");
     blsaw_deck_destroy(csound);
     smorph_deck_destroy(csound);
-    cheby3_tab_destroy(csound);
+
     return OK;
 }
 
@@ -97,6 +97,8 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"ccurve", sizeof(sampler), 0, "a", "iiii", (SUBR) ccurve_init,
      (SUBR) ccurve_vector, NULL, NULL},
+    {"cheby3", sizeof(sampler), 0, "a", "aaa", (SUBR) cheby3_init, (SUBR) cheby3_vector,
+     NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

@@ -14,11 +14,13 @@ extern "C" {
 /**
  * @brief simple distortion based on a 3rd degree chebyshev polynomial.
  *  - amt is a dry/wet control.
+ *  - drive is pre gain
  *  - table is constructed once at startup
  */
 typedef struct {
     OPDS h;
-    MYFLT *a_out, *a_in, *a_amt;
+    MYFLT *a_out, *a_in, *a_drive, *a_amt;
+    AUXCH aux;  // memblock
 
     tabread tr;   // read cheby table
     xfade xf;     // xfade wet and dry
@@ -26,7 +28,6 @@ typedef struct {
 } cheby3;
 
 int cheby3_tab_init(CSOUND* csound);
-int cheby3_tab_destroy(CSOUND* csound);
 int cheby3_init(CSOUND* csound, cheby3* obj);
 int cheby3_vector(CSOUND* csound, cheby3* obj);
 

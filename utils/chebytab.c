@@ -51,7 +51,7 @@ app_err entrypoint(const char* outfile) {
         return APP_DSP_ERR;
     }
 
-    float coeffs[4] = {1.0, 1.0, 0.5, 0.5};
+    float coeffs[4] = {1.0, 1.0, 1.0, 0.0};
     float gain = 1.0;
 
     wt_cheby_args cheby_args;
