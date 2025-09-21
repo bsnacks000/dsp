@@ -19,12 +19,9 @@ extern "C" {
  */
 typedef struct {
     OPDS h;
-    MYFLT *a_out, *a_in, *a_drive, *a_amt;
-    AUXCH aux;  // memblock
+    MYFLT *a_out, *a_in, *a_amt;
 
-    tabread tr;   // read cheby table
-    xfade xf;     // xfade wet and dry
-    balance bal;  // rebalance with initial signal
+    tabread tr;  // read cheby table
 } cheby3;
 
 int cheby3_tab_init(CSOUND* csound);

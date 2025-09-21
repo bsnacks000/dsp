@@ -1,13 +1,10 @@
 #include "distort.h"
 #include <dsp/maths.h>
-#include <dsp/rmap.h>
+
+#include <dsp/tabread.h>
 #include <dsp/utils.h>
 #include <dsp/wavetable/cheby.h>
 #include <dsp/wavetable/ramp.h>
-#include "dsp/balance.h"
-#include "dsp/conversions.h"
-#include "dsp/tabread.h"
-#include "dsp/xfade.h"
 
 #define WT_BUF_SZ 1026
 
@@ -32,8 +29,8 @@ int cheby3_tab_init(CSOUND* csound) {
         return NOTOK;
     }
 
-    // cheby3 = 3 coeffs set gain to 1 for now;
-    float coeffs[3] = {1.0, 0.25, 0.75};
+    // hard code some coeffs
+    float coeffs[3] = {0.5, 0.1, 0.75};
     float gain = 1.0;
 
     wt_cheby_args cheby_args;
@@ -50,25 +47,9 @@ int cheby3_init(CSOUND* csound, cheby3* obj) {
     (void) csound;
     (void) obj;
 
-    MYFLT sr = GetLocalSr(&obj->h);
-
     tabread_init(&obj->tr, &cheby3_wt);
-    balance_init(&obj->bal, sr);
-    xfade_init(&obj->xf, 0.0);
 
     return OK;
-}
-
-static inline void linlin_block(float* out,
-                                float* in,
-                                float src_lo,
-                                float src_hi,
-                                float dst_lo,
-                                float dst_hi,
-                                uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
-        out[i] = linlin(in[0], src_lo, src_hi, dst_lo, dst_hi);
-    }
 }
 
 int cheby3_vector(CSOUND* csound, cheby3* obj) {
@@ -76,16 +57,8 @@ int cheby3_vector(CSOUND* csound, cheby3* obj) {
 
     float* a_out = (float*) obj->a_out;
     float* a_in = (float*) obj->a_in;
-    // float* a_drive = (float*) obj->a_drive;
-    // float* a_amt = (float*) obj->a_amt;
 
     uint32_t nsmps = GetLocalKsmps(&obj->h);
-
-    // clamp the drive signal (linear range 0-3)
-    // clamp_block(a_drive, a_drive, 0.0, 2.0, nsmps);
-
-    // apply drive to input and write to a_out
-    // mult_block(a_out, a_in, a_drive, nsmps);
 
     // covert to unipolar and scale to len wavetab len
     // (-1,1) -> (0, N)
@@ -93,19 +66,8 @@ int cheby3_vector(CSOUND* csound, cheby3* obj) {
     dc_offset(a_out, a_out, 0.5, nsmps);
     scale(a_out, a_out, (float) (cheby3_wt.len - 1), nsmps);
 
-    // linlin_block(a_out, a_in, -1.0, 1.0, 0.0, (float) cheby3_wt.len - 1, nsmps);
-
-    // csound->Message(csound, "%f\n", *a_out);
-
     // read off the waveshaped value
     tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);
-
-    // // balance with a_in
-    // balance_tick_block(&obj->bal, a_out, a_in, nsmps);
-
-    // // apply xfade and mix wet/dry (left dry right wet)
-    // xfade_tick_block(&obj->xf, a_out, a_in, a_out, a_amt, nsmps);
-    // add_block(a_out, a_in, a_out, nsmps);
 
     return OK;
 }
