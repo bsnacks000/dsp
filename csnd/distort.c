@@ -30,11 +30,11 @@ int cheby3_tab_init(CSOUND* csound) {
     }
 
     // hard code some coeffs
-    float coeffs[3] = {0.5, 0.1, 0.75};
+    float coeffs[4] = {1.0, 0.25, 0.75, 0.3};
     float gain = 1.0;
 
     wt_cheby_args cheby_args;
-    wt_cheby_args_init(&cheby_args, coeffs, 3, gain);
+    wt_cheby_args_init(&cheby_args, coeffs, 4, gain);
 
     if ((err = wt_cheby(&cheby3_wt, &cheby_args)) != DSP_OK) {
         return NOTOK;
