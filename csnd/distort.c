@@ -33,8 +33,8 @@ int cheby3_tab_init(CSOUND* csound) {
     }
 
     // cheby3 = 3 coeffs set gain to 1 for now;
-    float coeffs[3] = {1.0, 1.0, 0.3};
-    float gain = 0.5;
+    float coeffs[3] = {1.0, 0.25, 0.75};
+    float gain = 1.0;
 
     wt_cheby_args cheby_args;
     wt_cheby_args_init(&cheby_args, coeffs, 3, gain);
@@ -59,16 +59,6 @@ int cheby3_init(CSOUND* csound, cheby3* obj) {
     return OK;
 }
 
-static inline void clamp_block(float* out,
-                               float* in,
-                               float min,
-                               float max,
-                               uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
-        out[i] = clamp(in[i], min, max);
-    }
-}
-
 static inline void linlin_block(float* out,
                                 float* in,
                                 float src_lo,
@@ -86,8 +76,8 @@ int cheby3_vector(CSOUND* csound, cheby3* obj) {
 
     float* a_out = (float*) obj->a_out;
     float* a_in = (float*) obj->a_in;
-    float* a_drive = (float*) obj->a_drive;
-    float* a_amt = (float*) obj->a_amt;
+    // float* a_drive = (float*) obj->a_drive;
+    // float* a_amt = (float*) obj->a_amt;
 
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
@@ -99,16 +89,16 @@ int cheby3_vector(CSOUND* csound, cheby3* obj) {
 
     // covert to unipolar and scale to len wavetab len
     // (-1,1) -> (0, N)
-    // scale(a_out, a_out, 0.5, nsmps);
-    // dc_offset(a_out, a_out, 0.5, nsmps);
-    // scale(a_out, a_out, cheby3_wt.len, nsmps);
+    scale(a_out, a_in, 0.5, nsmps);
+    dc_offset(a_out, a_out, 0.5, nsmps);
+    scale(a_out, a_out, (float) (cheby3_wt.len - 1), nsmps);
 
-    linlin_block(a_out, a_in, -1.0, 1.0, 0.0, (float) cheby3_wt.len - 1, nsmps);
+    // linlin_block(a_out, a_in, -1.0, 1.0, 0.0, (float) cheby3_wt.len - 1, nsmps);
 
     // csound->Message(csound, "%f\n", *a_out);
 
     // read off the waveshaped value
-    tabreadi_tick_block(&obj->tr, a_out, a_out, nsmps);
+    tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);
 
     // // balance with a_in
     // balance_tick_block(&obj->bal, a_out, a_in, nsmps);

@@ -12,7 +12,7 @@ nchnls  = 1
 
 
 instr 1;
-    asig oscili 0.5, 440, 1
+    asig oscili 1.0, 200, 1
 
     adrive = 0.0
     aamt = 0.0
