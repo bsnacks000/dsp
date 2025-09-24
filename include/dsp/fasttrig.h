@@ -70,6 +70,33 @@ static inline float fast_cosf(float x) {
     return fast_sinf(x + 0.25);
 }
 
+/**
+ * @brief fast tanh.
+ *  - x should be clamped [-1, 1]
+ *  - See https://mathr.co.uk/blog/2017-09-06_approximating_hyperbolic_tangent.html
+ */
+static inline float fast_tanh(float x) {
+    float xx = x * x;
+    return x * (27.0 + xx) / (27.0 + 9.0 * xx);
+}
+
+/**
+ * @brief a softsign function.
+ *  - x should be clamped [-1, 1]
+ */
+static inline float softsign(float x) {
+    return x / (1.0 + fabs(x));
+}
+
+/**
+ * @brief fast atan.
+ *  - x should be clamped [-1,1]
+ *  - Builder's method
+ */
+static inline float fast_atan(float x) {
+    return QRTR_PI * softsign(x);
+}
+
 #ifdef __cplusplus
 }
 #endif
