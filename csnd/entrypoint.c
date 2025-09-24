@@ -45,7 +45,7 @@ PUBLIC int csoundModuleCreate(CSOUND* csound) {
         return csound->InitError(csound, "smorph_deck_init: %d", err);
     }
 
-    if ((err = cheby3_tab_init(csound)) != OK) {
+    if ((err = chebsaw_tab_init(csound)) != OK) {
         return csound->InitError(csound, "cheby3_tab_init: %d", err);
     }
 
@@ -97,8 +97,8 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"ccurve", sizeof(sampler), 0, "a", "iiii", (SUBR) ccurve_init,
      (SUBR) ccurve_vector, NULL, NULL},
-    {"cheby3", sizeof(sampler), 0, "a", "aaa", (SUBR) cheby3_init, (SUBR) cheby3_vector,
-     NULL, NULL},
+    {"chebsaw", sizeof(sampler), 0, "a", "a", (SUBR) chebsaw_init,
+     (SUBR) chebsaw_vector, NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

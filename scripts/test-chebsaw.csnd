@@ -12,19 +12,20 @@ nchnls  = 1
 
 
 instr 1;
-    asig oscili 1.0, 200, 1
+    kenv linen 0.75, 0.1, p3, 0.1
+    alin linen 0.99, 2, p3, 2
+    asig oscili alin, cpspch(p4), 1
 
-    adrive = 0.0
-    aamt = 0.0
-
-    adist cheby3 asig, adrive, aamt
-    out adist * 0.5
+    adist chebsaw asig
+    out adist * kenv
 endin;
 
 </CsInstruments>
 <CsScore>
     f1 0 8192 10 1
-    i1 0 5
-
+    i1 0 4  6.0
+    i1 4 .  7.0
+    i1 8 .  8.0
+    e
 </CsScore>
 </CsoundSynthesizer>

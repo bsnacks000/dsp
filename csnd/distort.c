@@ -3,18 +3,18 @@
 
 #include <dsp/tabread.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/cheby.h>
+#include <dsp/wavetable/chebpoly.h>
 #include <dsp/wavetable/ramp.h>
 
 #define WT_BUF_SZ 1026
 
-static float cheby3_wt_buf[WT_BUF_SZ] = {0};
+static float chebsaw_buf[WT_BUF_SZ] = {0};
 
-static wavetable cheby3_wt;
+static wavetable chebsaw_wt;
 
-int cheby3_tab_init(CSOUND* csound) {
+int chebsaw_tab_init(CSOUND* csound) {
     (void) csound;
-    wavetable_init(&cheby3_wt, cheby3_wt_buf, WT_BUF_SZ);
+    wavetable_init(&chebsaw_wt, chebsaw_buf, WT_BUF_SZ);
 
     int err;
 
@@ -25,34 +25,36 @@ int cheby3_tab_init(CSOUND* csound) {
         .endpoint = true,
     };
 
-    if ((err = wt_linspace(&cheby3_wt, &ramp_args)) != DSP_OK) {
+    if ((err = wt_linspace(&chebsaw_wt, &ramp_args)) != DSP_OK) {
         return NOTOK;
     }
 
-    // hard code some coeffs
-    float coeffs[4] = {1.0, 0.25, 0.75, 0.3};
-    float gain = 1.0;
+    // ~saw wave coeffs from csound gen13 example
+    float h[16] = {
+        0.0,  100.0, -50.0, -33.0, 25.0,  20.0, -16.7, -14.2,
+        12.5, 11.1,  -10.0, -9.09, 8.333, 7.69, -7.14, -6.67,
+    };
 
-    wt_cheby_args cheby_args;
-    wt_cheby_args_init(&cheby_args, coeffs, 4, gain);
+    wt_chebpoly_args cheby_args;
+    wt_chebpoly_args_init(&cheby_args, h, 16);
 
-    if ((err = wt_cheby(&cheby3_wt, &cheby_args)) != DSP_OK) {
+    if ((err = wt_chebpoly(&chebsaw_wt, &cheby_args)) != DSP_OK) {
         return NOTOK;
     }
 
     return OK;
 }
 
-int cheby3_init(CSOUND* csound, cheby3* obj) {
+int chebsaw_init(CSOUND* csound, chebsaw* obj) {
     (void) csound;
     (void) obj;
 
-    tabread_init(&obj->tr, &cheby3_wt);
+    tabread_init(&obj->tr, &chebsaw_wt);
 
     return OK;
 }
 
-int cheby3_vector(CSOUND* csound, cheby3* obj) {
+int chebsaw_vector(CSOUND* csound, chebsaw* obj) {
     (void) csound;
 
     float* a_out = (float*) obj->a_out;
@@ -64,7 +66,7 @@ int cheby3_vector(CSOUND* csound, cheby3* obj) {
     // (-1,1) -> (0, N)
     scale(a_out, a_in, 0.5, nsmps);
     dc_offset(a_out, a_out, 0.5, nsmps);
-    scale(a_out, a_out, (float) (cheby3_wt.len - 1), nsmps);
+    scale(a_out, a_out, (float) (chebsaw_wt.len - 1), nsmps);
 
     // read off the waveshaped value
     tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);

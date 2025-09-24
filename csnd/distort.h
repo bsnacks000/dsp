@@ -12,21 +12,18 @@ extern "C" {
 #include <dsp/xfade.h>
 
 /**
- * @brief simple distortion based on a 3rd degree chebyshev polynomial.
- *  - amt is a dry/wet control.
- *  - drive is pre gain
- *  - table is constructed once at startup
+ * @brief chebyshev polynomial saw generator.
  */
 typedef struct {
     OPDS h;
-    MYFLT *a_out, *a_in, *a_amt;
+    MYFLT *a_out, *a_in;
 
     tabread tr;  // read cheby table
-} cheby3;
+} chebsaw;
 
-int cheby3_tab_init(CSOUND* csound);
-int cheby3_init(CSOUND* csound, cheby3* obj);
-int cheby3_vector(CSOUND* csound, cheby3* obj);
+int chebsaw_tab_init(CSOUND* csound);
+int chebsaw_init(CSOUND* csound, chebsaw* obj);
+int chebsaw_vector(CSOUND* csound, chebsaw* obj);
 
 #ifdef __cplusplus
 }
