@@ -31,7 +31,7 @@ static inline void tick_(svf* self, float xn) {
     float hpf = self->g1_ * (xn - self->two_r_plus_g_ * self->z0_ - self->z1_);
 
     float bpf = self->g_ * hpf + self->z0_;
-    bpf = self->drive ? hyptan_saturator(bpf, self->drive) : bpf;
+    bpf = self->drive ? fast_tanh_clip(bpf, self->drive) : bpf;
 
     float lpf = self->g_ * bpf + self->z1_;
     self->z0_ = self->g_ * hpf + bpf;

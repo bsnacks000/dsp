@@ -93,12 +93,14 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"sampler", sizeof(sampler), 0, "a", "aii", (SUBR) sampler_init,
      (SUBR) sampler_vector, NULL, NULL},
-    {"lline", sizeof(sampler), 0, "a", "iii", (SUBR) lline_init, (SUBR) lline_vector,
+    {"lline", sizeof(lline), 0, "a", "iii", (SUBR) lline_init, (SUBR) lline_vector,
      NULL, NULL},
-    {"ccurve", sizeof(sampler), 0, "a", "iiii", (SUBR) ccurve_init,
-     (SUBR) ccurve_vector, NULL, NULL},
-    {"chebsaw", sizeof(sampler), 0, "a", "a", (SUBR) chebsaw_init,
+    {"ccurve", sizeof(ccurve), 0, "a", "iiii", (SUBR) ccurve_init, (SUBR) ccurve_vector,
+     NULL, NULL},
+    {"chebsaw", sizeof(chebsaw), 0, "a", "a", (SUBR) chebsaw_init,
      (SUBR) chebsaw_vector, NULL, NULL},
+    {"saturator", sizeof(saturator), 0, "a", "aai", (SUBR) saturator_init,
+     (SUBR) saturator_vector, NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

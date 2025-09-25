@@ -25,6 +25,25 @@ int chebsaw_tab_init(CSOUND* csound);
 int chebsaw_init(CSOUND* csound, chebsaw* obj);
 int chebsaw_vector(CSOUND* csound, chebsaw* obj);
 
+typedef void (*saturator_func)(float* out, float* x, float* amt, uint32_t nsmps);
+
+/**
+ * @brief multi mode saturator
+ * 0=hard_clip
+ * 1=exp_clip
+ * 2=tanh_clip
+ * 3=atan_clip
+ */
+typedef struct {
+    OPDS h;
+    MYFLT *a_out, *a_in, *a_amt, *i_mode;
+
+    saturator_func func;
+} saturator;
+
+int saturator_init(CSOUND* csound, saturator* obj);
+int saturator_vector(CSOUND* csound, saturator* obj);
+
 #ifdef __cplusplus
 }
 #endif

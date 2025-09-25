@@ -5,6 +5,8 @@
 #include <dsp/utils.h>
 #include <dsp/wavetable/chebpoly.h>
 #include <dsp/wavetable/ramp.h>
+#include <stdint.h>
+#include "dsp/shape.h"
 
 #define WT_BUF_SZ 1026
 
@@ -70,6 +72,64 @@ int chebsaw_vector(CSOUND* csound, chebsaw* obj) {
 
     // read off the waveshaped value
     tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);
+
+    return OK;
+}
+
+typedef enum {
+    HARD_CLIP = 0,
+    EXP_CLIP,
+    TANH_CLIP,
+    ATAN_CLIP,
+} saturator_type;
+
+static int set_saturator_callback(saturator_type mode, saturator_func* cb) {
+    switch (mode) {
+        case HARD_CLIP: {
+            *cb = hard_clip_block;
+            break;
+        }
+        case EXP_CLIP: {
+            *cb = exp_clip_block;
+            break;
+        }
+        case TANH_CLIP: {
+            *cb = fast_tanh_clip_block;
+            break;
+        }
+        case ATAN_CLIP: {
+            *cb = fast_atan_clip_block;
+            break;
+        }
+        default:
+            return 1;
+    }
+    return 0;
+}
+
+int saturator_init(CSOUND* csound, saturator* obj) {
+    (void) csound;
+
+    int mode = (int) *obj->i_mode;
+
+    saturator_func cb;
+
+    int err;
+    if ((err = set_saturator_callback(mode, &cb)) != 0) {
+        csound->InitError(csound, "invalid mode: %d\n", mode);
+        return NOTOK;
+    }
+
+    obj->func = cb;
+
+    return OK;
+}
+
+int saturator_vector(CSOUND* csound, saturator* obj) {
+    (void) csound;
+    uint32_t nsmps = GetLocalKsmps(&obj->h);
+
+    obj->func(obj->a_out, obj->a_in, obj->a_amt, nsmps);
 
     return OK;
 }
