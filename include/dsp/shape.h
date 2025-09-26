@@ -4,30 +4,14 @@
 #ifndef DSP_SHAPE_H
 #define DSP_SHAPE_H
 
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <dsp/fasttrig.h>
 #include <dsp/maths.h>
 #include <math.h>
-
-/**
- * @brief hard clip to threshold
- */
-static inline float hard_clip(float xn, float threshold) {
-    if (xn > threshold)
-        return threshold;
-    else if (xn < -threshold)
-        return -threshold;
-    return xn;
-}
-
-/**
- * @brief soft clip with pre-gain - from Pirkle via Reiss(2014)
- */
-static inline float soft_clip(float xn, float amt) {
-    return sign_of(xn) * (1.0 - expf(-fabs(amt * xn)));
-}
 
 /**
  * @brief clamp xn between min and max
@@ -40,6 +24,47 @@ static inline float clamp(float xn, float min, float max) {
     return xn;
 }
 
+static inline void clamp_block(float* out,
+                               float* x,
+                               float min,
+                               float max,
+                               uint32_t nsmps) {
+
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = clamp(x[i], min, max);
+    }
+}
+
+/**
+ * @brief hard clip w/ drive amt.
+ */
+static inline float hard_clip(float xn, float amt) {
+    amt += 1e-9;
+    return clamp(amt * xn, -1.0, 1.0) / clamp(amt, -1.0, 1.0);
+}
+
+static inline void hard_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = hard_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief exp soft clip with pre-gain - from Pirkle via Reiss(2014)
+ */
+static inline float exp_clip(float xn, float pregain) {
+    return sign_of(xn) * (1.0 - exp(-fabs(pregain * xn)));
+}
+
+static inline void exp_clip_block(float* out,
+                                  float* x,
+                                  float* pregain,
+                                  uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = exp_clip(x[i], pregain[i]);
+    }
+}
+
 /*
  * Zavalishin monotonic saturators - amt related to drive in the circuit.
  * - expensive bois but sound nice.
@@ -49,25 +74,64 @@ static inline float clamp(float xn, float min, float max) {
 /**
  * @brief hypertangent monotonic saturator
  */
-static inline float hyptan_saturator(float xn, float amt) {
+static inline float tanh_clip(float xn, float amt) {
     amt += 1e-9;
     return tanh(amt * xn) / tanh(amt);
+}
+
+static inline void tanh_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = tanh_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief fast tanh saturator.
+ */
+static inline float fast_tanh_clip(float xn, float amt) {
+    amt += 1e-9;
+    return fast_tanh(amt * xn) / fast_tanh(amt);
+}
+
+static inline void fast_tanh_clip_block(float* out,
+                                        float* x,
+                                        float* amt,
+                                        uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = fast_tanh_clip(x[i], amt[i]);
+    }
 }
 
 /**
  * @brief arctangent monotonic saturator
  */
-static inline float arctan_saturator(float xn, float amt) {
+static inline float atan_clip(float xn, float amt) {
     amt += 1e-9;
     return atan(xn * amt) / atan(amt);
 }
 
-/**
- * Cheap saturators (expander / compander curves)
- * - amt drives pre-gain (NOTE: may change this to drive)
- */
+static inline void atan_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = atan_clip(x[i], amt[i]);
+    }
+}
 
-// TODO: sin_arctan, parabolic, hyperbolic, hyperbolic_sin, inverse_hyperbolic
+/**
+ * @brief arctangent monotonic saturator
+ */
+static inline float fast_atan_clip(float xn, float amt) {
+    amt += 1e-9;
+    return fast_atan(xn * amt) / fast_atan(amt);
+}
+
+static inline void fast_atan_clip_block(float* out,
+                                        float* x,
+                                        float* amt,
+                                        uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        out[i] = fast_atan_clip(x[i], amt[i]);
+    }
+}
 
 #ifdef __cplusplus
 }

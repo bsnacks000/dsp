@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #include <dsp/utils.h>
-#include <dsp/wavetable/cheby.h>
+#include <dsp/wavetable/chebpoly.h>
 #include <dsp/wavetable/ramp.h>
 #include <dsp/wavetable/wavetable.h>
 
@@ -51,13 +51,12 @@ app_err entrypoint(const char* outfile) {
         return APP_DSP_ERR;
     }
 
-    float coeffs[4] = {1.0, 1.0, 0.5, 0.5};
-    float gain = 1.0;
+    float h[4] = {0.0, 0.0, 0.0, 1.0};
 
-    wt_cheby_args cheby_args;
-    wt_cheby_args_init(&cheby_args, coeffs, 4, gain);
+    wt_chebpoly_args cheby_args;
+    wt_chebpoly_args_init(&cheby_args, h, 4);
 
-    if ((err = wt_cheby(&wt, &cheby_args)) != DSP_OK) {
+    if ((err = wt_chebpoly(&wt, &cheby_args)) != DSP_OK) {
         return APP_DSP_ERR + 1;
     }
 

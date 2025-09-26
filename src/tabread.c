@@ -60,7 +60,7 @@ void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) 
         uint32_t ipos = (uint32_t) val;
         float frac = val - ipos;
 
-        float a = buf[ipos - 1];
+        float a = ipos > 0 ? buf[ipos - 1] : buf[len - 1];
         float b = buf[ipos];
         float c = buf[ipos + 1];
         float d = buf[ipos + 2];
