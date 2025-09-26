@@ -32,6 +32,39 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
  */
 void line_tick_block(line* self, float* out, uint32_t nsmps);
 
+typedef enum {
+    ARLINE_OFF = 0,
+    ARLINE_ATK,
+    ARLINE_REL,
+} arline_stage;
+
+typedef struct {
+    float gate_thresh, start_level, atk_sec, atk_level, rel_sec, rel_level, sr;
+    float curr_gate_, prev_gate_;
+    line state_;
+    arline_stage stage_;
+} arline;
+
+void arline_init(arline* self,
+                 float gate_thresh,
+                 float start_level,
+                 float atk_sec,
+                 float atk_level,
+                 float rel_sec,
+                 float rel_level,
+                 float sr);
+
+void arline_tick_block(arline* self,
+                       float* out,
+                       float* gate,
+                       float* gate_thresh,
+                       float* start_level,
+                       float* atk_sec,
+                       float* atk_level,
+                       float* rel_sec,
+                       float* rel_level,
+                       uint32_t nsmps);
+
 #ifdef __cplusplus
 }
 #endif
