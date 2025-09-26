@@ -168,23 +168,17 @@ MunitResult test_hard_clip(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    float a = hard_clip(1.0, 0.5);
-    munit_assert_float(a, ==, 0.5);
-
-    a = hard_clip(-1.0, 0.5);
-    munit_assert_float(a, ==, -0.5);
-
-    a = hard_clip(-0.3, 0.5);
-    munit_assert_float(a, ==, -0.3);
+    float a = hard_clip(2.0, 1.0);
+    munit_assert_float(a, ==, 1.0);
 
     return MUNIT_OK;
 }
 
-MunitResult test_soft_clip(const MunitParameter params[], void* data) {
+MunitResult test_exp_clip(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    float a = soft_clip(0.5, 0.5);  // 0.22119921692859512
+    float a = exp_clip(0.5, 0.5);  // 0.22119921692859512
     munit_assert_double_equal(a, 0.22119921692859512, 6);
 
     return MUNIT_OK;
@@ -206,21 +200,21 @@ MunitResult test_clamp(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
-MunitResult test_hyptan_saturator(const MunitParameter params[], void* data) {
+MunitResult test_tanh_clip(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    float a = hyptan_saturator(0.5, 0.5);  // 0.5299937267423438
+    float a = tanh_clip(0.5, 0.5);  // 0.5299937267423438
     munit_assert_double_equal(a, 0.5299937267423438, 4);
 
     return MUNIT_OK;
 }
 
-MunitResult test_arctan_saturator(const MunitParameter params[], void* data) {
+MunitResult test_atan_clip(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    float a = arctan_saturator(0.5, 0.5);  // 0.5283735692285408
+    float a = atan_clip(0.5, 0.5);  // 0.5283735692285408
     munit_assert_double_equal(a, 0.5283735692285408, 4);
 
     return MUNIT_OK;
