@@ -127,6 +127,8 @@ void arline_init(arline* self,
               self->sr);
 }
 
+// NOTE: not sure about this yet ..
+// possibly better to have an i_rate tick_block
 void arline_tick_block(arline* self,
                        float* out,
                        float* gate,
