@@ -1,6 +1,8 @@
 
 #include <dsp/pblep.h>
 #include <math.h>
+#include "dsp/constants.h"
+#include "dsp/conversions.h"
 #include "dsp/shape.h"
 #include "dsp/utils.h"
 
@@ -17,9 +19,9 @@ static inline float blepsaw_tick_(blepsaw* self) {
     if (self->phase_ >= 1.0)
         self->phase_ -= 1.0;
 
-    double out = 2.0 * self->phase_ - 1.0;
+    double out = unipolar_to_bipolar(self->phase_);  // 2.0 * self->phase_ - 1.0;
     out -= polyblep(self->phase_, self->incr_);
-    return (float) (1.0 - out);
+    return out;  // (float) (1.0 - out);
 }
 
 static inline void update_blepsqr_(blepsqr* self) {
@@ -39,7 +41,7 @@ static inline float blepsqr_tick_(blepsqr* self) {
     out += polyblep(self->phase_, self->incr_);
 
     // blep: rising edge at phase = duty
-    double edge_phase = fmod((self->phase_ - duty), 1.0);
+    double edge_phase = fmod((self->phase_ - duty + 1.0), 1.0);
     out -= polyblep(edge_phase, self->incr_);
 
     return (float) out;
