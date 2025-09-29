@@ -12,7 +12,7 @@ nchnls  = 1
 0dbfs   = 1
 
 instr 1
-    afreq line 1, p3, p4
+    afreq line 1, p3, 1000
     aout blepsaw afreq, 0
     out aout * 0.75
 endin
@@ -20,7 +20,7 @@ endin
 
 
 instr 2
-    afreq line 1, p3, p4
+    afreq line 1, p3, 1000
     aduty = 0.5
     aout blepsqr afreq, aduty, 0
     out aout * 0.75
@@ -29,8 +29,8 @@ endin
 
 
 instr 3
-    afreq = 100
-    aduty line 0.1, p3, 0.9
+    afreq = 440
+    aduty line 0.01, p3, 0.99
     aout blepsqr afreq, aduty, 0
     out aout * 0.75
 endin
@@ -39,9 +39,9 @@ endin
 </CsInstruments>
 <CsScore>
 
-;i1 0 3 1000;
-;i2 0 3 1000;
-i3 0 3
+i1 0 3
+i2 3 3
+i3 6 3
 
 </CsScore>
 </CsoundSynthesizer>
