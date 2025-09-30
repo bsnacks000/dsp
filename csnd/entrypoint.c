@@ -17,6 +17,7 @@
 
 #include <csdl.h>
 
+#include "blep.h"
 #include "bq.h"
 #include "curve.h"
 #include "ddelay.h"
@@ -89,7 +90,7 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"blsaw", sizeof(blsaw), 0, "a", "ai", (SUBR) blsaw_init, (SUBR) blsaw_vector, NULL,
      NULL},
-    {"smorph", sizeof(blsaw), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
+    {"smorph", sizeof(smorph), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
      NULL, NULL},
     {"sampler", sizeof(sampler), 0, "a", "aii", (SUBR) sampler_init,
      (SUBR) sampler_vector, NULL, NULL},
@@ -101,6 +102,10 @@ static OENTRY localops[] = {
      (SUBR) chebsaw_vector, NULL, NULL},
     {"saturator", sizeof(saturator), 0, "a", "aai", (SUBR) saturator_init,
      (SUBR) saturator_vector, NULL, NULL},
+    {"blepsaw", sizeof(ssaw), 0, "a", "ai", (SUBR) ssaw_init, (SUBR) ssaw_vector, NULL,
+     NULL},
+    {"blepsqr", sizeof(ssqr), 0, "a", "aai", (SUBR) ssqr_init, (SUBR) ssqr_vector, NULL,
+     NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
