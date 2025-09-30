@@ -32,38 +32,116 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
  */
 void line_tick_block(line* self, float* out, uint32_t nsmps);
 
+/**
+ * @brief stages for an AR envelope.
+ */
 typedef enum {
-    ARLINE_OFF = 0,
-    ARLINE_ATK,
-    ARLINE_REL,
-} arline_stage;
+    AR_IDLE = 0,
+    AR_ATK,
+    AR_REL,
+} ar_stage;
 
+/**
+ * @brief state for a linear AR envelope.
+ */
 typedef struct {
     float gate_thresh, start_level, atk_sec, atk_level, rel_sec, rel_level, sr;
     float curr_gate_, prev_gate_;
     line state_;
-    arline_stage stage_;
-} arline;
+    ar_stage stage_;
+} line_ar;
 
-void arline_init(arline* self,
-                 float gate_thresh,
-                 float start_level,
-                 float atk_sec,
-                 float atk_level,
-                 float rel_sec,
-                 float rel_level,
-                 float sr);
+/**
+ * @brief init linear AR envelope.
+ */
+void line_ar_init(line_ar* self,
+                  float gate_thresh,
+                  float start_level,
+                  float atk_sec,
+                  float atk_level,
+                  float rel_sec,
+                  float rel_level,
+                  float sr);
 
-void arline_tick_block(arline* self,
-                       float* out,
-                       float* gate,
-                       float* gate_thresh,
-                       float* start_level,
-                       float* atk_sec,
-                       float* atk_level,
-                       float* rel_sec,
-                       float* rel_level,
-                       uint32_t nsmps);
+/**
+ * @brief tick one block of the linear AR envelope. The envelope fires when the
+ *  gate rises above the gate threshold. If the gate falls below and then rises
+ *  again before the envelope is finished it will reset. The envelope only grabs
+ *  the instanteous values of the signals at stage transitions.
+ *
+ *  For typical AR envelopes the start and release segments should be the same.
+ */
+void line_ar_tick_block(line_ar* self,
+                        float* out,
+                        float* gate,
+                        float* gate_thresh,
+                        float* start_level,
+                        float* atk_sec,
+                        float* atk_level,
+                        float* rel_sec,
+                        float* rel_level,
+                        uint32_t nsmps);
+
+/**
+ * @brief stages for an ADSR envelope.
+ */
+typedef enum {
+    ADSR_IDLE = 0,
+    ADSR_ATK,
+    ADSR_DCY,
+    ADSR_SUS,
+    ADSR_REL,
+} adsr_stage;
+
+/**
+ * @brief state for a linear ADSR envelope.
+ */
+typedef struct {
+    float gate_thresh, start_level, atk_sec, atk_level, decay_sec, sustain_level,
+        rel_sec, rel_level, sr;
+
+    float curr_gate_, prev_gate_;
+    line state_;
+    adsr_stage stage_;
+
+} line_adsr;
+
+/**
+ * @brief initialize a linear ADSR envelope.
+ */
+void line_adsr_init(line_adsr* self,
+                    float gate_thresh,
+                    float start_level,
+                    float atk_sec,
+                    float atk_level,
+                    float decay_sec,
+                    float sustain_level,
+                    float rel_sec,
+                    float rel_level,
+                    float sr);
+
+/**
+ * @brief tick one block of the linear ADSR envelope. The envelope fires when the
+ *  gate is above the threshold and runs through atk/dec stages, holding at sustain
+ *  level. When the gate is released it will move directly to the release stage. It
+ *  will wait on the final release level until retriggered.
+ *
+ *  The envelope only grabs the instanteous values of the signals at stage transitions.
+ *
+ *  For typical envelopes the start and release levels should be the same.
+ */
+void line_adsr_tick_block(line_adsr* self,
+                          float* out,
+                          float* gate,
+                          float* gate_thresh,
+                          float* start_level,
+                          float* atk_sec,
+                          float* atk_level,
+                          float* decay_sec,
+                          float* sustain_level,
+                          float* rel_sec,
+                          float* rel_level,
+                          uint32_t nsmps);
 
 #ifdef __cplusplus
 }
