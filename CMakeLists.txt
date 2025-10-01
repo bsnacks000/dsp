@@ -52,7 +52,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
-target_compile_options(${PROJECT_NAME} PRIVATE -Wextra -Wall -Wpedantic -Werror)
+target_compile_options(${PROJECT_NAME} PRIVATE
+    -Wextra -Wall -Wpedantic -Werror -Wmissing-declarations -Wmissing-prototypes -Wmissing-declarations)
 
 if(COVERAGE)
     message(STATUS "Building with coverage instrumentation")

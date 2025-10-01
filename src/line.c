@@ -55,6 +55,9 @@ static inline float ar_tick_(line_ar* self) {
         case AR_IDLE: {
             if (prev_gate_below_thresh && curr_gate_above_thresh) {
                 self->stage_ = AR_ATK;
+                // NOTE: must reinit or we can be off by one sample in some situations.
+                line_init(&self->state_, self->start_level, self->atk_level,
+                          self->atk_sec, self->sr);
                 return line_tick_(&self->state_);
             }
             return self->state_.level_;
@@ -138,16 +141,16 @@ void line_ar_init(line_ar* self,
 
 // NOTE: not sure about this yet ..
 // possibly better to have an i_rate tick_block
-void ar_tick_block(line_ar* self,
-                   float* out,
-                   float* gate,
-                   float* gate_thresh,
-                   float* start_level,
-                   float* atk_sec,
-                   float* atk_level,
-                   float* rel_sec,
-                   float* rel_level,
-                   uint32_t nsmps) {
+void line_ar_tick_block(line_ar* self,
+                        float* out,
+                        float* gate,
+                        float* gate_thresh,
+                        float* start_level,
+                        float* atk_sec,
+                        float* atk_level,
+                        float* rel_sec,
+                        float* rel_level,
+                        uint32_t nsmps) {
     for (uint32_t i = 0; i < nsmps; i++) {
 
         // update all inputs
@@ -199,7 +202,7 @@ void line_adsr_init(line_adsr* self,
  *  - if we are in the release stage and recv a new gate jump immediately to start/atk
  */
 
-float adsr_tick_(line_adsr* self) {
+static inline float adsr_tick_(line_adsr* self) {
     bool prev_gate_below_thresh = self->prev_gate_ < self->gate_thresh;
     bool curr_gate_above_thresh = self->curr_gate_ >= self->gate_thresh;
 
@@ -209,6 +212,8 @@ float adsr_tick_(line_adsr* self) {
             // initial atk
             if (prev_gate_below_thresh && curr_gate_above_thresh) {
                 self->stage_ = ADSR_ATK;
+                line_init(&self->state_, self->start_level, self->atk_level,
+                          self->atk_sec, self->sr);
                 return line_tick_(&self->state_);
             }
             return self->state_.level_;
