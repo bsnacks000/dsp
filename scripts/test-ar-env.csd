@@ -21,8 +21,33 @@ instr 1
     arel_sec = 0.1
     arel_level = 0.0
 
-    aamp ar_line agate, agate_thresh, astart_level, aatk_sec, aatk_level, arel_sec, arel_level
+    aamp ar_line agate, agate_thresh, astart_level, aatk_sec, \
+        aatk_level, arel_sec, arel_level
     asig oscili aamp, 440, 1
+    out asig
+endin
+
+
+instr 2 ; test modulating the env signals
+    klin line 0.25, p3, 6.5
+    agate vco2 1.0, klin, 2, 0.5
+
+    agate_thresh = 0.5
+    astart_level = 0.0
+    aatk_sec line 0.01, p3, 0.2
+    aatk_level line 0.9, p3, 0.6
+    arel_sec line 0.25, p3, 0.5
+    arel_level = 0.0
+
+    aamp ar_line agate, agate_thresh, astart_level, aatk_sec, \
+        aatk_level, arel_sec, arel_level
+
+
+    ; NOTE good lag setting for resets ... minimal noise in the jump
+    ; NOTE this is csound's lag not my lag!
+    aamp lag aamp, 0.05
+
+    asig oscili aamp, 220, 1
     out asig
 endin
 
@@ -30,7 +55,8 @@ endin
 </CsInstruments>
 <CsScore>
     f1 0 8192 10 1
-    i1 0 3 1;
+    ;i1 0 3 1;
+    i2 0 25
 
 </CsScore>
 </CsoundSynthesizer>

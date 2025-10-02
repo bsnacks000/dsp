@@ -156,12 +156,12 @@ void line_ar_tick_block(line_ar* self,
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
         self->curr_gate_ = gate[i];
-        self->gate_thresh = (gate_thresh == NULL) ? self->gate_thresh : gate_thresh[i];
-        self->start_level = (start_level == NULL) ? self->start_level : start_level[i];
-        self->atk_sec = (atk_sec == NULL) ? self->atk_sec : atk_sec[i];
-        self->atk_level = (atk_level == NULL) ? self->atk_level : atk_level[i];
-        self->rel_sec = (rel_sec == NULL) ? self->rel_sec : rel_sec[i];
-        self->rel_level = (rel_level == NULL) ? self->rel_level : rel_level[i];
+        self->gate_thresh = gate_thresh[i];
+        self->start_level = start_level[i];
+        self->atk_sec = atk_sec[i];
+        self->atk_level = atk_level[i];
+        self->rel_sec = rel_sec[i];
+        self->rel_level = rel_level[i];
 
         out[i] = ar_tick_(self);
     }
@@ -306,15 +306,14 @@ void line_adsr_tick_block(line_adsr* self,
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
         self->curr_gate_ = gate[i];
-        self->gate_thresh = (gate_thresh == NULL) ? self->gate_thresh : gate_thresh[i];
-        self->start_level = (start_level == NULL) ? self->start_level : start_level[i];
-        self->atk_sec = (atk_sec == NULL) ? self->atk_sec : atk_sec[i];
-        self->atk_level = (atk_level == NULL) ? self->atk_level : atk_level[i];
-        self->decay_sec = (decay_sec == NULL) ? self->decay_sec : decay_sec[i];
-        self->sustain_level =
-            (sustain_level == NULL) ? self->sustain_level : sustain_level[i];
-        self->rel_sec = (rel_sec == NULL) ? self->gate_thresh : rel_sec[i];
-        self->rel_level = (rel_level == NULL) ? self->gate_thresh : rel_level[i];
+        self->gate_thresh = gate_thresh[i];
+        self->start_level = start_level[i];
+        self->atk_sec = atk_sec[i];
+        self->atk_level = atk_level[i];
+        self->decay_sec = decay_sec[i];
+        self->sustain_level = sustain_level[i];
+        self->rel_sec = rel_sec[i];
+        self->rel_level = rel_level[i];
 
         out[i] = adsr_tick_(self);
     }
