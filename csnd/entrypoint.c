@@ -22,6 +22,7 @@
 #include "curve.h"
 #include "ddelay.h"
 #include "distort.h"
+#include "env.h"
 #include "follow.h"
 #include "line.h"
 #include "maths.h"
@@ -106,6 +107,14 @@ static OENTRY localops[] = {
      NULL},
     {"blepsqr", sizeof(ssqr), 0, "a", "aai", (SUBR) ssqr_init, (SUBR) ssqr_vector, NULL,
      NULL},
+    {"ar_line", sizeof(ar_line), 0, "a", "aaaaaaa", (SUBR) ar_line_init,
+     (SUBR) ar_line_vector, NULL, NULL},
+    {"adsr_line", sizeof(adsr_line), 0, "a", "aaaaaaaaa", (SUBR) adsr_line_init,
+     (SUBR) adsr_line_vector, NULL, NULL},
+    {"ar_curve", sizeof(ar_curve), 0, "a", "aaaaaaaaa", (SUBR) ar_curve_init,
+     (SUBR) ar_curve_vector, NULL, NULL},
+    {"adsr_curve", sizeof(adsr_curve), 0, "a", "aaaaaaaaaaaa", (SUBR) adsr_curve_init,
+     (SUBR) adsr_curve_vector, NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
