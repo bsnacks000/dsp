@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+#include <dsp/utils.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -31,15 +32,6 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
  * @brief line tick block.
  */
 void line_tick_block(line* self, float* out, uint32_t nsmps);
-
-/**
- * @brief stages for an AR envelope.
- */
-typedef enum {
-    AR_IDLE = 0,
-    AR_ATK,
-    AR_REL,
-} ar_stage;
 
 /**
  * @brief state for a linear AR envelope.
@@ -81,17 +73,6 @@ void line_ar_tick_block(line_ar* self,
                         float* rel_sec,
                         float* rel_level,
                         uint32_t nsmps);
-
-/**
- * @brief stages for an ADSR envelope.
- */
-typedef enum {
-    ADSR_IDLE = 0,
-    ADSR_ATK,
-    ADSR_DCY,
-    ADSR_SUS,
-    ADSR_REL,
-} adsr_stage;
 
 /**
  * @brief state for a linear ADSR envelope.

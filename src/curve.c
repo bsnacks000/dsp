@@ -2,25 +2,6 @@
 #include <dsp/utils.h>
 #include <math.h>
 
-// static inline void update_(curve* self) {
-//     self->finished_ = false;
-//     self->nsmps_ = (uint32_t) nsmps_dur(self->sr, self->dur_sec);
-//     // assure 1 sample
-//     self->nsmps_ = self->nsmps_ <= 0 ? 1 : self->nsmps_;
-
-//     // assure math doesn't break
-//     self->factor = self->factor == 0.0 ? 1e-6 : self->factor;
-
-//     // build line maths
-//     self->level_ = self->start;
-//     self->a1_ = (self->stop - self->start) / (1.0 - expf(self->factor));
-//     self->a2_ = self->start + self->a1_;
-//     self->b1_ = self->a1_;
-
-//     // calc growth factor
-//     self->grow_ = expf(self->factor / self->nsmps_);
-// }
-
 static inline void update_(curve* self) {
     self->finished_ = false;
 
@@ -68,9 +49,6 @@ static inline float tick_(curve* self) {
     return out;
 }
 
-/**
- * @brief curve init.
- */
 void curve_init(curve* self,
                 float start,
                 float stop,
@@ -87,12 +65,67 @@ void curve_init(curve* self,
     update_(self);
 }
 
-/**
- * @brief curve tick block.
- */
 void curve_tick_block(curve* self, float* out, uint32_t nsmps) {
 
     for (uint32_t i = 0; i < nsmps; i++) {
         out[i] = tick_(self);
     }
 }
+
+static inline float ar_tick_(curve_ar* self);
+
+static inline float adsr_tick_(curve_adsr* self);
+
+void curve_ar_init(curve_ar* self,
+                   float gate_thresh,
+                   float start_level,
+                   float atk_sec,
+                   float atk_crv,
+                   float atk_level,
+                   float rel_sec,
+                   float rel_crv,
+                   float rel_level,
+                   float sr);
+
+void curve_ar_tick_block(curve_ar* self,
+                         float* out,
+                         float* gate,
+                         float* gate_thresh,
+                         float* start_level,
+                         float* atk_sec,
+                         float* atk_crv,
+                         float* atk_level,
+                         float* rel_sec,
+                         float* rel_crv,
+                         float* rel_level,
+                         uint32_t nsmps);
+
+void curve_adsr_init(curve_adsr* self,
+                     float gate_thresh,
+                     float start_level,
+                     float atk_sec,
+                     float atk_crv,
+                     float atk_level,
+                     float dcy_sec,
+                     float dcy_crv,
+                     float sustain_level,
+                     float rel_sec,
+                     float rel_crv,
+                     float rel_level,
+                     float sr);
+
+void curve_adsr_tick_block(curve_adsr* self,
+                           float* out,
+                           float* gate,
+                           float* gate_thresh,
+                           float* start_level,
+                           float* atk_sec,
+                           float* atk_crv,
+                           float* atk_level,
+                           float* dcy_sec,
+                           float* dcy_crv,
+                           float* sustain_level,
+                           float* rel_sec,
+                           float* rel_crv,
+                           float* rel_level,
+                           uint32_t nsmps);
