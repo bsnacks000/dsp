@@ -56,6 +56,29 @@ instr 2
 endin
 
 
+instr 3
+    agate vco2 1.0, p4, 2, 0.5
+
+    agate_thresh = 0.5
+    astart_level = 0.0
+    aatk_sec = 0.2
+    aatk_crv = 1.0
+    aatk_level = 0.7
+    adecay_sec = 0.3
+    adecay_crv = -1.0
+    asustain_level = 0.6
+    arel_sec = 0.3
+    arel_crv = -2.0
+    arel_level = 0.0
+
+    aamp adsr_curve agate, agate_thresh, astart_level, \
+        aatk_sec, aatk_crv, aatk_level, adecay_sec, adecay_crv, asustain_level, \
+        arel_sec, arel_crv, arel_level
+
+    asig oscili aamp, 220, 1
+    out asig
+endin
+
 
 </CsInstruments>
 <CsScore>
@@ -63,7 +86,9 @@ endin
     ;i1 0 15 0.25;
     ;i1 15 5 2.0;
     ;i1 20 3 5.0;
-    i2 0 20
+    ;i2 0 20
+
+    i3 0 15 0.25
 
 </CsScore>
 </CsoundSynthesizer>

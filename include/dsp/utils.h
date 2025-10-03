@@ -149,6 +149,13 @@ static inline float nsmps_dur(float sr, float dur_sec) {
     return sr * fabsf(dur_sec);
 }
 
+/**
+ * @brief a signal guard for exponentials. Adds a small epsilon in case we hit zero.
+ */
+static inline float zero_guard(float xn) {
+    return xn + 1e-9;
+}
+
 #ifdef __cpluplus
 }
 #endif

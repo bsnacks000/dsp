@@ -78,8 +78,8 @@ void line_ar_tick_block(line_ar* self,
  * @brief state for a linear ADSR envelope.
  */
 typedef struct {
-    float gate_thresh, start_level, atk_sec, atk_level, decay_sec, sustain_level,
-        rel_sec, rel_level, sr;
+    float gate_thresh, start_level, atk_sec, atk_level, dcy_sec, sustain_level, rel_sec,
+        rel_level, sr;
 
     float curr_gate_, prev_gate_;
     line state_;
@@ -95,7 +95,7 @@ void line_adsr_init(line_adsr* self,
                     float start_level,
                     float atk_sec,
                     float atk_level,
-                    float decay_sec,
+                    float dcy_sec,
                     float sustain_level,
                     float rel_sec,
                     float rel_level,
@@ -118,7 +118,7 @@ void line_adsr_tick_block(line_adsr* self,
                           float* start_level,
                           float* atk_sec,
                           float* atk_level,
-                          float* decay_sec,
+                          float* dcy_sec,
                           float* sustain_level,
                           float* rel_sec,
                           float* rel_level,

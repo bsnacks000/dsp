@@ -16,7 +16,8 @@ static inline void update_(curve* self) {
     double stop = (double) self->stop;
 
     // assure math doesn't break
-    factor = factor == 0.0 ? 1e-6 : factor;
+    // ADDED guard to init
+    // factor = factor == 0.0 ? 1e-6 : factor;
 
     if (fabs(factor) < 0.01) {
         factor = (factor < 0.0 ? -0.01 : 0.01);
@@ -32,7 +33,7 @@ static inline void update_(curve* self) {
     self->grow_ = exp(factor / nsmps_frac);
 }
 
-static inline float tick_(curve* self) {
+static inline float curve_tick_(curve* self) {
     if (self->finished_)
         return self->level_;
 
@@ -59,22 +60,172 @@ void curve_init(curve* self,
     self->start = start;
     self->stop = stop;
     self->dur_sec = dur_sec;
-    self->factor = factor;
+    self->factor = zero_guard(factor);
     self->sr = sr;
 
     update_(self);
 }
 
 void curve_tick_block(curve* self, float* out, uint32_t nsmps) {
-
     for (uint32_t i = 0; i < nsmps; i++) {
-        out[i] = tick_(self);
+        out[i] = curve_tick_(self);
     }
 }
 
-static inline float ar_tick_(curve_ar* self);
+// these are basically clones of linear AR/ADSR more or less
+// TODO: maybe combine the internals of line/curve AR/ADSR into one API for sanity
 
-static inline float adsr_tick_(curve_adsr* self);
+static inline float ar_tick_(curve_ar* self) {
+    bool prev_gate_below_thresh = self->prev_gate_ < self->gate_thresh;
+    bool curr_gate_above_thresh = self->curr_gate_ >= self->gate_thresh;
+
+    switch (self->stage_) {
+        case AR_IDLE: {
+            if (prev_gate_below_thresh && curr_gate_above_thresh) {
+                self->stage_ = AR_ATK;
+                // NOTE: must reinit or we can be off by one sample in some situations.
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+            return self->state_.level_;
+        }
+        case AR_ATK: {
+
+            // retrigger occurs during attack phase: reset the envelope to
+            // instantaneous start/atk levels.
+            if (prev_gate_below_thresh && curr_gate_above_thresh) {
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+
+            float out = curve_tick_(&self->state_);
+
+            // the last tick updated finished state of line: reset the envelope to
+            // rel levels and proceed to rel.
+            if (self->state_.finished_) {
+                self->stage_ = AR_REL;
+                curve_init(&self->state_, out, self->rel_level, self->rel_sec,
+                           self->rel_crv, self->sr);
+            }
+
+            return out;
+        }
+
+        case AR_REL: {
+
+            // retrigger occurs: reset the envelope to current start/atk levels
+            if (prev_gate_below_thresh && curr_gate_above_thresh) {
+                self->stage_ = AR_ATK;
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+
+            float out = curve_tick_(&self->state_);
+
+            // release is finished: reset to idle and current start/atk levels.
+            if (self->state_.finished_) {
+                self->stage_ = AR_IDLE;
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+            }
+            return out;
+        }
+
+        default:
+            // TODO dsp_assert
+            return 0.0;  // should never reach
+    }
+}
+
+static inline float adsr_tick_(curve_adsr* self) {
+    bool prev_gate_below_thresh = self->prev_gate_ < self->gate_thresh;
+    bool curr_gate_above_thresh = self->curr_gate_ >= self->gate_thresh;
+
+    switch (self->stage_) {
+        case ADSR_IDLE: {
+
+            // initial atk
+            if (prev_gate_below_thresh && curr_gate_above_thresh) {
+                self->stage_ = ADSR_ATK;
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+            return self->state_.level_;
+        }
+        case ADSR_ATK: {
+
+            // early release
+            if (!curr_gate_above_thresh) {
+                self->stage_ = ADSR_REL;
+                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                           self->rel_sec, self->rel_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+
+            float out = curve_tick_(&self->state_);
+
+            // next stage: decay
+            if (self->state_.finished_) {
+                self->stage_ = ADSR_DCY;
+                curve_init(&self->state_, out, self->sustain_level, self->dcy_sec,
+                           self->dcy_crv, self->sr);
+            }
+
+            return out;
+        }
+        case ADSR_DCY: {
+            if (!curr_gate_above_thresh) {
+                self->stage_ = ADSR_REL;
+                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                           self->rel_sec, self->rel_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+            float out = curve_tick_(&self->state_);
+
+            if (self->state_.finished_) {
+                self->stage_ = ADSR_SUS;
+            }
+
+            return out;
+        }
+        case ADSR_SUS: {
+            if (!curr_gate_above_thresh) {
+                self->stage_ = ADSR_REL;
+                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                           self->rel_sec, self->rel_crv, self->sr);
+
+                return curve_tick_(&self->state_);
+            }
+            return self->state_.level_;
+        }
+        case ADSR_REL: {
+
+            // retrigger occurs: reset the envelope to current start/atk levels
+            if (prev_gate_below_thresh && curr_gate_above_thresh) {
+                self->stage_ = ADSR_ATK;
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+                return curve_tick_(&self->state_);
+            }
+
+            float out = curve_tick_(&self->state_);
+
+            // release is finished: reset to idle and current start/atk levels.
+            if (self->state_.finished_) {
+                self->stage_ = ADSR_IDLE;
+                curve_init(&self->state_, self->start_level, self->atk_level,
+                           self->atk_sec, self->atk_crv, self->sr);
+            }
+            return out;
+        }
+        default:
+            return 0.0;
+    }
+}
 
 void curve_ar_init(curve_ar* self,
                    float gate_thresh,
@@ -85,7 +236,24 @@ void curve_ar_init(curve_ar* self,
                    float rel_sec,
                    float rel_crv,
                    float rel_level,
-                   float sr);
+                   float sr) {
+    self->gate_thresh = gate_thresh;
+    self->start_level = start_level;
+    self->atk_sec = fabs(atk_sec);
+    self->atk_crv = zero_guard(atk_crv);
+    self->atk_level = atk_level;
+    self->rel_sec = fabs(rel_sec);
+    self->rel_crv = zero_guard(rel_crv);
+    self->rel_level = rel_level;
+    self->sr = sr;
+
+    self->stage_ = AR_IDLE;
+    self->curr_gate_ = 0.0;
+    self->prev_gate_ = 0.0;
+
+    curve_init(&self->state_, self->start_level, self->atk_level, self->atk_sec,
+               self->atk_crv, self->sr);
+}
 
 void curve_ar_tick_block(curve_ar* self,
                          float* out,
@@ -98,7 +266,24 @@ void curve_ar_tick_block(curve_ar* self,
                          float* rel_sec,
                          float* rel_crv,
                          float* rel_level,
-                         uint32_t nsmps);
+                         uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+
+        // update all inputs
+        self->prev_gate_ = self->curr_gate_;
+        self->curr_gate_ = gate[i];
+        self->gate_thresh = gate_thresh[i];
+        self->start_level = start_level[i];
+        self->atk_sec = atk_sec[i];
+        self->atk_crv = zero_guard(atk_crv[i]);
+        self->atk_level = atk_level[i];
+        self->rel_sec = rel_sec[i];
+        self->rel_crv = zero_guard(rel_crv[i]);
+        self->rel_level = rel_level[i];
+
+        out[i] = ar_tick_(self);
+    }
+}
 
 void curve_adsr_init(curve_adsr* self,
                      float gate_thresh,
@@ -112,7 +297,27 @@ void curve_adsr_init(curve_adsr* self,
                      float rel_sec,
                      float rel_crv,
                      float rel_level,
-                     float sr);
+                     float sr) {
+    self->gate_thresh = gate_thresh;
+    self->start_level = start_level;
+    self->atk_sec = fabs(atk_sec);
+    self->atk_crv = zero_guard(atk_crv);
+    self->atk_level = atk_level;
+    self->dcy_sec = fabs(dcy_sec);
+    self->dcy_crv = zero_guard(dcy_crv);
+    self->sustain_level = sustain_level;
+    self->rel_sec = fabs(rel_sec);
+    self->rel_crv = zero_guard(rel_crv);
+    self->rel_level = rel_level;
+    self->sr = sr;
+
+    self->stage_ = ADSR_IDLE;
+    self->curr_gate_ = 0.0;
+    self->prev_gate_ = 0.0;
+
+    curve_init(&self->state_, self->start_level, self->atk_level, self->atk_sec,
+               self->atk_crv, self->sr);
+}
 
 void curve_adsr_tick_block(curve_adsr* self,
                            float* out,
@@ -128,4 +333,24 @@ void curve_adsr_tick_block(curve_adsr* self,
                            float* rel_sec,
                            float* rel_crv,
                            float* rel_level,
-                           uint32_t nsmps);
+                           uint32_t nsmps) {
+
+    for (uint32_t i = 0; i < nsmps; i++) {
+        // update all inputs
+        self->prev_gate_ = self->curr_gate_;
+        self->curr_gate_ = gate[i];
+        self->gate_thresh = gate_thresh[i];
+        self->start_level = start_level[i];
+        self->atk_sec = atk_sec[i];
+        self->atk_level = atk_level[i];
+        self->atk_crv = zero_guard(atk_crv[i]);
+        self->dcy_sec = dcy_sec[i];
+        self->dcy_crv = zero_guard(dcy_crv[i]);
+        self->sustain_level = sustain_level[i];
+        self->rel_sec = rel_sec[i];
+        self->rel_crv = zero_guard(rel_crv[i]);
+        self->rel_level = rel_level[i];
+
+        out[i] = adsr_tick_(self);
+    }
+}

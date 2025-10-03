@@ -52,11 +52,32 @@ instr 2 ; test modulating the env signals
 endin
 
 
+
+instr 3
+    agate mpulse p4, 1
+
+    agate_thresh = 0.5
+    astart_level = 0.0
+    aatk_sec = 0.5
+    aatk_crv = 3.0
+    aatk_level = 0.75
+    arel_sec = 0.5
+    arel_crv = 1.0
+    arel_level = 0.0
+
+    aamp ar_curve agate, agate_thresh, astart_level, aatk_sec, \
+        aatk_crv, aatk_level, arel_sec, arel_crv, arel_level
+    asig oscili aamp, 220, 1
+    out asig
+endin
+
+
 </CsInstruments>
 <CsScore>
     f1 0 8192 10 1
     ;i1 0 3 1;
-    i2 0 25
+    ;i2 0 25
+    i3 0 5 1
 
 </CsScore>
 </CsoundSynthesizer>

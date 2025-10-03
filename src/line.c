@@ -172,7 +172,7 @@ void line_adsr_init(line_adsr* self,
                     float start_level,
                     float atk_sec,
                     float atk_level,
-                    float decay_sec,
+                    float dcy_sec,
                     float sustain_level,
                     float rel_sec,
                     float rel_level,
@@ -181,7 +181,7 @@ void line_adsr_init(line_adsr* self,
     self->start_level = start_level;
     self->atk_sec = fabs(atk_sec);
     self->atk_level = atk_level;
-    self->decay_sec = fabs(decay_sec);
+    self->dcy_sec = fabs(dcy_sec);
     self->sustain_level = sustain_level;
     self->rel_sec = fabs(rel_sec);
     self->rel_level = rel_level;
@@ -233,7 +233,7 @@ static inline float adsr_tick_(line_adsr* self) {
             // next stage: decay
             if (self->state_.finished_) {
                 self->stage_ = ADSR_DCY;
-                line_init(&self->state_, out, self->sustain_level, self->decay_sec,
+                line_init(&self->state_, out, self->sustain_level, self->dcy_sec,
                           self->sr);
             }
 
@@ -296,7 +296,7 @@ void line_adsr_tick_block(line_adsr* self,
                           float* start_level,
                           float* atk_sec,
                           float* atk_level,
-                          float* decay_sec,
+                          float* dcy_sec,
                           float* sustain_level,
                           float* rel_sec,
                           float* rel_level,
@@ -310,7 +310,7 @@ void line_adsr_tick_block(line_adsr* self,
         self->start_level = start_level[i];
         self->atk_sec = atk_sec[i];
         self->atk_level = atk_level[i];
-        self->decay_sec = decay_sec[i];
+        self->dcy_sec = dcy_sec[i];
         self->sustain_level = sustain_level[i];
         self->rel_sec = rel_sec[i];
         self->rel_level = rel_level[i];
