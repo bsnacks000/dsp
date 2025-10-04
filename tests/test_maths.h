@@ -5,7 +5,9 @@
 extern "C" {
 #endif
 
+#include <dsp/fasttrig.h>
 #include <dsp/maths.h>
+#include <dsp/shape.h>
 #include "munit.h"
 
 MunitResult test_mult(const MunitParameter params[], void* data);
@@ -32,13 +34,13 @@ MunitResult test_sign_of(const MunitParameter params[], void* data);
 
 MunitResult test_hard_clip(const MunitParameter params[], void* data);
 
-MunitResult test_soft_clip(const MunitParameter params[], void* data);
+MunitResult test_exp_clip(const MunitParameter params[], void* data);
 
 MunitResult test_clamp(const MunitParameter params[], void* data);
 
-MunitResult test_hyptan_saturator(const MunitParameter params[], void* data);
+MunitResult test_tanh_clip(const MunitParameter params[], void* data);
 
-MunitResult test_arctan_saturator(const MunitParameter params[], void* data);
+MunitResult test_atan_clip(const MunitParameter params[], void* data);
 
 MunitResult test_noise_block(const MunitParameter params[], void* data);
 
@@ -71,12 +73,10 @@ static MunitTest test_maths_module[] = {
 
     {"/flip", test_sign_of, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/hard_clip", test_hard_clip, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/soft_clip", test_soft_clip, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/exp_clip", test_exp_clip, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/clamp", test_clamp, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/hyptan_saturator", test_hyptan_saturator, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
-    {"/arctan_saturator", test_arctan_saturator, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
+    {"/tanh_clip", test_tanh_clip, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/atan_clip", test_atan_clip, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/noise_block", test_noise_block, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/scale", test_scale, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/dc_offset", test_dc_offset, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},

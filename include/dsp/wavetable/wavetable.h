@@ -70,6 +70,11 @@ dsp_err wavetable_shallow_copy(wavetable* self, wavetable* other);
  */
 dsp_err wavetable_deep_copy(wavetable* self, wavetable* other);
 
+/**
+ * @brief Zero a wavetable buffer.
+ */
+void wavetable_zero_buf(wavetable* self);
+
 #ifdef __cplusplus
 }
 #endif

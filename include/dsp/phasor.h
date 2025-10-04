@@ -25,7 +25,19 @@ void phasor_init(phasor* self, float freq, float iphs, float sr);
 /**
  * @brief tick one block of phasor.
  */
-void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t sz);
+void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps);
+
+/**
+ * @brief a unipolar impulse generator. Outputs 1 or 0 at freq.
+ */
+void impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps);
+
+/**
+ * @brief a random impulse generator. Clusters impulses around
+ * an exp distribution using phase jumping. Produces clustered, stochastic
+ * impulses with density roughly proportional to the base frequency.
+ */
+void rand_impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps);
 
 #ifdef __cplusplus
 }

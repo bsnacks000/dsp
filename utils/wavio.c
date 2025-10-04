@@ -20,7 +20,7 @@ void wavio_open_write(wavio* self,
     memset(self, 0, sizeof(*self));
     self->info.samplerate = sr;
     self->info.channels = nchns;
-    self->info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    self->info.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
     self->nframes = nframes;
     self->block_sz = nframes * nchns;

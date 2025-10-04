@@ -4,9 +4,7 @@
 #include <dsp/interpolate.h>
 #include <dsp/oscil.h>
 #include <dsp/utils.h>
-#include "dsp/wavetable/deck.h"
-
-#include <stdio.h>
+#include <dsp/wavetable/deck.h>
 
 static inline void oscil_update_(oscil* self) {
     self->incr_ = fabsf(self->freq) * self->wt->len / self->sr;

@@ -35,6 +35,26 @@ extern "C" {
 #endif
 
 /**
+ * @brief stages for an AR envelope.
+ */
+typedef enum {
+    AR_IDLE = 0,
+    AR_ATK,
+    AR_REL,
+} ar_stage;
+
+/**
+ * @brief stages for an ADSR envelope.
+ */
+typedef enum {
+    ADSR_IDLE = 0,
+    ADSR_ATK,
+    ADSR_DCY,
+    ADSR_SUS,
+    ADSR_REL,
+} adsr_stage;
+
+/**
  * @brief library error codes.
  */
 typedef enum { DSP_OK = 0, DSP_ERR = 1 } dsp_err;
@@ -127,6 +147,13 @@ static inline bool has_fractional_part(float x) {
  */
 static inline float nsmps_dur(float sr, float dur_sec) {
     return sr * fabsf(dur_sec);
+}
+
+/**
+ * @brief a signal guard for exponentials. Adds a small epsilon in case we hit zero.
+ */
+static inline float zero_guard(float xn) {
+    return xn + 1e-9;
 }
 
 #ifdef __cpluplus

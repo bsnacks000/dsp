@@ -261,7 +261,7 @@ static dfII_resonant_design_equation dfII_get_resonant_design_equation(
  *
  */
 
-void lshlf(dfII* self, float fc, float q, float gain_db) {
+static void lshlf(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0, gain_db / 40.0);
     float omega0 = TWO_PI * fc / self->sr;
     float cos_omega0 = cosf(omega0);
@@ -285,7 +285,7 @@ void lshlf(dfII* self, float fc, float q, float gain_db) {
     self->b2 = b2 / b0;
 }
 
-void hshlf(dfII* self, float fc, float q, float gain_db) {
+static void hshlf(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0, gain_db / 40.0);
     float omega0 = TWO_PI * fc / self->sr;
     float cos_omega0 = cosf(omega0);
@@ -309,7 +309,7 @@ void hshlf(dfII* self, float fc, float q, float gain_db) {
     self->b2 = b2 / b0;
 }
 
-void peak(dfII* self, float fc, float q, float gain_db) {
+static void peak(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0, gain_db / 40.0);
     float omega0 = TWO_PI * fc / self->sr;
 

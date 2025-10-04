@@ -17,9 +17,15 @@
 
 #include <csdl.h>
 
+#include "blep.h"
 #include "bq.h"
+#include "curve.h"
 #include "ddelay.h"
+#include "distort.h"
+#include "env.h"
 #include "follow.h"
+#include "lag.h"
+#include "line.h"
 #include "maths.h"
 #include "oscil.h"
 #include "phasor.h"
@@ -42,6 +48,10 @@ PUBLIC int csoundModuleCreate(CSOUND* csound) {
         return csound->InitError(csound, "smorph_deck_init: %d", err);
     }
 
+    if ((err = chebsaw_tab_init(csound)) != OK) {
+        return csound->InitError(csound, "cheby3_tab_init: %d", err);
+    }
+
     return OK;
 }
 
@@ -50,6 +60,7 @@ PUBLIC int csoundModuleDestroy(CSOUND* csound) {
     // printf("ModuleDestroy called!\n");
     blsaw_deck_destroy(csound);
     smorph_deck_destroy(csound);
+
     return OK;
 }
 
@@ -81,10 +92,34 @@ static OENTRY localops[] = {
      NULL, NULL},
     {"blsaw", sizeof(blsaw), 0, "a", "ai", (SUBR) blsaw_init, (SUBR) blsaw_vector, NULL,
      NULL},
-    {"smorph", sizeof(blsaw), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
+    {"smorph", sizeof(smorph), 0, "a", "aai", (SUBR) smorph_init, (SUBR) smorph_vector,
      NULL, NULL},
     {"sampler", sizeof(sampler), 0, "a", "aii", (SUBR) sampler_init,
      (SUBR) sampler_vector, NULL, NULL},
+    {"lline", sizeof(lline), 0, "a", "iii", (SUBR) lline_init, (SUBR) lline_vector,
+     NULL, NULL},
+    {"ccurve", sizeof(ccurve), 0, "a", "iiii", (SUBR) ccurve_init, (SUBR) ccurve_vector,
+     NULL, NULL},
+    {"chebsaw", sizeof(chebsaw), 0, "a", "a", (SUBR) chebsaw_init,
+     (SUBR) chebsaw_vector, NULL, NULL},
+    {"saturator", sizeof(saturator), 0, "a", "aai", (SUBR) saturator_init,
+     (SUBR) saturator_vector, NULL, NULL},
+    {"blepsaw", sizeof(ssaw), 0, "a", "ai", (SUBR) ssaw_init, (SUBR) ssaw_vector, NULL,
+     NULL},
+    {"blepsqr", sizeof(ssqr), 0, "a", "aai", (SUBR) ssqr_init, (SUBR) ssqr_vector, NULL,
+     NULL},
+    {"ar_line", sizeof(ar_line), 0, "a", "aaaaaaa", (SUBR) ar_line_init,
+     (SUBR) ar_line_vector, NULL, NULL},
+    {"adsr_line", sizeof(adsr_line), 0, "a", "aaaaaaaaa", (SUBR) adsr_line_init,
+     (SUBR) adsr_line_vector, NULL, NULL},
+    {"ar_curve", sizeof(ar_curve), 0, "a", "aaaaaaaaa", (SUBR) ar_curve_init,
+     (SUBR) ar_curve_vector, NULL, NULL},
+    {"adsr_curve", sizeof(adsr_curve), 0, "a", "aaaaaaaaaaaa", (SUBR) adsr_curve_init,
+     (SUBR) adsr_curve_vector, NULL, NULL},
+
+    {"llag", sizeof(llag), 0, "a", "aa", (SUBR) llag_init, (SUBR) llag_vector, NULL,
+     NULL},
+
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

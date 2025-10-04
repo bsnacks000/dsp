@@ -5,15 +5,17 @@
 #ifndef DSP_MATHS_H
 #define DSP_MATHS_H
 
+#include "dsp/utils.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 #include <dsp/constants.h>
+
+// TODO: add const correctness
 
 /**
  * @brief add two blocks
@@ -51,11 +53,79 @@ static inline void div_block(float* out, float* x, float* y, uint32_t n) {
 }
 
 /**
+ * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
+ */
+static inline float sign_of(float xn) {
+    return (float) ((float) (xn > 0) - (float) (xn < 0));
+}
+
+static inline float rand_unipolar(void) {
+    return (float) rand() / (float) RAND_MAX;
+}
+
+static inline float rand_bipolar(void) {
+    return ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+}
+
+// // inverversions for unipolar / bipolar signals
+
+/**
+ * @brief phase invert a single sample
+ */
+static inline float phase_invert(float x) {
+    return -x;
+}
+
+/**
+ * @brief phase invert a block
+ */
+static inline void phase_invert_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = phase_invert(x[i]);
+    }
+}
+
+/**
+ * @brief invert over linear range using (a+b) -x
+ */
+static inline float range_invert(float x, float a, float b) {
+    return (a + b) - x;
+}
+
+/**
+ * @brief invert a unipolar signal (0,1) -> (1,0)
+ */
+#define invert_unipolar(x) range_invert(x, 0.0, 1.0)
+
+/**
+ * @brief invert a bipolar signal (-1,1) -> (1,-1)
+ */
+#define invert_bipolar(x) range_invert(x, -1.0, 1.0)
+
+/**
+ * @brief invert a unipolar block
+ */
+static inline void invert_unipolar_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = invert_unipolar(x[i]);
+    }
+}
+
+/**
+ * @brief invert a bipolar block
+ */
+static inline void invert_bipolar_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = invert_bipolar(x[i]);
+    }
+}
+
+/**
  * @brief random bipolar number (-1, 1)
  */
 static inline void noise_block(float* out, uint32_t n) {
     for (uint32_t i = 0; i < n; i++) {
-        out[i] = ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+        out[i] = rand_bipolar();
     }
 }
 
@@ -74,6 +144,127 @@ static inline void scale(float* out, float* x, float factor, uint32_t n) {
 static inline void dc_offset(float* out, float* x, float factor, uint32_t n) {
     for (uint32_t i = 0; i < n; i++) {
         out[i] = x[i] + factor;
+    }
+}
+
+/**
+ * @brief abs(*x)
+ */
+static inline void abs_block(float* out, float* x, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = fabs(x[i]);
+    }
+}
+
+// various logic gates
+//
+//
+
+/**
+ * @brief *x > *y
+ */
+static inline void gt_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] > y[i]);
+    }
+}
+
+/**
+ * @brief *x > y
+ */
+static inline void gt_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] > y);
+    }
+}
+
+/**
+ * @brief *x >= *y
+ */
+static inline void gte_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] >= y[i]);
+    }
+}
+
+/**
+ * @brief *x >= y
+ */
+static inline void gte_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] >= y);
+    }
+}
+
+/**
+ * @brief *x < *y
+ */
+static inline void lt_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] < y[i]);
+    }
+}
+
+/**
+ * @brief *x < y
+ */
+static inline void lt_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] < y);
+    }
+}
+
+/**
+ * @brief *x <= *y
+ */
+static inline void lte_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] <= y[i]);
+    }
+}
+
+/**
+ * @brief *x <= y
+ */
+static inline void lte_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) (x[i] <= y);
+    }
+}
+
+/**
+ * @brief *x == *y
+ */
+static inline void ee_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) check_float_equal(x[i], y[i]);
+    }
+}
+
+/**
+ * @brief *x == y
+ */
+static inline void ee_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) check_float_equal(x[i], y);
+    }
+}
+
+/**
+ * @brief *x != *y
+ */
+static inline void ne_block(float* out, float* x, float* y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) !check_float_equal(x[i], y[i]);
+    }
+}
+
+/**
+ * @brief *x != *y
+ */
+static inline void ne_scalar_block(float* out, float* x, float y, uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
+        out[i] = (float) !check_float_equal(x[i], y);
     }
 }
 
@@ -146,131 +337,6 @@ static inline void matrix_transpose(matrix* b, matrix* a) {
 }
 
 // TODO: more matrix ops as needed?
-
-// bhaskara fast sin/cos ops - expect phase x (between 0 and 1)
-
-/**
- * @brief fast quarter sin
- */
-static inline float fast_qsinf(float x) {
-    float pi_m_x = DSP_PI - x;
-    return (16.0 * x * pi_m_x) / (5.0 * DSP_PI_SQUARED - 4.0 * x * pi_m_x);
-}
-
-/**
- * @brief fast quarter cos
- */
-static inline float fast_qcosf(float x) {
-    return fast_qsinf(HALF_PI - x);
-}
-
-/**
- * @brief fast half sin
- */
-static inline float fast_hsinf(float x) {
-    float theta = x * 2.0;
-    int q = (int) theta;
-    float qpos = theta - q;
-
-    qpos = (q & 1) ? 1.0 - qpos : qpos;
-    theta = qpos * HALF_PI;
-
-    return fast_qsinf(theta);
-}
-
-/**
- * @brief fast half cos
- */
-static inline float fast_hcosf(float x) {
-    return fast_hsinf(x + 0.5);
-}
-
-/**
- * @brief fast sin
- */
-static inline float fast_sinf(float x) {
-    float theta = x * 4.0;
-    int q = (int) theta;
-    float qpos = theta - q;
-
-    qpos = (q & 1) ? 1.0 - qpos : qpos;
-    theta = qpos * HALF_PI;
-
-    float sign = (q & 2) ? -1.0 : 1.0;
-    return sign * fast_qsinf(theta);
-}
-
-/**
- * @brief fast cosf;
- */
-static inline float fast_cosf(float x) {
-    return fast_sinf(x + 0.25);
-}
-
-/**
- * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
- */
-static inline float sign_of(float xn) {
-    return (float) ((float) (xn > 0) - (float) (xn < 0));
-}
-
-/**
- * @brief hard clip to threshold
- */
-static inline float hard_clip(float xn, float threshold) {
-    if (xn > threshold)
-        return threshold;
-    else if (xn < -threshold)
-        return -threshold;
-    return xn;
-}
-
-/**
- * @brief soft clip with pre-gain - from Pirkle via Reiss(2014)
- */
-static inline float soft_clip(float xn, float amt) {
-    return sign_of(xn) * (1.0 - expf(-fabs(amt * xn)));
-}
-
-/**
- * @brief clamp xn between min and max
- */
-static inline float clamp(float xn, float min, float max) {
-    if (xn > max)
-        return max;
-    else if (xn < min)
-        return min;
-    return xn;
-}
-
-/*
- * Zavalishin monotonic saturators - amt related to drive in the circuit.
- * - expensive bois but sound nice.
- * - amt controls the drive of the circuit
- */
-
-/**
- * @brief hypertangent monotonic saturator
- */
-static inline float hyptan_saturator(float xn, float amt) {
-    amt += 1e-9;
-    return tanh(amt * xn) / tanh(amt);
-}
-
-/**
- * @brief arctangent monotonic saturator
- */
-static inline float arctan_saturator(float xn, float amt) {
-    amt += 1e-9;
-    return atan(xn * amt) / atan(amt);
-}
-
-/**
- * Cheap saturators (expander / compander curves)
- * - amt drives pre-gain (NOTE: may change this to drive)
- */
-
-// TODO: sin_arctan, parabolic, hyperbolic, hyperbolic_sin, inverse_hyperbolic
 
 #ifdef __cplusplus
 }

@@ -1,17 +1,8 @@
 #include <dsp/maths.h>
 #include <dsp/rmap.h>
+#include <dsp/wavetable/deck.h>
 #include <dsp/wavetable/sinesum.h>
 #include <dsp/wavetable/wavetable.h>
-
-/**
- * @brief wt_deck is fat pointer type that simply holds an array of wavetable pointers.
- * Its lookup strategy is based on position. We borrow terminology from serum and other
- * wt synths and call these "frames".
- */
-typedef struct {
-    wavetable** frames;
-    uint32_t frames_sz;  // nrows
-} wt_deck;
 
 /**
  * @brief init a wt_deck. We check that frames is at least 2 so that we can iterate
