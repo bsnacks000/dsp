@@ -24,6 +24,7 @@
 #include "distort.h"
 #include "env.h"
 #include "follow.h"
+#include "lag.h"
 #include "line.h"
 #include "maths.h"
 #include "oscil.h"
@@ -115,6 +116,10 @@ static OENTRY localops[] = {
      (SUBR) ar_curve_vector, NULL, NULL},
     {"adsr_curve", sizeof(adsr_curve), 0, "a", "aaaaaaaaaaaa", (SUBR) adsr_curve_init,
      (SUBR) adsr_curve_vector, NULL, NULL},
+
+    {"llag", sizeof(llag), 0, "a", "aa", (SUBR) llag_init, (SUBR) llag_vector, NULL,
+     NULL},
+
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
