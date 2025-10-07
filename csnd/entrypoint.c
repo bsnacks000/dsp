@@ -116,9 +116,10 @@ static OENTRY localops[] = {
      (SUBR) ar_curve_vector, NULL, NULL},
     {"adsr_curve", sizeof(adsr_curve), 0, "a", "aaaaaaaaaaaa", (SUBR) adsr_curve_init,
      (SUBR) adsr_curve_vector, NULL, NULL},
-
     {"llag", sizeof(llag), 0, "a", "aa", (SUBR) llag_init, (SUBR) llag_vector, NULL,
      NULL},
+    {"rcladder", sizeof(rcladder), 0, "a", "aaa", (SUBR) rcladder_init,
+     (SUBR) rcladder_vector, NULL, NULL},
 
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
