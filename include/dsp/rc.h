@@ -46,6 +46,31 @@ void rc_one_pole_tick_block(rc_one_pole* self,
                             float* freq,
                             uint32_t sz);
 
+/**
+ * @brief 4 pole rc ladder
+ */
+typedef struct {
+    float freq, q, sr;
+    float lp_, hp_, t_, t_over_2_, two_over_t_, k_, g_, g2_, g3_, g4_;
+    rc_one_pole bank_[4];
+} rc_ladder;
+
+/**
+ * @brief initialize rc_ladder.
+ */
+void rc_ladder_init(rc_ladder* self, float freq, float q, float sr);
+
+/**
+ * @brief tick one block of the rc_ladder.
+ */
+void rc_ladder_tick_block(rc_ladder* self,
+                          float* out_lp,
+                          float* out_hp,
+                          float* in,
+                          float* freq,
+                          float* q,
+                          uint32_t nsmps);
+
 #ifdef __cplusplus
 }
 #endif
