@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #include <dsp/constants.h>
+#include <dsp/fasttrig.h>
 #include <dsp/shape.h>
-#include <math.h>
 #include <stdint.h>
 
 /**
@@ -31,9 +31,8 @@ static inline xfade_pair xfade_sin(float position) {
     // NOTE: changed from original impl .. see py src
     float t = clamp(position, 0.0, 1.0);
 
-    // TODO: fast cosine impl
-    float left = cosf(t * DSP_PI * 0.5);
-    float right = sinf(t * DSP_PI * 0.5);
+    float left = fast_qcosf(t);
+    float right = fast_qsinf(t);
 
     xfade_pair out = {.left = left, .right = right};
     return out;
