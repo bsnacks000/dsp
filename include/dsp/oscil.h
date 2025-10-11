@@ -47,9 +47,27 @@ void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
 void oscili_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
 
 /**
+ * @brief linear interpolating oscil that allows phase mod.
+ */
+void oscili_pm_tick_block(oscil* self,
+                          float* out,
+                          float* freq,
+                          float* phs,
+                          uint32_t nsmps);
+
+/**
  * @brief cubic interpolating oscil. guard point = 2
  */
 void oscil3_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
+
+/**
+ * @brief cubic interpolating oscil that allows phase mod.
+ */
+void oscil3_pm_tick_block(oscil* self,
+                          float* out,
+                          float* freq,
+                          float* phs,
+                          uint32_t nsmps);
 
 /**
  * @brief cross fading wavetable oscil that uses frequency to perform xfade. Designed to

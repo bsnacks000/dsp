@@ -65,6 +65,61 @@ int ftoscil3_vector(CSOUND* csound, ftoscil3* obj) {
     return OK;
 }
 
+int ftoscil3_pm_init(CSOUND* csound, ftoscil3_pm* obj) {
+    (void) csound;
+    (void) obj;
+
+    FUNC* ftp;
+    if ((ftp = csound->FTFind(csound, obj->i_fn)) == NULL) {
+        return csound->InitError(csound, Str("No table for ftoscil3.\n"));
+    }
+    obj->ftp = ftp;
+    uint32_t pow2_len = ftp->flen;
+
+    // check pow2_len from ftable
+    if (!is_pow2(pow2_len)) {
+        return csound->InitError(csound, Str("Ftable is not a pow2.\n"));
+    }
+
+    uint32_t buf_sz = pow2_len + 2;  // add 2 guard points for my cubic
+    // interpolation.
+
+    // allocate our own buffer for the wavetable
+    csound->AuxAlloc(csound, buf_sz * sizeof(MYFLT), &obj->aux);
+    if (obj->aux.auxp == NULL) {
+        return csound->InitError(csound, "AuxAlloc failed\n");
+    }
+
+    // // copy our pow2_table
+    MYFLT* buf = (MYFLT*) obj->aux.auxp;
+    for (size_t i = 0; i < pow2_len; i++) {
+        buf[i] = ftp->ftable[i];
+    }
+
+    // set guard points
+    buf[pow2_len] = buf[0];
+    buf[pow2_len + 1] = buf[1];
+
+    MYFLT sr = GetLocalSr(&obj->h);
+
+    wavetable_init(&obj->wt, buf, buf_sz);
+
+    dsp_err err;
+    if ((err = oscil_init(&obj->state, &obj->wt, 440.0, 0.0, sr)) != DSP_OK) {
+        return csound->InitError(csound, "oscil_init: err\n");
+    }
+    return OK;
+}
+
+int ftoscil3_pm_vector(CSOUND* csound, ftoscil3_pm* obj) {
+    (void) csound;
+    uint32_t nsamps = GetLocalKsmps(&obj->h);
+
+    oscil3_pm_tick_block(&obj->state, obj->a_out, obj->a_freq, obj->a_phase, nsamps);
+
+    return OK;
+}
+
 int oftoscil3_init(CSOUND* csound, oftoscil3* obj) {
 
     FUNC* ftp;
