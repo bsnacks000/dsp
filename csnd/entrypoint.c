@@ -84,6 +84,10 @@ static OENTRY localops[] = {
      (SUBR) bqpara_vector, NULL, NULL},
     {"ftoscil3", sizeof(ftoscil3), 0, "a", "aii", (SUBR) ftoscil3_init,
      (SUBR) ftoscil3_vector, NULL, NULL},
+
+    {"ftoscil3_pm", sizeof(ftoscil3_pm), 0, "a", "aai", (SUBR) ftoscil3_pm_init,
+     (SUBR) ftoscil3_pm_vector, NULL, NULL},
+
     {"oftoscil3", sizeof(oftoscil3), 0, "a", "aiio", (SUBR) oftoscil3_init,
      (SUBR) oftoscil3_vector, NULL, NULL},
     {"dphasor", sizeof(dphasor), 0, "a", "a", (SUBR) dphasor_init,

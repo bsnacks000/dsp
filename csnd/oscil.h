@@ -23,6 +23,18 @@ typedef struct {
 int ftoscil3_init(CSOUND* csound, ftoscil3* obj);
 int ftoscil3_vector(CSOUND* csound, ftoscil3* obj);
 
+typedef struct {
+    OPDS h;
+    MYFLT *a_out, *a_freq, *a_phase, *i_fn;  // a-aai
+    FUNC* ftp;                               // the ftable pointer
+    AUXCH aux;                               // hold our own copy of ftable
+    wavetable wt;
+    oscil state;
+} ftoscil3_pm;
+
+int ftoscil3_pm_init(CSOUND* csound, ftoscil3_pm* obj);
+int ftoscil3_pm_vector(CSOUND* csound, ftoscil3_pm* obj);
+
 #define OFTOSCIL_FILTER_N 8
 
 // extension of the above but using oversampling
