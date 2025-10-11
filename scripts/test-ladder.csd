@@ -46,7 +46,7 @@ instr 2;
     afreq = line(p4, p3, p5)
     aq = line(p6, p3, p7)
 
-    aout = moogladder(ain, afreq, aq)
+    aout = zdf_ladder(ain, afreq, aq)
     out aout
 
 endin
@@ -57,7 +57,7 @@ endin
 f1 0 8192 10 1
 
 i1 0 5  20 5000 0.1 25.0
-i2 5 5  20 5000 0.1 1.0
+i2 5 5  20 5000 0.1 25.0
 
 </CsScore>
 </CsoundSynthesizer>

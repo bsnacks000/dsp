@@ -81,32 +81,35 @@ static inline void rc_ladder_update_(rc_ladder* self) {
     float fc = self->freq;
     float q = self->q;
 
-    for (int i = 0; i < 4; i++) {
-        self->bank_[i].freq = fc;
-        rc_one_pole_update_(&self->bank_[i]);
-    }
-
-    // scale Q -> k ... Q= 0->25, k = 0->4 ...  from pirkle
-    self->k_ = 4.0 * (q - 0.707) / (25.0 - 0.707);
+    // scale Q -> k ... Q= 0.1->25.0, k = 0->4 ...  from pirkle/yi
+    self->k_ = 4.0 * (q - 0.1) / (25.0 - 0.1);
 
     // zavalashin's warping
     double omega_c = TWO_PI * fc;
     double omega_warped = self->two_over_t_ * tan(omega_c * self->t_over_2_);
     double g = omega_warped * self->t_over_2_;
 
+    // we already calculate g so give it here to the one_pole bank
+    for (int i = 0; i < 4; i++) {
+        self->bank_[i].g_ = g;
+    }
+
+    // need to de-warp .. yay math..
+    self->one_plus_g_ = (1.0 + g);
+
     // expand g
-    self->g_ = g;
+    self->g_ = g / (1.0 + g);
     self->g2_ = g * g;
-    self->g3_ = g * g * g;
-    self->g4_ = g * g * g * g;
+    self->g3_ = self->g2_ * g;
+    self->g4_ = self->g3_ * g;
 }
 
 static inline float rc_ladder_tick_(rc_ladder* self, float xn) {
     // we must access the previous output state registers
     // to create the feedback parameter S
     // See https://www.kvraudio.com/forum/viewtopic.php?t=571909
+    double one_plus_g = self->one_plus_g_;
 
-    double one_plus_g = 1.0 + self->g_;
     double f1_z0 = self->bank_[0].z0_ / one_plus_g;
     double f2_z0 = self->bank_[1].z0_ / one_plus_g;
     double f3_z0 = self->bank_[2].z0_ / one_plus_g;
@@ -127,7 +130,6 @@ static inline float rc_ladder_tick_(rc_ladder* self, float xn) {
     rc_one_pole_tick_(&self->bank_[2], self->bank_[1].lp_);
     rc_one_pole_tick_(&self->bank_[3], self->bank_[2].lp_);
 
-    // grab last lp and attenuvert to form hp signal.
     return (float) self->bank_[3].lp_;
 }
 
@@ -145,6 +147,7 @@ void rc_ladder_init(rc_ladder* self, float freq, float q, float sr) {
     self->g2_ = 1e-9;
     self->g3_ = 1e-9;
     self->g4_ = 1e-9;
+    self->one_plus_g_ = 1e-9;
 
     // init the one pole bank
     for (int i = 0; i < 4; i++) {

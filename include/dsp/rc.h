@@ -2,8 +2,8 @@
  * @file rc.h
  * @brief RC one pole and ladder (LP) filters.
  *
- * Based on Zavalishin and Pirkle.
- *
+ *  - Based on Zavalishin and Pirkle.
+ *  - Also Steven Yi's zdf_filter (csound)
  */
 
 #ifndef DSP_RC_H
@@ -42,14 +42,15 @@ void rc_one_pole_tick_block(rc_one_pole* self,
                             uint32_t sz);
 
 /**
- * @brief 4 pole rc ladder lowpass (Zavalishin / Pirkle)
+ * @brief 4 pole rc ladder lowpass (Zavalishin / Pirkle) ..
+ *  - NOTE: q currently ranges (0-4) and self oscillates >4.0
  */
 typedef struct {
     // public
     float freq, q, sr;
 
     // private
-    double t_, t_over_2_, two_over_t_, k_, g_, g2_, g3_, g4_;
+    double t_, t_over_2_, two_over_t_, k_, one_plus_g_, g_, g2_, g3_, g4_;
     rc_one_pole bank_[4];
 } rc_ladder;
 
