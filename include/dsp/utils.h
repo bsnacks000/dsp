@@ -156,6 +156,13 @@ static inline float zero_guard(float xn) {
     return xn + 1e-9;
 }
 
+/**
+ * @brief calculate a semitone ratio
+ */
+static inline float semitone_ratio(float semitones) {
+    return powf(2.0f, semitones / 12.0f);
+}
+
 #ifdef __cpluplus
 }
 #endif
