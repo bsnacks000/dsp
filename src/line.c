@@ -28,7 +28,7 @@ static inline float line_tick_(line* self) {
 void line_init(line* self, float start, float stop, float dur_sec, float sr) {
     self->start = start;
     self->stop = stop;
-    self->dur_sec = dur_sec;
+    self->dur_sec = fabs(dur_sec);
     self->sr = sr;
 
     line_update_(self);
@@ -335,7 +335,10 @@ static inline float sampi_tick_(sampi* self, float xn) {
     bool curr_gate_above_thresh = self->curr_gate_ >= self->gate_thresh;
 
     // calculate the next tick no matter what.
-    self->curr_out_ = line_tick_(&self->state_);
+    // NOTE: that we bypass the line counter/finished to create a rolling trajectory
+
+    self->curr_out_ = self->state_.level_;
+    self->state_.level_ += self->state_.step_;
 
     // detect retrigger
     if (prev_gate_below_thresh && curr_gate_above_thresh) {

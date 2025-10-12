@@ -19,6 +19,7 @@
 
 #include "blep.h"
 #include "bq.h"
+#include "coreDefs.h"
 #include "curve.h"
 #include "ddelay.h"
 #include "distort.h"
@@ -30,6 +31,7 @@
 #include "oscil.h"
 #include "phasor.h"
 #include "rc.h"
+#include "samph.h"
 #include "sampler.h"
 #include "svf.h"
 
@@ -124,7 +126,10 @@ static OENTRY localops[] = {
      NULL},
     {"rcladder", sizeof(rcladder), 0, "a", "aaa", (SUBR) rcladder_init,
      (SUBR) rcladder_vector, NULL, NULL},
-
+    {"ssampi", sizeof(ssampi), 0, "a", "aaaaiii", (SUBR) ssampi_init,
+     (SUBR) ssampi_vector, NULL, NULL},
+    {"ssamph", sizeof(ssamph), 0, "a", "aaa", (SUBR) ssamph_init, (SUBR) ssamph_vector,
+     NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
