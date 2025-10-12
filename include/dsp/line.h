@@ -34,6 +34,25 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
 void line_tick_block(line* self, float* out, uint32_t nsmps);
 
 /**
+ * @brief sample and linearly interpolate.
+ */
+typedef struct {
+    float start, stop, dur_sec, gate_thresh, sr;
+    float prev_gate_, curr_gate_, curr_dur_, curr_out_;
+    line state_;
+} sampi;
+
+void sampi_init(sampi* self, float start, float stop, float dur_sec, float sr);
+
+void sampi_tick_block(sampi* self,
+                      float* out,
+                      float* in,
+                      float* dur_sec,
+                      float* gate,
+                      float* gate_thresh,
+                      uint32_t nsmps);
+
+/**
  * @brief state for a linear AR envelope.
  */
 typedef struct {
