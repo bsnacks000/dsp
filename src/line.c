@@ -318,3 +318,50 @@ void line_adsr_tick_block(line_adsr* self,
         out[i] = adsr_tick_(self);
     }
 }
+
+void sampi_init(sampi* self, float start, float stop, float dur_sec, float sr) {
+    self->start = start;
+    self->stop = stop;
+    self->dur_sec = dur_sec;
+    self->sr = sr;
+    self->curr_out_ = start;
+
+    line_init(&self->state_, start, stop, dur_sec, sr);
+}
+
+static inline float sampi_tick_(sampi* self, float xn) {
+    // get state of the current gate
+    bool prev_gate_below_thresh = self->prev_gate_ < self->gate_thresh;
+    bool curr_gate_above_thresh = self->curr_gate_ >= self->gate_thresh;
+
+    // calculate the next tick no matter what.
+    self->curr_out_ = line_tick_(&self->state_);
+
+    // detect retrigger
+    if (prev_gate_below_thresh && curr_gate_above_thresh) {
+        self->start = self->curr_out_;  // set start to current out
+        self->stop = xn;                // set new stop
+        // re-init line for next pass
+        line_init(&self->state_, self->start, self->stop, self->curr_dur_, self->sr);
+    }
+
+    return self->curr_out_;
+}
+
+void sampi_tick_block(sampi* self,
+                      float* out,
+                      float* in,
+                      float* dur_sec,
+                      float* gate,
+                      float* gate_thresh,
+                      uint32_t nsmps) {
+
+    for (uint32_t i = 0; i < nsmps; i++) {
+        self->prev_gate_ = self->curr_gate_;
+        self->curr_gate_ = gate[i];
+        self->gate_thresh = gate_thresh[i];
+        self->curr_dur_ = dur_sec[i];
+
+        out[i] = sampi_tick_(self, in[i]);
+    }
+}
