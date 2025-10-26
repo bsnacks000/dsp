@@ -33,19 +33,19 @@ typedef enum {
     TRI,
 } waveform;
 
-bool validate_waveform(waveform w) {
+static bool validate_waveform(waveform w) {
     if (w >= 0 && w <= 3)
         return true;
     return false;
 }
 
-bool validate_nharms(int nharms) {
+static bool validate_nharms(int nharms) {
     if (nharms > 0 && nharms <= HARMS_MAX_SZ && is_pow2(nharms))
         return true;
     return false;
 }
 
-app_err entrypoint(const char* outfile, waveform wf, int nharms) {
+static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
     if (!validate_path(outfile, ".wav")) {
         return APP_ERR_INVALID_PATH;
     }
@@ -118,7 +118,8 @@ app_err entrypoint(const char* outfile, waveform wf, int nharms) {
     // // this means we do not copy guard point
     // // sr = nharms for writing oscillator wavetables.
     wavio w;
-    wavio_open_write(&w, malloc, outfile, nharms, 1, WT_BUF_SZ);
+    wavio_open_write(&w, malloc, outfile, nharms, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
+                     WT_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);

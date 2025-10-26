@@ -96,7 +96,8 @@ app_err entrypoint(const char* outdir) {
                  (outdir[strlen(outdir) - 1] == '/') ? "" : "/", i);
 
         wavio w;
-        wavio_open_write(&w, malloc, path, wavtbs[i]->nharms, 1, WAVETABLE_BUF_SZ);
+        wavio_open_write(&w, malloc, path, wavtbs[i]->nharms,
+                         SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, WAVETABLE_BUF_SZ);
         wavio_fill_block(&w, wavtbs[i]->buf);
         wavio_write_block(&w);
         wavio_close(&w, free);

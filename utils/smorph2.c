@@ -208,7 +208,8 @@ app_err entrypoint(const char* outfile) {
     // oscil3_tick_block(&left, out, freq, nsmps);
 
     wavio w;
-    wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE, 1, nsmps);
+    wavio_open_write(&w, malloc, outfile, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+                     TARGET_SAMPLERATE, 1, nsmps);
     wavio_fill_block(&w, out);
     wavio_write_block(&w);
     wavio_close(&w, free);

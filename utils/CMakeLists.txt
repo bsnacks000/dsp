@@ -32,7 +32,6 @@ endfunction()
 
 # Executables
 # -----------
-make_exe(hello hello.c)
 make_exe(sinesum sinesum.c)
 make_exe(blsaw blsaw.c)
 make_exe(blsawtab blsawtab.c)

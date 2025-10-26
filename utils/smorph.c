@@ -128,7 +128,8 @@ app_err entrypoint(const char* outfile) {
     //     fprintf(stderr, "%.6f\n", lintab.buf[i]);
     // }
     wavio w;
-    wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE, 1, nsmps);
+    wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE,
+                     SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, nsmps);
     wavio_fill_block(&w, out);
     wavio_write_block(&w);
     wavio_close(&w, free);
