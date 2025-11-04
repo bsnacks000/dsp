@@ -24,14 +24,14 @@ typedef enum {
     APP_DSP_ERR,
 } app_err;
 
-void cleanup(wavetable** wavtbs, int n) {
+static void cleanup(wavetable** wavtbs, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
     }
 }
 
-app_err entrypoint(const char* outfile) {
+static app_err entrypoint(const char* outfile) {
     if (!validate_path(outfile, ".wav")) {
         return APP_ERR_INVALID_PATH;
     }
