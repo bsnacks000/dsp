@@ -15,8 +15,6 @@ extern "C" {
 #include <dsp/wavetable/wavetable.h>
 #include <stdint.h>
 
-// TODO: do we need oscil to own its wavetable? should prob change to wavetable*
-
 /**
  * @brief oscil state. This object is generic over its tick method. The provided
  * wavetable must be tuned with the appropriate guard points to be able to use
@@ -81,6 +79,8 @@ typedef struct {
 
 /**
  * @brief init blxoscil state. The deck should be generated using the sinesum API.
+ *
+ * Runtime check for l and r to be configured with the same sample rate.
  */
 dsp_err blxoscil_init(blxoscil* self,
                       wt_deck* deck,
@@ -110,7 +110,8 @@ typedef struct {
 } xoscil;
 
 /**
- * @brief initialize a xoscil. The
+ * @brief initialize a xoscil. Runtime check for l and r to be configured
+ * with the same sample rate.
  */
 dsp_err xoscil_init(xoscil* self,
                     wt_deck* deck,
