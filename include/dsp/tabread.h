@@ -16,6 +16,7 @@
 extern "C" {
 #endif
 
+#include <dsp/wavetable/deck.h>
 #include <dsp/wavetable/wavetable.h>
 
 /**
@@ -44,6 +45,29 @@ void tabreadi_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
  * @brief cubic interpolating tabread.
  */
 void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
+
+/**
+ * @brief xfade tabreader.
+ */
+typedef struct {
+    wt_deck* deck;
+    tabread *l, *r;
+    float pos, l_amp_, r_amp_;
+} xtabread;
+
+void xtabread_init(xtabread* self, wt_deck* deck, tabread* l, tabread* r, float pos);
+
+void xtabreadi_tick_block(xtabread* self,
+                          float* out,
+                          float* idx,
+                          float* pos,
+                          uint32_t nsmps);
+
+void xtabread3_tick_block(xtabread* self,
+                          float* out,
+                          float* idx,
+                          float* pos,
+                          uint32_t nsmps);
 
 #ifdef __cplusplus
 }

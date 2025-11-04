@@ -39,6 +39,18 @@ static inline xfade_pair xfade_sin(float position) {
 }
 
 /**
+ * @brief given a position and deck_sz calculate a cross fade value over a given
+ * frame/band pair.
+ */
+static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
+    pos = clamp(pos, 0.0, 1.0);
+
+    float scaled = pos * (deck_sz - 1);
+    float fader = scaled - floorf(scaled);
+    return xfade_sin(fader);
+}
+
+/**
  * @brief xfade state.
  */
 typedef struct {
