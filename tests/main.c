@@ -1,5 +1,6 @@
 #include "munit.h"
 
+#include "test_balance.h"
 #include "test_conversions.h"
 #include "test_interpolate.h"
 #include "test_maths.h"
@@ -14,9 +15,13 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
     // register test_suites
     // sentinel
     MunitSuite all_test_suites[] = {
-        maths_test_suite,       utils_test_suite,
-        interpolate_test_suite, wavetable_test_suite,
-        conversions_test_suite, {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
+        maths_test_suite,
+        utils_test_suite,
+        interpolate_test_suite,
+        wavetable_test_suite,
+        conversions_test_suite,
+        balance_test_suite,
+        {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
     MunitSuite test_suite_main = {
