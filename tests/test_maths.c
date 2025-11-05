@@ -1,5 +1,8 @@
 #include "test_maths.h"
-#include "dsp/maths.h"
+
+#include <dsp/fasttrig.h>
+#include <dsp/maths.h>
+#include <dsp/shape.h>
 
 MunitResult test_mult(const MunitParameter params[], void* data) {
     (void) params;

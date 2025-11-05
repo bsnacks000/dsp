@@ -1,28 +1,12 @@
 #include <dsp/balance.h>
 
+#include "helpers.h"
 #include "munit.h"
 
 #include <math.h>
 #include <string.h>
 
 #define NSMPS 64
-
-static void fill_random_bipolar_signal(float* buf, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
-        float r = (float) munit_rand_double();
-        buf[i] = 2.0 * r - 1.0;
-    }
-}
-
-static void copy_buf(float* dest, float* src, uint32_t nsmps) {
-    memcpy(dest, src, sizeof(float) * nsmps);
-}
-
-static void scale_buf(float* buf, float val, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
-        buf[i] *= val;
-    }
-}
 
 MunitResult test_balance_init(const MunitParameter params[], void* data) {
 

@@ -1,5 +1,6 @@
 #include "test_conversions.h"
-#include "dsp/conversions.h"
+
+#include <dsp/conversions.h>
 
 MunitResult test_samps_per_ms(const MunitParameter params[], void* data) {
     (void) params;
