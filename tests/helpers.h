@@ -37,7 +37,7 @@ static inline void scale_buf(float* buf, float val, uint32_t nsmps) {
     }
 }
 
-static inline void finite_check(float* buf, uint32_t nsmps) {
+static inline void check_finite(float* buf, uint32_t nsmps) {
     // check finite (no NaN/Inf)
     for (uint32_t i = 0; i < nsmps; i++) {
         munit_assert(!isnan(buf[i]));
@@ -45,7 +45,7 @@ static inline void finite_check(float* buf, uint32_t nsmps) {
     }
 }
 
-static inline void energy_check(float* buf, float upper_bound, uint32_t nsmps) {
+static inline void check_energy(float* buf, float upper_bound, uint32_t nsmps) {
     // assert there are no explosions in the buffer by checking against some upper
     // bound.
     float energy = 0.0f;
@@ -54,7 +54,7 @@ static inline void energy_check(float* buf, float upper_bound, uint32_t nsmps) {
     munit_assert_double(energy, <, upper_bound);
 }
 
-static inline void decay_check(float* buf, uint32_t nsmps) {
+static inline void check_signal_decays(float* buf, uint32_t nsmps) {
     // assert the signal decays
     float eps = 0.1 + 1e-6;  // hardcoding for now
     float peak_first = fabs(buf[0]);

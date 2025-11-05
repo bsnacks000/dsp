@@ -4,7 +4,6 @@
 #include "munit.h"
 
 #include <math.h>
-#include <string.h>
 
 #define NSMPS 64
 

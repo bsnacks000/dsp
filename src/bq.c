@@ -40,7 +40,7 @@ void dfII_init(dfII* self, float sr) {
     // state registers
     self->x_z1 = 0.0;
     self->x_z2 = 0.0;
-    self->sr = sr;
+    self->sr = fabs(sr);
 }
 
 float dfII_tick(dfII* self, float xn) {
@@ -352,10 +352,11 @@ void bq_non_resonant_init(bq_non_resonant* self,
                           float sr) {
     self->freq = freq;
     self->t = t;
+    self->sr = fabs(sr);
 
     // set state
     dfII state;
-    dfII_init(&state, sr);
+    dfII_init(&state, self->sr);
     self->state_ = state;
 
     // set design equation
@@ -388,13 +389,13 @@ void bq_resonant_init(bq_resonant* self,
                       float freq,
                       float q,
                       float sr) {
-    self->sr = sr;
+    self->sr = fabs(sr);
     self->t = t;
     self->freq = freq;
     self->q = q;
 
     dfII state;
-    dfII_init(&state, sr);
+    dfII_init(&state, self->sr);
 
     self->state_ = state;
     self->update_ = dfII_get_resonant_design_equation(t);
@@ -437,10 +438,10 @@ void bq_para_eq_init(bq_para_eq* self,
     self->freq = freq;
     self->q = q;
     self->gain = gain;
-    self->sr = sr;
+    self->sr = fabs(sr);
 
     dfII state;
-    dfII_init(&state, sr);
+    dfII_init(&state, self->sr);
     self->state_ = state;
 
     self->update_ = dfII_get_para_eq_design_equation(t);
