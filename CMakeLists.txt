@@ -4,7 +4,7 @@ set(PROJECT_NAME dsp)
 project(${PROJECT_NAME} LANGUAGES C VERSION 0.1.0)
 
 # extend semver prerelease tag .. Ex. -alpha.0, -rc.1
-set(DSP_VERSION "${PROJECT_VERSION}-alpha.1")
+set(DSP_VERSION "${PROJECT_VERSION}-alpha.2")
 
 # generate and add to build tree
 configure_file(
@@ -43,11 +43,11 @@ if(COVERAGE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 
-# always build the main static library
+# always build the main shared library
 file(GLOB_RECURSE SRC_FILES src/*.c)
 
 # note the build tree includes the generated headers
-add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
+add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
