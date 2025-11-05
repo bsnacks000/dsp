@@ -15,8 +15,6 @@ extern "C" {
 #include <dsp/wavetable/wavetable.h>
 #include <stdint.h>
 
-// TODO: do we need oscil to own its wavetable? should prob change to wavetable*
-
 /**
  * @brief oscil state. This object is generic over its tick method. The provided
  * wavetable must be tuned with the appropriate guard points to be able to use
@@ -47,9 +45,27 @@ void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
 void oscili_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
 
 /**
+ * @brief linear interpolating oscil that allows phase mod.
+ */
+void oscili_pm_tick_block(oscil* self,
+                          float* out,
+                          float* freq,
+                          float* phs,
+                          uint32_t nsmps);
+
+/**
  * @brief cubic interpolating oscil. guard point = 2
  */
 void oscil3_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
+
+/**
+ * @brief cubic interpolating oscil that allows phase mod.
+ */
+void oscil3_pm_tick_block(oscil* self,
+                          float* out,
+                          float* freq,
+                          float* phs,
+                          uint32_t nsmps);
 
 /**
  * @brief cross fading wavetable oscil that uses frequency to perform xfade. Designed to
@@ -63,6 +79,8 @@ typedef struct {
 
 /**
  * @brief init blxoscil state. The deck should be generated using the sinesum API.
+ *
+ * Runtime check for l and r to be configured with the same sample rate.
  */
 dsp_err blxoscil_init(blxoscil* self,
                       wt_deck* deck,
@@ -92,7 +110,8 @@ typedef struct {
 } xoscil;
 
 /**
- * @brief initialize a xoscil. The
+ * @brief initialize a xoscil. Runtime check for l and r to be configured
+ * with the same sample rate.
  */
 dsp_err xoscil_init(xoscil* self,
                     wt_deck* deck,

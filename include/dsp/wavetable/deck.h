@@ -18,6 +18,7 @@ extern "C" {
 #include <dsp/rmap.h>
 #include <dsp/wavetable/sinesum.h>
 #include <dsp/wavetable/wavetable.h>
+#include <dsp/xfade.h>
 
 /**
  * @brief wt_deck is fat pointer type that simply holds an array of wavetable pointers.
@@ -47,6 +48,32 @@ bool wt_deck_frames_equal(wt_deck* self);
  * sized and the matrix should be initialized with the correct buffer
  */
 dsp_err wt_deck_matrix_fill(wt_deck* self, matrix* out);
+
+/**
+ * @brief represents a low/high pair. The tables used for the actual crossfade.
+ */
+typedef struct {
+    wavetable* low;
+    wavetable* high;
+} wt_frame_pair;
+
+static inline wt_frame_pair wt_deck_pos_lookup(wt_deck* self, float pos) {
+    pos = clamp(pos, 0.0f, 1.0f);  // ensure [0, 1]
+    pos = 0.5f - 0.5f * cosf(pos * M_PI);
+
+    float fidx = pos * (self->frames_sz - 1);  // range: [0, N-1]
+    uint32_t idx = (int) fidx;
+
+    if (idx >= self->frames_sz - 1) {
+        idx = self->frames_sz - 2;
+        fidx = (float) idx;
+    }
+
+    return (wt_frame_pair) {
+        .low = self->frames[idx],
+        .high = self->frames[idx + 1],
+    };
+}
 
 #ifdef __cplusplus
 }

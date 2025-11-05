@@ -1,136 +1,136 @@
-
-#include <sndfile.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <sndfile.h>
 #include "wavio.h"
 
-/**
- * @brief open sf for write. This will always write a wav float32 format. Only works
- * with mono or stereo files.
- * NOTE: allocates memory for wavio struct via allocator.
- */
-void wavio_open_write(wavio* self,
-                      void* (*alloc)(uint64_t nbytes),
-                      const char* path,
-                      int sr,
-                      int nchns,
-                      uint32_t nframes) {
+// type mask - determine WAV/AIFF
+// subtype - determine the byte format
+#define SF_FORMAT_TYPEMASK 0x0FFF0000
+#define SF_FORMAT_SUBMASK 0x0000FFFF
 
-    memset(self, 0, sizeof(*self));
-    self->info.samplerate = sr;
-    self->info.channels = nchns;
-    self->info.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+static inline bool is_supported_write_format(int format) {
+    int major = format & SF_FORMAT_TYPEMASK;
+    int subtype = format & SF_FORMAT_SUBMASK;
 
-    self->nframes = nframes;
-    self->block_sz = nframes * nchns;
-    self->block_nbytes = sizeof(float) * self->block_sz;
+    if (major != SF_FORMAT_WAV && major != SF_FORMAT_AIFF)
+        return false;
 
-    self->block = (float*) alloc(sizeof(float) * nframes * self->info.channels);
-    if (self->block == NULL) {
-        fprintf(stderr, "alloc failed.");
-        exit(EXIT_FAILURE);
-    }
+    if (subtype != SF_FORMAT_PCM_16 && subtype != SF_FORMAT_PCM_24 &&
+        subtype != SF_FORMAT_FLOAT)
+        return false;
 
-    if ((self->handle = sf_open(path, SFM_WRITE, &self->info)) == NULL) {
-        fprintf(stderr, "sf_open: %s\n", sf_strerror(self->handle));
-        exit(EXIT_FAILURE);
-    }
+    return true;
 }
 
-/**
- * @brief open sf for read. Supports wav and aiff PCM/float formats. Only works with
- * mono or stereo files.
- * NOTE: allocates memory for wavio struct via allocator.
- */
-void wavio_open_read(wavio* self,
-                     void* (*alloc)(uint32_t nbytes),
+int wavio_open_write(wavio* self,
+                     void* (*alloc)(size_t nbytes),
                      const char* path,
-                     uint32_t nframes) {
+                     int sr,
+                     int nchns,
+                     int format,
+                     uint32_t n_frames) {
 
     memset(self, 0, sizeof(*self));
-    if ((self->handle = sf_open(path, SFM_READ, &self->info)) == NULL) {
-        fprintf(stderr, "sf_open: %s\n", sf_strerror(self->handle));
-        exit(EXIT_FAILURE);
+    memset(&self->info, 0, sizeof(SF_INFO));
+
+    // check supported chan count
+    if (nchns < 1 || nchns > 2) {
+        fprintf(stderr, "unsupported channel count: %d\n", nchns);
+        return SF_ERR_UNRECOGNISED_FORMAT;
     }
 
-    self->nframes = nframes;
+    // check supported formats
+    if (!is_supported_write_format(format)) {
+        fprintf(stderr,
+                "wavio_open_write: unsupported format (must be WAV or AIFF / i16, "
+                "i24,f32)\n");
+        return SF_ERR_UNRECOGNISED_FORMAT;
+    }
+
+    // set the struct
+    self->info.samplerate = sr;
+    self->info.channels = nchns;
+    self->info.format = format;
+    self->n_frames = n_frames;
+    self->block_sz = n_frames * nchns;
+    self->block_nbytes = sizeof(float) * self->block_sz;
+
+    // alloc or fail
+    self->block = (float*) alloc(self->block_nbytes);
+    if (!self->block) {
+        fprintf(stderr, "wavio_open_write: alloc failed\n");
+        return SF_ERR_SYSTEM;
+    }
+
+    // open the file for write or err
+    self->handle = sf_open(path, SFM_WRITE, &self->info);
+    if (!self->handle) {
+        fprintf(stderr, "wavio_open_write: %s\n", sf_strerror(NULL));
+        return SF_ERR_SYSTEM;
+    }
+    return SF_ERR_NO_ERROR;  // SF_ERR_NO_ERROR	0
+}
+
+int wavio_open_read(wavio* self,
+                    void* (*alloc)(size_t nbytes),
+                    const char* path,
+                    uint32_t nframes) {
+
+    memset(self, 0, sizeof(*self));
+    memset(&self->info, 0, sizeof(SF_INFO));
+
+    // open read or err
+    if ((self->handle = sf_open(path, SFM_READ, &self->info)) == NULL) {
+        fprintf(stderr, "wavio_open_read: %s\n", sf_strerror(NULL));
+        return SF_ERR_SYSTEM;
+    }
+
+    self->n_frames = nframes;
     self->block_sz = nframes * self->info.channels;
     self->block_nbytes = sizeof(float) * self->block_sz;
 
-    self->block = (float*) alloc(sizeof(float) * nframes * self->info.channels);
-
-    if (self->block == NULL) {
-        fprintf(stderr, "alloc failed.");
-        exit(EXIT_FAILURE);
+    self->block = (float*) alloc(self->block_nbytes);
+    // alloc or err
+    if (!self->block) {
+        fprintf(stderr, "wavio_open_read: alloc failed\n");
+        sf_close(self->handle);
+        self->handle = NULL;
+        return SF_ERR_SYSTEM;
     }
+
+    return SF_ERR_NO_ERROR;  // SF_ERR_NO_ERROR	0
 }
 
-/**
- * @brief fill wavio with one block of interleaved audio.
- * NOTE: in_sz must equal self->block_sz;
- */
 void wavio_fill_block(wavio* self, const float* in) {
     memcpy(self->block, in, self->block_nbytes);
 }
 
-/**
- * @brief copy one block (nframes) of interleaved audio into out.
- * NOTE: out_sz must equal self->block_sz;
- */
 void wavio_copy_block(wavio* self, float* out) {
     memcpy(out, self->block, self->block_nbytes);
 }
 
-/**
- * @brief write nframes of block into the file handle.
- */
-void wavio_write_block(wavio* self) {
-    sf_count_t count;
-    if ((count = sf_writef_float(self->handle, self->block, self->nframes) !=
-                 self->nframes)) {
-        fprintf(stderr, "sf_write: %s\n", sf_strerror(self->handle));
-        exit(EXIT_FAILURE);
-    }
+sf_count_t wavio_write_block(wavio* self) {
+    return sf_writef_float(self->handle, self->block, self->n_frames);
 }
 
-/**
- * @brief read nframes from the file into block.
- */
 sf_count_t wavio_read_block(wavio* self) {
-    memset(self->block, 0, self->block_nbytes);
-    return sf_readf_float(self->handle, self->block, self->nframes);
+    return sf_readf_float(self->handle, self->block, self->n_frames);
 }
 
-/**
- * @brief cleanup the wavio object using dealloc.
- */
-void wavio_close(wavio* self, void (*dealloc)(void*)) {
-    dealloc(self->block);
-    int err;
-    if ((err = sf_close(self->handle)) != 0) {
-        fprintf(stderr, "sf_close: %s\n", sf_strerror(self->handle));
-        exit(EXIT_FAILURE);
+int wavio_close(wavio* self, void (*dealloc)(void*)) {
+    if (self->block) {
+        dealloc(self->block);
+        self->block = NULL;
     }
+    int err = 0;
+    if (self->handle) {
+        err = sf_close(self->handle);
+        self->handle = NULL;
+        if (err != 0)
+            fprintf(stderr, "sf_close failed: error code %d\n", err);
+    }
+
+    return err;
 }
-
-/**
- * @brief mux N chans into 1 interleaved signal.
- * Makes the following assumptions:
- *  1. interleaved size (nframes) == sum of the length of all channels
- *  2. each channel is the same size
- *  3. size of interleaved is divisible by num of channels
- */
-void wavio_mux(float** channels, float* interleaved, uint32_t nchns, uint32_t nframes);
-
-/**
- * @brief demux an interleaved signal into multiple channels.
- * Makes the following assumptions:
- *  1. interleaved size (nframes) == sum of the length of all channels
- *  2. each channel is the same size
- *  3. size of interleaved is divisible by num of channels
- */
-void wavio_demux(float* interleaved,
-                 float** channels,
-                 uint32_t nchns,
-                 uint32_t nframes);

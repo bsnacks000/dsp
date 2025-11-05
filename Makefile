@@ -38,11 +38,9 @@ build:
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
 
-test:
-	./build/tests/dsp_unit_tests
+build-clean: clean build
 
-coverage:
-	$(MAKE) clean
+coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	# Run tests from build directory
 	./build/tests/dsp_unit_tests
@@ -58,6 +56,9 @@ coverage:
        	llvm-profdata merge -sparse coverage.profraw -o coverage.profdata; \
        	llvm-cov report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
 	fi
+
+test:
+	./build/tests/dsp_unit_tests
 
 html-cov:
 	open ./coverage/index.html

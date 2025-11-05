@@ -1,18 +1,34 @@
 /**
- * @brief sndfile utils.
- * - Reads and writes mono and stereo signals. Buffers for stereo seignals are always
- *  interleaved and calculated as nchans * buf_sz -> [l,r,l,r,l,r, ...]
- * - sndfile errors can be handled in the caller.
- * - read -> copy | fill -> write
+ * @version 0.1.0
+ * @brief wavio - libsndfile wrapper for block reading and writing.
+ *
+ *
+ *
+ *
+ *
+ *  * mux/demux
+ *
+ *  * Supports converting between the following f32 memory layouts:
+ *      - interleaved (frame major)
+ *      - planar (channel major)
+ *  * Conversions to/from 1D contiguous array or float** multi channels.
+ *
+ *  * Makes the following assumptions:
+ *       1. Each channel has the same number of frames (samples).
+ *       2. The interleaved buffer length equals n_chans * n_frames.
+ *       3. The size of the interleaved buffer is evenly divisible by n_chans.
+ *       4. Input and output buffers do not overlap or alias each other.
  */
-#ifndef DSP_WAVIO_H
-#define DSP_WAVIO_H
+
+#ifndef WAVIO_H
+#define WAVIO_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include <sndfile.h>
+#include <stddef.h>
 
 /**
  * @brief hold sndfile handle and info.
@@ -20,33 +36,39 @@ extern "C" {
 typedef struct {
     SNDFILE* handle;
     SF_INFO info;
-    uint32_t nframes;       // this is the kblock size
+    uint32_t n_frames;      // this is the kblock size
     float* block;           // interleaved block
     uint32_t block_sz;      // interleaved block sz (kvec_sz * nchans)
     uint32_t block_nbytes;  // sizeof (float) * blk_sz
 } wavio;
 
 /**
- * @brief open sf for write. This will always write a wav float32 format. Only works
- * with mono or stereo files.
+ * @brief open sf for write.
  * NOTE: allocates memory for wavio struct via allocator.
+ *  - return 0 on success.
+ *  - return SF_ERR_UNRECOGNISED_FORMAT if AIFF/WAV i16, i24 f32 are not specified.
+ *  - return SF_ERR_SYSTEM if alloc fails.
  */
-void wavio_open_write(wavio* self,
-                      void* (*alloc)(uint64_t nbytes),
-                      const char* path,
-                      int sr,
-                      int chans,
-                      uint32_t nframes);
+int wavio_open_write(wavio* self,
+                     void* (*alloc)(size_t nbytes),
+                     const char* path,
+                     int sr,
+                     int chans,
+                     int format,
+                     uint32_t n_frames);
 
 /**
  * @brief open sf for read. Supports wav and aiff PCM/float formats. Only works with
  * mono or stereo files.
  * NOTE: allocates memory for wavio struct via allocator.
+ *  - return 0 on success.
+ *  - return SF_SYSTEM_ERR if open_read fails.
+ *  - Fails fast if alloc error.
  */
-void wavio_open_read(wavio* self,
-                     void* (*alloc)(uint32_t nbytes),
-                     const char* path,
-                     uint32_t nframes);
+int wavio_open_read(wavio* self,
+                    void* (*alloc)(size_t nbytes),
+                    const char* path,
+                    uint32_t n_frames);
 
 /**
  * @brief fill wavio with one block of interleaved audio.
@@ -63,7 +85,7 @@ void wavio_copy_block(wavio* self, float* out);
 /**
  * @brief write the current block.
  */
-void wavio_write_block(wavio* self);
+sf_count_t wavio_write_block(wavio* self);
 
 /**
  * @brief read the next block. If sf_count_t returns 0 we have reached EOF. The
@@ -75,28 +97,63 @@ sf_count_t wavio_read_block(wavio* self);
 /**
  * @brief cleanup the wavio object using dealloc. Fails fast on sf_close error.
  */
-void wavio_close(wavio* self, void (*dealloc)(void*));
+int wavio_close(wavio* self, void (*dealloc)(void*));
 
 /**
  * @brief mux N chans into 1 interleaved signal.
- * Makes the following assumptions:
- *  1. interleaved size (nframes) == sum of the length of all channels
- *  2. each channel is the same size
- *  3. size of interleaved is divisible by num of channels
  */
-void wavio_mux(float** channels, float* interleaved, uint32_t nchns, uint32_t nframes);
+static inline void wavio_mux(float* interleaved,
+                             const float** channels,
+                             size_t n_chans,
+                             size_t n_frames) {
+    for (size_t i = 0; i < n_frames; i++) {
+        for (size_t j = 0; j < n_chans; j++) {
+            interleaved[i * n_chans + j] = channels[j][i];
+        }
+    }
+}
 
 /**
  * @brief demux an interleaved signal into multiple channels.
- * Makes the following assumptions:
- *  1. interleaved size (nframes) == sum of the length of all channels
- *  2. each channel is the same size
- *  3. size of interleaved is divisible by num of channels
  */
-void wavio_demux(float* interleaved,
-                 float** channels,
-                 uint32_t nchns,
-                 uint32_t nframes);
+static inline void wavio_demux(float** channels,
+                               const float* interleaved,
+                               size_t n_chans,
+                               size_t n_frames) {
+    for (size_t i = 0; i < n_frames; i++) {
+        for (size_t j = 0; j < n_chans; j++) {
+            channels[j][i] = interleaved[i * n_chans + j];
+        }
+    }
+}
+
+/**
+ * @brief mux n_chans in a 1d array in row major order into an interleaved buffer
+ */
+static inline void wavio_mux1d(float* interleaved,
+                               const float* channels,
+                               size_t n_chans,
+                               size_t len_chans) {
+    for (size_t i = 0; i < len_chans; i++) {
+        for (size_t j = 0; j < n_chans; j++) {
+            interleaved[i * n_chans + j] = channels[j * len_chans + i];
+        }
+    }
+}
+
+/**
+ * @brief demux n_chans from an interleaved buffer into a 1d array in row major order.
+ */
+static inline void wavio_demux1d(float* channels,
+                                 const float* interleaved,
+                                 size_t n_chans,
+                                 size_t len_chans) {
+    for (size_t i = 0; i < len_chans; i++) {
+        for (size_t j = 0; j < n_chans; j++) {
+            channels[j * len_chans + i] = interleaved[i * n_chans + j];
+        }
+    }
+}
 
 #ifdef __cplusplus
 }

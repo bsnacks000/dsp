@@ -19,6 +19,7 @@
 
 #include "blep.h"
 #include "bq.h"
+#include "coreDefs.h"
 #include "curve.h"
 #include "ddelay.h"
 #include "distort.h"
@@ -30,6 +31,7 @@
 #include "oscil.h"
 #include "phasor.h"
 #include "rc.h"
+#include "samph.h"
 #include "sampler.h"
 #include "svf.h"
 
@@ -84,6 +86,10 @@ static OENTRY localops[] = {
      (SUBR) bqpara_vector, NULL, NULL},
     {"ftoscil3", sizeof(ftoscil3), 0, "a", "aii", (SUBR) ftoscil3_init,
      (SUBR) ftoscil3_vector, NULL, NULL},
+
+    {"ftoscil3_pm", sizeof(ftoscil3_pm), 0, "a", "aai", (SUBR) ftoscil3_pm_init,
+     (SUBR) ftoscil3_pm_vector, NULL, NULL},
+
     {"oftoscil3", sizeof(oftoscil3), 0, "a", "aiio", (SUBR) oftoscil3_init,
      (SUBR) oftoscil3_vector, NULL, NULL},
     {"dphasor", sizeof(dphasor), 0, "a", "a", (SUBR) dphasor_init,
@@ -116,10 +122,14 @@ static OENTRY localops[] = {
      (SUBR) ar_curve_vector, NULL, NULL},
     {"adsr_curve", sizeof(adsr_curve), 0, "a", "aaaaaaaaaaaa", (SUBR) adsr_curve_init,
      (SUBR) adsr_curve_vector, NULL, NULL},
-
     {"llag", sizeof(llag), 0, "a", "aa", (SUBR) llag_init, (SUBR) llag_vector, NULL,
      NULL},
-
+    {"rcladder", sizeof(rcladder), 0, "a", "aaa", (SUBR) rcladder_init,
+     (SUBR) rcladder_vector, NULL, NULL},
+    {"ssampi", sizeof(ssampi), 0, "a", "aaaaiii", (SUBR) ssampi_init,
+     (SUBR) ssampi_vector, NULL, NULL},
+    {"ssamph", sizeof(ssamph), 0, "a", "aaa", (SUBR) ssamph_init, (SUBR) ssamph_vector,
+     NULL, NULL},
     {NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

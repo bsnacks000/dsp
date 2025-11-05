@@ -3,6 +3,7 @@
  */
 #include <dsp/wavetable/wavetable.h>
 #include <dsp/wavetable/window.h>
+#include <sndfile.h>
 
 #include "cli.h"
 #include "common.h"
@@ -52,7 +53,8 @@ app_err entrypoint(const char* outfile, wt_window_type wind) {
     }
 
     wavio w;
-    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, 1, WT_BUF_SZ);
+    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, 1, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+                     WT_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);

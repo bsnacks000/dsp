@@ -156,6 +156,32 @@ static inline float zero_guard(float xn) {
     return xn + 1e-9;
 }
 
+/**
+ * @brief calculate a semitone ratio
+ */
+static inline float semitone_ratio(float semitones) {
+    return powf(2.0f, semitones / 12.0f);
+}
+
+/**
+ * @brief normalize the values in buf
+ */
+static inline void normalize(float* buf, uint32_t buf_sz) {
+    float max = 0.0;
+    for (uint32_t i = 0; i < buf_sz; i++) {
+        float a = fabs(buf[i]);  // use absolute value (handle bipolar signals)
+        if (a > max) {
+            max = a;
+        }
+    }
+    if (DSP_LIKELY(max)) {
+        float s = 1.0 / max;
+        for (uint32_t i = 0; i < buf_sz; i++) {
+            buf[i] *= s;
+        }
+    }
+}
+
 #ifdef __cpluplus
 }
 #endif

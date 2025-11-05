@@ -33,6 +33,13 @@ dsp_err wt_chebpoly_args_init(wt_chebpoly_args* self, const float* h, uint32_t h
  */
 dsp_err wt_chebpoly(wavetable* wt, void* args);
 
+/**
+ * @brief generate a deck with a set of chebypoly args.
+ */
+dsp_err chebpoly_deck_generate(wavetable** wt,
+                               wt_chebpoly_args** args,
+                               uint32_t n_bands);
+
 #ifdef __cplusplus
 }
 #endif

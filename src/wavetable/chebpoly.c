@@ -1,10 +1,9 @@
-#include <dsp/conversions.h>
-#include <dsp/shape.h>
+
 #include <dsp/wavetable/chebpoly.h>
-#include <dsp/wavetable/normalize.h>
+#include <dsp/wavetable/wavetable.h>
+
 #include <stdint.h>
 #include <sys/types.h>
-#include "dsp/utils.h"
 
 // TODO: check : sz >= 2; sum of coeffs != 0.0
 dsp_err wt_chebpoly_args_init(wt_chebpoly_args* self, const float* h, uint32_t h_sz) {
@@ -57,6 +56,24 @@ dsp_err wt_chebpoly(wavetable* wt, void* args) {
     }
 
     normalize(buf, len);
+
+    return DSP_OK;
+}
+
+dsp_err chebpoly_deck_generate(wavetable** wt,
+                               wt_chebpoly_args** args,
+                               uint32_t n_bands) {
+
+    for (uint32_t i = 0; i < n_bands; i++) {
+        dsp_err err;
+        wavetable* w = wt[i];
+        wt_chebpoly_args* arg = args[i];
+        if ((err = wt_chebpoly(w, arg)) != DSP_OK) {
+            return err;
+        }
+
+        wavetable_add_guard_point(w);
+    }
 
     return DSP_OK;
 }

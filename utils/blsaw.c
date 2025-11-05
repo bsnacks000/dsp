@@ -1,5 +1,6 @@
 #include <dsp/oscil.h>
 #include <dsp/wavetable/sinesum.h>
+#include <sndfile.h>
 #include "common.h"
 
 #include "dsp/utils.h"
@@ -113,7 +114,8 @@ app_err entrypoint(const char* outfile) {
     blxoscil3_tick_block(&blsaw, out, lintab.buf, nsmps);
 
     wavio w;
-    wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE, 1, nsmps);
+    wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE,
+                     SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, nsmps);
     wavio_fill_block(&w, out);
     wavio_write_block(&w);
     wavio_close(&w, free);

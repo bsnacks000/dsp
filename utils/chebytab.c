@@ -64,7 +64,8 @@ app_err entrypoint(const char* outfile) {
     // // this means we do not copy guard point
     // // sr = nharms for writing oscillator wavetables.
     wavio w;
-    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, 1, WT_BUF_SZ);
+    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
+                     WT_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);
