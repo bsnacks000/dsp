@@ -3,7 +3,9 @@
 #include "test_balance.h"
 #include "test_bq.h"
 #include "test_conversions.h"
+#include "test_curve.h"
 #include "test_interpolate.h"
+#include "test_line.h"
 #include "test_maths.h"
 #include "test_utils.h"
 #include "test_wavetable.h"
@@ -18,7 +20,8 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
         maths_test_suite,       utils_test_suite,
         interpolate_test_suite, wavetable_test_suite,
         conversions_test_suite, balance_test_suite,
-        bq_test_suite,          {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
+        bq_test_suite,          curve_test_suite,
+        line_test_suite,        {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
     MunitSuite test_suite_main = {

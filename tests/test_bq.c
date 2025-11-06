@@ -2,8 +2,6 @@
 #include <dsp/bq.h>
 #include "helpers.h"
 
-#include <stdio.h>
-
 #define NSMPS 64
 
 MunitResult test_dfII_init(const MunitParameter params[], void* data) {

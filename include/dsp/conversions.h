@@ -27,6 +27,13 @@ static inline float samps_per_ms(float sr) {
 }
 
 /**
+ * @breif calculate the ms for nsmps
+ */
+static inline float ms_per_samps(float nsmps, float sr) {
+    return nsmps / sr * 1000.0;
+}
+
+/**
  * @brief Convert decibel gain to amplitude (linear)
  *
  */
