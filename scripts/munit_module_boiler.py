@@ -35,7 +35,7 @@ static MunitTest {self.name}_test_module[] = {{
 }};
 
 static const MunitSuite {self.name}_test_suite = {{
-    "/curve",               /* name */
+    "/{self.name}",               /* name */
     {self.name}_test_module,      /* tests */
     NULL,                   /* suites */
     1,                      /* iterations */
