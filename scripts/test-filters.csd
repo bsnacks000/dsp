@@ -11,6 +11,8 @@ nchnls  = 1
 0dbfs   = 1
 
 ; basic filter sweep tests for svf, rc and biquad modules
+; TODO -- break this out into multiple tests
+
 
 ; svf (lowpass only)
 ; Q [0.25, 4.0]
@@ -126,14 +128,6 @@ endin
 
 </CsInstruments>
 <CsScore>
-;i7 0 3 0
-;i7 3 3 1
-;i7 6 3 2
-;i7 9 3 3
-
-;i6 0 3 0
-;i6 3 3 1
-;i6 6 3 2
 
 i1  0 3        ; svflp
 i2  3 3        ; rclp
@@ -151,6 +145,13 @@ i4  36 3 4      ; bqnres lr
 i5  39 3 0      ; bqpara low
 i5  42 3 1      ; bqpara high
 i5  45 3 2      ; bqpara band
+i6  48 3 0      ; rc lp
+i6  51 3 1      ; rc hp
+i6  54 3 2      ; rc ap
+i7  57 3 0      ; svf lp
+i7  60 3 1      ; svf hp
+i7  63 3 2      ; svf bp
+i7  66 3 3      ; svf bs
 
 
 </CsScore>
