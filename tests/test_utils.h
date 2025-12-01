@@ -5,10 +5,6 @@
 extern "C" {
 #endif
 
-#include <dsp/utils.h>
-#include <dsp/wavetable/normalize.h>
-
-#include <stdbool.h>
 #include "munit.h"
 
 MunitResult test_float_underflow(const MunitParameter params[], void* data);

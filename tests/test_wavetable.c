@@ -1,7 +1,7 @@
+#include <dsp/utils.h>
+#include <dsp/wavetable/wavetable.h>
+
 #include "test_wavetable.h"
-#include "dsp/utils.h"
-#include "dsp/wavetable/normalize.h"
-#include "dsp/wavetable/wavetable.h"
 
 MunitResult test_wavetable_init(const MunitParameter params[], void* data) {
     (void) params;

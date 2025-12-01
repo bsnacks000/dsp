@@ -1,4 +1,5 @@
 #include "test_interpolate.h"
+#include <dsp/interpolate.h>
 
 MunitResult test_interpolate_linear(const MunitParameter params[], void* data) {
     (void) params;

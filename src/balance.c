@@ -27,7 +27,7 @@ inline static void tick_(balance* self, float out, float cmp) {
 }
 
 void balance_init(balance* self, float sr) {
-    self->sr = sr;
+    self->sr = fabs(sr);
     self->coef_ = 0.0;
     self->d0_ = 0.0;
     self->d1_ = 0.0;

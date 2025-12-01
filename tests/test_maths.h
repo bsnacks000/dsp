@@ -5,9 +5,6 @@
 extern "C" {
 #endif
 
-#include <dsp/fasttrig.h>
-#include <dsp/maths.h>
-#include <dsp/shape.h>
 #include "munit.h"
 
 MunitResult test_mult(const MunitParameter params[], void* data);

@@ -1,4 +1,5 @@
 #include "test_utils.h"
+#include <dsp/utils.h>
 
 MunitResult test_float_underflow(const MunitParameter params[], void* data) {
     (void) params;
