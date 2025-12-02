@@ -1,5 +1,4 @@
 #include <dsp/stft.h>
-#include <stdio.h>
 #include <string.h>
 
 void stft_init(stft* self,
