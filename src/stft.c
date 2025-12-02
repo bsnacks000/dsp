@@ -1,4 +1,5 @@
 #include <dsp/stft.h>
+#include <stdio.h>
 #include <string.h>
 
 void stft_init(stft* self,
@@ -31,13 +32,18 @@ bool stft_tick(stft* self, dft_complex* frame_out, float* real_in) {
         self->write_ptr_ = (self->write_ptr_ + 1) & self->buf_mask_;
     }
 
+    self->write_counter_ += self->hop_sz;
     if (self->write_counter_ >= self->fft_sz) {
         float tmp[self->fft_sz];
 
         for (uint32_t i = 0; i < self->fft_sz; i++) {
-            uint32_t idx = (self->write_ptr_ - self->hop_sz + i) & self->buf_mask_;
+            uint32_t idx = (self->write_ptr_ - self->fft_sz + i) & self->buf_mask_;
             tmp[i] = self->win[i] * self->buf[idx];
         }
+
+        // for (uint32_t i = 0; i < self->fft_sz; i++)
+        //     printf("\t%.7f", tmp[i]);
+        // printf("\n");
 
         self->forward(self->dft, frame_out, tmp);
         self->write_counter_ -= self->hop_sz;
@@ -76,6 +82,10 @@ void istft_tick(istft* self, float* real_out, dft_complex* frame_in) {
     // do inverse fft
     float tmp[self->fft_sz];
     self->inverse(self->idft, tmp, frame_in);
+
+    // for (uint32_t i = 0; i < self->fft_sz; i++)
+    //     printf("%.7f,", tmp[i]);
+    // printf("\n");
 
     // overlap add one fft len into the ola buffer (optional window)
     for (uint32_t i = 0; i < self->fft_sz; i++) {
