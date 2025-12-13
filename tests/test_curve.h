@@ -21,8 +21,14 @@ MunitResult test_adsr_tick_block(const MunitParameter params[], void* data);
 
 // register tests
 static MunitTest curve_test_module[] = {
-    {"/curve_init", test_curve_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/init", test_curve_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 
+    {"/tick_block", test_curve_tick_block, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/ar_init", test_ar_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/ar_tick_block", test_ar_tick_block, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/adsr_init", test_adsr_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/adsr_tick_block", test_adsr_tick_block, NULL, NULL, MUNIT_TEST_OPTION_NONE,
+     NULL},
     // need this NULL stub or we segfault
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
