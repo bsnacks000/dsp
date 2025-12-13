@@ -28,7 +28,7 @@ static MunitTest rc_test_module[] = {
 };
 
 static const MunitSuite rc_test_suite = {
-    "/curve",               /* name */
+    "/rc",                  /* name */
     rc_test_module,         /* tests */
     NULL,                   /* suites */
     1,                      /* iterations */
