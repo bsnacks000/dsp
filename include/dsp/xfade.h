@@ -57,7 +57,7 @@ static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
 typedef struct {
     float position;
     // private
-    float l_coeff_, r_coeff_, last_;
+    float l_coeff_, r_coeff_;
 } xfade;
 
 /**

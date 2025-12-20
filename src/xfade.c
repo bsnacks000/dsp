@@ -10,7 +10,6 @@ static inline void update_(xfade* self) {
 
 void xfade_init(xfade* self, float position) {
     self->position = position;
-    self->last_ = 0.0;
     self->l_coeff_ = 0.0;
     self->r_coeff_ = 0.0;
 
@@ -29,9 +28,7 @@ void xfade_tick_block(xfade* self,
         if (!pos_eq) {
             self->position = position_;
             update_(self);
-            out[i] = in_l[i] * self->l_coeff_ + in_r[i] * self->r_coeff_;
-        } else {
-            out[i] = self->last_;
         }
+        out[i] = in_l[i] * self->l_coeff_ + in_r[i] * self->r_coeff_;
     }
 }

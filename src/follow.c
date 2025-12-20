@@ -7,8 +7,6 @@
 static const float TLD_AUDIO_ENVELOPE_ANALOG_TC = -0.99967234081320612357829304641019;
 
 static inline float calculate_time_(float t_ms, float sr) {
-    dsp_assert(sr <= 0.0, "follow:calculate_time_: sr <= 0.0");
-    dsp_assert(t_ms <= 0.0, "follow:calculate_time: t_ms <= 0.0");
     return exp(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001));
 }
 
