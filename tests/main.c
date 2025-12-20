@@ -5,7 +5,9 @@
 #include "test_conversions.h"
 #include "test_curve.h"
 #include "test_delay.h"
+#include "test_follow.h"
 #include "test_interpolate.h"
+#include "test_lag.h"
 #include "test_line.h"
 #include "test_maths.h"
 #include "test_rc.h"
@@ -35,6 +37,8 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
         xfade_test_suite,
         delay_test_suite,
         stft_test_suite,
+        lag_test_suite,
+        follow_test_suite,
         {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
