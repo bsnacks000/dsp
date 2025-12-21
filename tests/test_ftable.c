@@ -1,16 +1,16 @@
+#include <dsp/ftable/ftable.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/wavetable.h>
 
-#include "test_wavetable.h"
+#include "test_ftable.h"
 
-MunitResult test_wavetable_init(const MunitParameter params[], void* data) {
+MunitResult test_ftable_init(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
-    wavetable wt;
+    ftable wt;
 
     float x[10] = {0.0};
 
-    wavetable_init(&wt, x, 10);
+    ftable_init(&wt, x, 10);
 
     munit_assert(wt.is_pow2 == 1);
     munit_assert(wt.len == 8);
@@ -19,43 +19,43 @@ MunitResult test_wavetable_init(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
-MunitResult test_wavetable_shallow_copy(const MunitParameter params[], void* data) {
+MunitResult test_ftable_shallow_copy(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    wavetable wt1;
-    wavetable wt2;
+    ftable wt1;
+    ftable wt2;
 
     float x[5] = {0.0};
     float y[5] = {0.0};
 
-    wavetable_init(&wt1, x, 5);
-    wavetable_init(&wt2, y, 5);
+    ftable_init(&wt1, x, 5);
+    ftable_init(&wt2, y, 5);
 
-    wavetable_shallow_copy(&wt2, &wt1);
+    ftable_shallow_copy(&wt2, &wt1);
     // assert that the pointers are the same
     munit_assert_ptr_equal(wt1.buf, wt2.buf);
 
     return MUNIT_OK;
 }
 
-MunitResult test_wavetable_deep_copy(const MunitParameter params[], void* data) {
+MunitResult test_ftable_deep_copy(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
     (void) params;
     (void) data;
 
-    wavetable wt1;
-    wavetable wt2;
+    ftable wt1;
+    ftable wt2;
 
     float x[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
     float y[5] = {0.0};
 
-    wavetable_init(&wt1, x, 5);
-    wavetable_init(&wt2, y, 5);
+    ftable_init(&wt1, x, 5);
+    ftable_init(&wt2, y, 5);
 
-    wavetable_deep_copy(&wt2, &wt1);
+    ftable_deep_copy(&wt2, &wt1);
     // assert we did not copy the buf pointer explicitly (like shallow copy)
     munit_assert_ptr_not_equal(wt1.buf, wt2.buf);
 
@@ -65,22 +65,22 @@ MunitResult test_wavetable_deep_copy(const MunitParameter params[], void* data) 
     return MUNIT_OK;
 }
 
-MunitResult test_wavetable_write(const MunitParameter params[], void* data) {
+MunitResult test_ftable_write(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
     float x[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
     float y[10] = {0.0};
 
-    wavetable wt1;
-    wavetable_init(&wt1, y, 10);
+    ftable wt1;
+    ftable_init(&wt1, y, 10);
 
-    wavetable_write(&wt1, x, 5, 2);
+    ftable_write(&wt1, x, 5, 2);
 
     return MUNIT_OK;
 }
 
-static dsp_err wt_test_func(wavetable* wt, void* args) {
+static dsp_err wt_test_func(ftable* wt, void* args) {
     (void) args;
     // fill table with 3 values
     float x = 1.0;
@@ -91,31 +91,31 @@ static dsp_err wt_test_func(wavetable* wt, void* args) {
     return DSP_OK;
 }
 
-MunitResult test_wavetable_func(const MunitParameter params[], void* data) {
+MunitResult test_ftable_func(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
-    wavetable wt1;
+    ftable wt1;
 
     float x[5] = {0.0};
 
-    wavetable_init(&wt1, x, 5);
+    ftable_init(&wt1, x, 5);
 
-    wavetable_func(&wt1, wt_test_func, NULL);
+    ftable_func(&wt1, wt_test_func, NULL);
 
     return MUNIT_OK;
 }
 
-MunitResult test_wavetable_add_guard_point(const MunitParameter* params, void* data) {
+MunitResult test_ftable_add_guard_point(const MunitParameter* params, void* data) {
     (void) params;
     (void) data;
 
     float x[5] = {1.0, 2.0, 3.0, 0.0, 0.0};
 
-    wavetable wt1;
-    wavetable_init(&wt1, x, 5);
+    ftable wt1;
+    ftable_init(&wt1, x, 5);
 
-    wavetable_add_guard_point(&wt1);
+    ftable_add_guard_point(&wt1);
     munit_assert_float(x[4], ==, 2.0);
     munit_assert_float(x[3], ==, 1.0);
 

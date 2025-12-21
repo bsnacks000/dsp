@@ -8,10 +8,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <dsp/ftable/chebpoly.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/ramp.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/chebpoly.h>
-#include <dsp/wavetable/ramp.h>
-#include <dsp/wavetable/wavetable.h>
 
 #include "cli.h"
 #include "common.h"
@@ -37,8 +37,8 @@ app_err entrypoint(const char* outfile) {
 
     // remeber to add the plus 2 guard point
     float wt_buf[WT_BUF_SZ + 2] = {0};
-    wavetable wt;
-    wavetable_init(&wt, wt_buf, WT_BUF_SZ + 2);
+    ftable wt;
+    ftable_init(&wt, wt_buf, WT_BUF_SZ + 2);
 
     // calc a line between -1.0 -> 1.0
     wt_ramp_args ramp_args = {
@@ -62,7 +62,7 @@ app_err entrypoint(const char* outfile) {
 
     // // open sf write .. set block size equal to wt buf sz
     // // this means we do not copy guard point
-    // // sr = nharms for writing oscillator wavetables.
+    // // sr = nharms for writing oscillator ftables.
     wavio w;
     wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
                      WT_BUF_SZ);

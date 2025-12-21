@@ -1,6 +1,6 @@
 /**
- * @brief Fill a wavetable buffer with samples.
- *  - Differences with wavetable_write
+ * @brief Fill a ftable buffer with samples.
+ *  - Differences with ftable_write
  *      - nsmps must equal wt->len
  *      - the entire buffer is filled using copy_nsmps (memcpy).
  */
@@ -15,7 +15,7 @@ extern "C" {
 
 #include <dsp/utils.h>
 
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/ftable.h>
 #include <stdint.h>
 
 /**
@@ -29,12 +29,12 @@ typedef struct {
 /**
  * @brief fill nsmps if nsmps must equal wt->len.
  */
-dsp_err wt_fill(wavetable* wt, void* args);
+dsp_err wt_fill(ftable* wt, void* args);
 
 /**
  * @brief fill nsmps and normalize if nsmps must equal wt->len.
  */
-dsp_err wt_fill_normalize(wavetable* wt, void* args);
+dsp_err wt_fill_normalize(ftable* wt, void* args);
 
 #ifdef __cplusplus
 }

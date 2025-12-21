@@ -8,7 +8,7 @@
 //       while (val < 0) val += buf_sz;
 //       while (val >= buf_sz) val -= buf_sz;
 
-void tabread_init(tabread* self, wavetable* wt) {
+void tabread_init(tabread* self, ftable* wt) {
     self->wt = wt;
 }
 

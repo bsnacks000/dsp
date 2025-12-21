@@ -7,9 +7,9 @@ extern "C" {
 
 #include <csdl.h>
 
+#include <dsp/ftable/ftable.h>
 #include <dsp/phasor.h>
 #include <dsp/tabread.h>
-#include <dsp/wavetable/wavetable.h>
 
 /**
  * simple looping sampler with speed control
@@ -24,7 +24,7 @@ typedef struct {
     AUXCH idxs;
 
     float dur;  // the sample dur (buf_sz / sr)
-    wavetable wt;
+    ftable wt;
     phasor ph;
     tabread tab;
 } sampler;

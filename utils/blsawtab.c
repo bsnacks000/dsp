@@ -4,14 +4,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/sinesum.h>
 #include "cli.h"
 #include "common.h"
 #include "wavio.h"
 
 #define TARGET_SAMPLERATE 48000.0f
-#define WAVETABLE_BUF_SZ 1024
+#define ftable_BUF_SZ 1024
 
 typedef enum {
     APP_OK = 0,
@@ -35,7 +35,7 @@ bool validate_outdir(const char* outdir) {
     return true;
 }
 
-void cleanup(wavetable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -68,12 +68,12 @@ app_err entrypoint(const char* outdir) {
         args[i] = a;
     }
 
-    // create the wavetable deck
-    wavetable* wavtbs[7] = {0};
+    // create the ftable deck
+    ftable* wavtbs[7] = {0};
     for (int i = 0; i < 7; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
-        float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
-        wavetable_init(wt, buf, WAVETABLE_BUF_SZ);
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
+        float* buf = (float*) malloc(sizeof(float) * ftable_BUF_SZ);
+        ftable_init(wt, buf, ftable_BUF_SZ);
         wavtbs[i] = wt;
     }
 
@@ -87,7 +87,7 @@ app_err entrypoint(const char* outdir) {
         printf("band: %d, f0: %.5f sr: %.1f nharms: %.1f\n", i, wavtbs[i]->f0,
                wavtbs[i]->sr, wavtbs[i]->nharms);
 
-        // for (int j = 0; j < WAVETABLE_BUF_SZ; j++) {
+        // for (int j = 0; j < ftable_BUF_SZ; j++) {
         //     printf("%f\n", wavtbs[i]->buf[j]);
         // }
         // build outpath
@@ -97,7 +97,7 @@ app_err entrypoint(const char* outdir) {
 
         wavio w;
         wavio_open_write(&w, malloc, path, wavtbs[i]->nharms,
-                         SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, WAVETABLE_BUF_SZ);
+                         SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, ftable_BUF_SZ);
         wavio_fill_block(&w, wavtbs[i]->buf);
         wavio_write_block(&w);
         wavio_close(&w, free);

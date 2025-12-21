@@ -1,9 +1,9 @@
 #include <dsp/constants.h>
-#include <dsp/wavetable/window.h>
+#include <dsp/ftable/window.h>
 
 // ref: https://github.com/csound/csound/blob/develop/Engine/fgens.c#L1043
 
-dsp_err wt_window(wavetable* wt, void* args) {
+dsp_err wt_window(ftable* wt, void* args) {
     wt_window_args* args_ = (wt_window_args*) args;
     wt_window_type type = args_->type;
 

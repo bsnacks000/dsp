@@ -1,9 +1,9 @@
+#include <dsp/ftable/ramp.h>
 #include <dsp/maths.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/ramp.h>
 #include <stdint.h>
 
-dsp_err wt_linspace(wavetable* wt, void* args) {
+dsp_err wt_linspace(ftable* wt, void* args) {
     wt_ramp_args* args_ = (wt_ramp_args*) args;
 
     float start = args_->start;
@@ -29,7 +29,7 @@ dsp_err wt_linspace(wavetable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err wt_geomspace(wavetable* wt, void* args) {
+dsp_err wt_geomspace(ftable* wt, void* args) {
     wt_ramp_args* args_ = (wt_ramp_args*) args;
 
     float start = args_->start;

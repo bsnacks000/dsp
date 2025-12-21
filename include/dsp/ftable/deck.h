@@ -1,8 +1,8 @@
 /**
- * @brief wavetable decks for various utilities
+ * @brief ftable decks for various utilities
  *  - sinesum (band limited / novel waveforms)
  *  - TODO: interpolation / spectral morph (based on serum2)
- *  - TODO: wrapers for other wavetable module functionality (cheby, window)
+ *  - TODO: wrapers for other ftable module functionality (cheby, window)
  *
  */
 
@@ -14,19 +14,19 @@
 extern "C" {
 #endif
 
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/maths.h>
 #include <dsp/rmap.h>
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
 #include <dsp/xfade.h>
 
 /**
- * @brief wt_deck is fat pointer type that simply holds an array of wavetable pointers.
+ * @brief wt_deck is fat pointer type that simply holds an array of ftable pointers.
  * Its lookup strategy is based on position. We borrow terminology from serum and other
  * wt synths and call these "frames".
  */
 typedef struct {
-    wavetable** frames;
+    ftable** frames;
     uint32_t frames_sz;  // nrows
 } wt_deck;
 
@@ -34,7 +34,7 @@ typedef struct {
  * @brief init a wt_deck. We check that frames is at least 2 so that we can iterate
  * and determine if all frames in the deck are equal.
  */
-void wt_deck_init(wt_deck* self, wavetable** frames, uint32_t frames_sz);
+void wt_deck_init(wt_deck* self, ftable** frames, uint32_t frames_sz);
 
 /**
  * @brief check if all frames are of equal length. Usually this is the case when we're
@@ -53,8 +53,8 @@ dsp_err wt_deck_matrix_fill(wt_deck* self, matrix* out);
  * @brief represents a low/high pair. The tables used for the actual crossfade.
  */
 typedef struct {
-    wavetable* low;
-    wavetable* high;
+    ftable* low;
+    ftable* high;
 } wt_frame_pair;
 
 static inline wt_frame_pair wt_deck_pos_lookup(wt_deck* self, float pos) {
