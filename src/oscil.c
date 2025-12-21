@@ -66,23 +66,6 @@ static inline float oscil3_tick_(oscil* self) {
     return out;
 }
 
-/// NOTE: These were moved from deck public API.
-// The reasoning is that other modules may implement different private lookup strategies
-// for decks if needed. These specific strats are more bound to xoscil.
-
-// /**
-//  * @brief given a position and deck_sz calculate a cross fade value over a given
-//  * frame/band pair.
-//  */
-// static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
-//     pos = clamp(pos, 0.0, 1.0);
-
-//     float scaled = pos * (deck_sz - 1);
-//     float fader = scaled - floorf(scaled);
-//     // fprintf(stderr, "%.8f\n", fader);
-//     return xfade_sin(fader);
-// }
-
 /**
  * @brief query the l/r amplitudes for use with xfade given freq for bandlimited
  * crossfades.
@@ -100,35 +83,6 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
     float fader = linlin(freq, lo, hi, 0.0, 1.0);
     return xfade_sin(fader);
 }
-
-/**
- * @brief represents a low/high pair. The tables used for the actual crossfade.
- */
-// typedef struct {
-//     ftable* low;
-//     ftable* high;
-// } wt_frame_pair;
-
-/**
- * @brief wt_deck lookup using the position to fill a band_pair.
- */
-// static inline wt_frame_pair wt_deck_pos_lookup(wt_deck* self, float pos) {
-//     pos = clamp(pos, 0.0f, 1.0f);  // ensure [0, 1]
-//     pos = 0.5f - 0.5f * cosf(pos * M_PI);
-
-//     float fidx = pos * (self->frames_sz - 1);  // range: [0, N-1]
-//     uint32_t idx = (int) fidx;
-
-//     if (idx >= self->frames_sz - 1) {
-//         idx = self->frames_sz - 2;
-//         fidx = (float) idx;
-//     }
-
-//     return (wt_frame_pair) {
-//         .low = self->frames[idx],
-//         .high = self->frames[idx + 1],
-//     };
-// }
 
 /**
  * @brief query the deck and return the correct band_pair given the freq. To provide

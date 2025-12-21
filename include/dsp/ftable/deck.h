@@ -9,16 +9,18 @@
 #ifndef DSP_DECK_H
 #define DSP_DECK_H
 
-#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <dsp/fasttrig.h>
 #include <dsp/ftable/ftable.h>
 #include <dsp/ftable/sinesum.h>
 #include <dsp/maths.h>
 #include <dsp/rmap.h>
 #include <dsp/xfade.h>
+
+#include <stdint.h>
 
 /**
  * @brief wt_deck is fat pointer type that simply holds an array of ftable pointers.
@@ -57,9 +59,12 @@ typedef struct {
     ftable* high;
 } wt_frame_pair;
 
+/**
+ * @brief return a frame_pair from a deck given pos.
+ */
 static inline wt_frame_pair wt_deck_pos_lookup(wt_deck* self, float pos) {
-    pos = clamp(pos, 0.0f, 1.0f);  // ensure [0, 1]
-    pos = 0.5f - 0.5f * cosf(pos * M_PI);
+    pos = clamp(pos, 0.0f, 1.0f);         // ensure [0, 1]
+    pos = 0.5f - 0.5f * fast_hcosf(pos);  // smooth transition w/ half cos
 
     float fidx = pos * (self->frames_sz - 1);  // range: [0, N-1]
     uint32_t idx = (int) fidx;
