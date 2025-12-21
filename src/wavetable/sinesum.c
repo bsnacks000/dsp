@@ -1,7 +1,7 @@
 
 #include <dsp/assert.h>
 #include <dsp/ftable/ftable.h>
-#include <dsp/ftable/normalize.h>
+
 #include <dsp/ftable/sinesum.h>
 #include <dsp/maths.h>
 #include <dsp/utils.h>

@@ -1,5 +1,4 @@
 #include <dsp/ftable/fill.h>
-#include <dsp/ftable/normalize.h>
 
 static inline dsp_err fill_base_(ftable* wt, void* args) {
     wt_fill_args* args_ = (wt_fill_args*) args;
