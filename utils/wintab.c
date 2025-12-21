@@ -1,8 +1,8 @@
 /**
  * @brief wintab - window to .wav file
  */
-#include <dsp/wavetable/wavetable.h>
-#include <dsp/wavetable/window.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/window.h>
 #include <sndfile.h>
 
 #include "cli.h"
@@ -38,8 +38,8 @@ app_err entrypoint(const char* outfile, wt_window_type wind) {
     wt_window_args args = {.type = wind};
 
     float wt_buf[WT_BUF_SZ + 2] = {0};
-    wavetable wt;
-    wavetable_init(&wt, wt_buf, WT_BUF_SZ + 2);
+    ftable wt;
+    ftable_init(&wt, wt_buf, WT_BUF_SZ + 2);
 
     dsp_err err;
     if ((err = wt_window(&wt, &args)) != DSP_OK) {

@@ -1,19 +1,19 @@
+#include <dsp/ftable/sinesum.h>
 #include <dsp/oscil.h>
-#include <dsp/wavetable/sinesum.h>
 #include <sndfile.h>
 #include "common.h"
 
+#include "dsp/ftable/deck.h"
+#include "dsp/ftable/ftable.h"
+#include "dsp/ftable/ramp.h"
 #include "dsp/utils.h"
-#include "dsp/wavetable/deck.h"
-#include "dsp/wavetable/ramp.h"
-#include "dsp/wavetable/wavetable.h"
 #include "wavio.h"
 
 /**
- * target 15kHz .. add +2 for wavetable buf sz
+ * target 15kHz .. add +2 for ftable buf sz
  */
 #define TARGET_SAMPLERATE 48000.0f
-#define WAVETABLE_BUF_SZ 8194
+#define ftable_BUF_SZ 8194
 #define MAX_FREQ 15000.0f
 
 typedef enum {
@@ -22,7 +22,7 @@ typedef enum {
     APP_DSP_ERR,
 } app_err;
 
-void cleanup(wavetable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -52,12 +52,12 @@ app_err entrypoint(const char* outfile) {
         args[i] = a;
     }
 
-    // create the wavetable deck
-    wavetable* wavtabs[7] = {0};
+    // create the ftable deck
+    ftable* wavtabs[7] = {0};
     for (int i = 0; i < 7; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
-        float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
-        wavetable_init(wt, buf, WAVETABLE_BUF_SZ);
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
+        float* buf = (float*) malloc(sizeof(float) * ftable_BUF_SZ);
+        ftable_init(wt, buf, ftable_BUF_SZ);
         wavtabs[i] = wt;
     }
 
@@ -68,13 +68,13 @@ app_err entrypoint(const char* outfile) {
     }
 
     // generate bandlimited saw wave with blxoscil
-    // use a wavetable ramp fill 5 seconds.
+    // use a ftable ramp fill 5 seconds.
 
     uint32_t nsmps = (uint32_t) TARGET_SAMPLERATE * 5;
 
     float* lintab_buf = (float*) malloc(sizeof(float) * (nsmps + 2));
-    wavetable lintab;
-    wavetable_init(&lintab, lintab_buf, nsmps);
+    ftable lintab;
+    ftable_init(&lintab, lintab_buf, nsmps);
 
     wt_ramp_args ramp_args = {
         .start = 1.0,

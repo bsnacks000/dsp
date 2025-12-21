@@ -1,10 +1,10 @@
 #include "distort.h"
 #include <dsp/maths.h>
 
+#include <dsp/ftable/chebpoly.h>
+#include <dsp/ftable/ramp.h>
 #include <dsp/tabread.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/chebpoly.h>
-#include <dsp/wavetable/ramp.h>
 #include <stdint.h>
 #include "dsp/shape.h"
 
@@ -12,11 +12,11 @@
 
 static float chebsaw_buf[WT_BUF_SZ] = {0};
 
-static wavetable chebsaw_wt;
+static ftable chebsaw_wt;
 
 int chebsaw_tab_init(CSOUND* csound) {
     (void) csound;
-    wavetable_init(&chebsaw_wt, chebsaw_buf, WT_BUF_SZ);
+    ftable_init(&chebsaw_wt, chebsaw_buf, WT_BUF_SZ);
 
     int err;
 

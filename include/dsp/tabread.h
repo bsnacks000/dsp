@@ -1,9 +1,9 @@
 /**
  * @brief tabread. Multipurpose table readers. Current impl is based on
  * puredata's simple tabread family of objects which zero clip past boundaries. These
- * reader's are basically just interpolating indexes into the wavetable buffer.
+ * reader's are basically just interpolating indexes into the ftable buffer.
  *
- * They should be controlled by a signal scaled to the range of the wavetable len and
+ * They should be controlled by a signal scaled to the range of the ftable len and
  * can be used to implement waveshaper transfer functions, samplers and other synthesis
  * methods that rely on having fine grained read pointer control.
  *
@@ -16,20 +16,20 @@
 extern "C" {
 #endif
 
-#include <dsp/wavetable/deck.h>
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/ftable.h>
 
 /**
  * @brief tabread
  */
 typedef struct {
-    wavetable* wt;
+    ftable* wt;
 } tabread;
 
 /**
  * @brief init tabread.
  */
-void tabread_init(tabread* self, wavetable* wt);
+void tabread_init(tabread* self, ftable* wt);
 
 /**
  * @brief truncating tabread.

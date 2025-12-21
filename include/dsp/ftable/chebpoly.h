@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/ftable.h>
 
 /**
  * @brief state for wt_cheby_args
@@ -31,14 +31,12 @@ dsp_err wt_chebpoly_args_init(wt_chebpoly_args* self, const float* h, uint32_t h
 /**
  * @brief fill the wt with an nth order chebyshev polynomial series.
  */
-dsp_err wt_chebpoly(wavetable* wt, void* args);
+dsp_err wt_chebpoly(ftable* wt, void* args);
 
 /**
  * @brief generate a deck with a set of chebypoly args.
  */
-dsp_err chebpoly_deck_generate(wavetable** wt,
-                               wt_chebpoly_args** args,
-                               uint32_t n_bands);
+dsp_err chebpoly_deck_generate(ftable** wt, wt_chebpoly_args** args, uint32_t n_bands);
 
 #ifdef __cplusplus
 }

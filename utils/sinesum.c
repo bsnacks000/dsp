@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
 
 #include "cli.h"
 #include "common.h"
@@ -87,13 +87,13 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
     //     printf("%f\n", amps[i]);
     // }
 
-    // // alloc wavetable
+    // // alloc ftable
     size_t buf_sz = WT_BUF_SZ + 2;  // don't forget guard point
     float buf[buf_sz];
     memset(buf, 0, sizeof(float) * buf_sz);
 
-    wavetable wt;
-    wavetable_init(&wt, buf, buf_sz);
+    ftable wt;
+    ftable_init(&wt, buf, buf_sz);
 
     wt_sinesum_args args = {
         .amps = amps,
@@ -105,7 +105,7 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
 
     // // run .. sinesum infalliable but we check for good measure in case it changes.
     dsp_err err;
-    if ((err = wavetable_func(&wt, wt_sinesum, (void*) &args)) != DSP_OK) {
+    if ((err = ftable_func(&wt, wt_sinesum, (void*) &args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
@@ -116,7 +116,7 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
 
     // // open sf write .. set block size equal to wt buf sz
     // // this means we do not copy guard point
-    // // sr = nharms for writing oscillator wavetables.
+    // // sr = nharms for writing oscillator ftables.
     wavio w;
     wavio_open_write(&w, malloc, outfile, nharms, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
                      WT_BUF_SZ);

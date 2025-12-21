@@ -7,8 +7,8 @@ extern "C" {
 
 #include <csdl.h>
 #include <dsp/balance.h>
+#include <dsp/ftable/ftable.h>
 #include <dsp/tabread.h>
-#include <dsp/wavetable/wavetable.h>
 #include <dsp/xfade.h>
 
 /**

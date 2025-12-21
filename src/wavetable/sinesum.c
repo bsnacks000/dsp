@@ -1,10 +1,10 @@
 
 #include <dsp/assert.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/normalize.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/maths.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/normalize.h>
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
 
 /**
  * @brief The lanczos smoothing interpolation formula. Mainly used to round off
@@ -38,7 +38,7 @@ dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
     return DSP_OK;
 }
 
-dsp_err wt_sinesum(wavetable* wt, void* args) {
+dsp_err wt_sinesum(ftable* wt, void* args) {
     wt_sinesum_args* args_ = (wt_sinesum_args*) args;
 
     float* buf = wt->buf;
@@ -65,20 +65,20 @@ dsp_err wt_sinesum(wavetable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err sinesum_deck_generate(wavetable** wt,
+dsp_err sinesum_deck_generate(ftable** wt,
                               wt_sinesum_args** args,
                               uint32_t n_bands,
                               float sr) {
     for (uint32_t i = 0; i < n_bands; i++) {
         dsp_err err;
-        wavetable* w = wt[i];
+        ftable* w = wt[i];
         wt_sinesum_args* arg = args[i];
 
         if ((err = wt_sinesum(w, (void*) arg)) != DSP_OK) {
             return err;
         }
         // manually wrap guard points here ..
-        wavetable_add_guard_point(w);
+        ftable_add_guard_point(w);
         // NOTE: 0.707 seems to be the sweet spot to avoid aliasing
         w->f0 = max_fundamental(arg->nharms, sr, 0.707);
         w->sr = sr;

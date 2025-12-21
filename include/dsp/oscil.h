@@ -1,27 +1,28 @@
 /**
- * @brief fast (pow2) wavetable oscillators
+ * @brief fast (pow2) ftable oscillators
  */
 
 #ifndef DSP_OSCIL_H
 #define DSP_OSCIL_H
 
-#include "dsp/wavetable/deck.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
+
 #include <stdint.h>
 
 /**
  * @brief oscil state. This object is generic over its tick method. The provided
- * wavetable must be tuned with the appropriate guard points to be able to use
+ * ftable must be tuned with the appropriate guard points to be able to use
  * the linear and cubic methods.
  */
 typedef struct {
-    wavetable* wt;
+    ftable* wt;
     float freq, phase, sr;
     // private
     double incr_, index_;
@@ -29,10 +30,10 @@ typedef struct {
 } oscil;
 
 /**
- * @brief Initialize oscil state. Checks wavetable at runtime for pow2 len. phase is
+ * @brief Initialize oscil state. Checks ftable at runtime for pow2 len. phase is
  * normalized between 0-1.
  */
-dsp_err oscil_init(oscil* self, wavetable* wt, float freq, float phase, float sr);
+dsp_err oscil_init(oscil* self, ftable* wt, float freq, float phase, float sr);
 
 /**
  * @brief truncating oscil. guard point = 0
@@ -68,7 +69,7 @@ void oscil3_pm_tick_block(oscil* self,
                           uint32_t nsmps);
 
 /**
- * @brief cross fading wavetable oscil that uses frequency to perform xfade. Designed to
+ * @brief cross fading ftable oscil that uses frequency to perform xfade. Designed to
  * be used with a band limited deck.
  */
 typedef struct {

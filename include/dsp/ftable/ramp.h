@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
+#include <dsp/ftable/ftable.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/wavetable.h>
 #include <stdint.h>
 
 /**
@@ -24,9 +24,9 @@ typedef struct {
 
 /**
  * @brief generates a list of evenly spaced numbers over a specified interval
- *  - requires a pow2 wavetable.
+ *  - requires a pow2 ftable.
  */
-dsp_err wt_linspace(wavetable* wt, void* args);
+dsp_err wt_linspace(ftable* wt, void* args);
 
 /**
  * @brief generates a list of numbers spaced evenly on a log scale (a geometric
@@ -34,7 +34,7 @@ dsp_err wt_linspace(wavetable* wt, void* args);
  *  - A tolerance is added to avoid 0.0 in case it is given.
  *  - Negative start and stop sign will be flipped.
  */
-dsp_err wt_geomspace(wavetable* wt, void* args);
+dsp_err wt_geomspace(ftable* wt, void* args);
 
 #ifdef __cplusplus
 }

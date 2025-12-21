@@ -50,7 +50,7 @@ int sampler_init(CSOUND* csound, sampler* obj) {
     // NOTE: flen gives the full len - guard point
     // wt will wrap the last 2 samples in this setup regardless so
     // we don't have memcopy the whole sample.
-    wavetable_init(&obj->wt, ftp->ftable, ftp->flen);
+    ftable_init(&obj->wt, ftp->ftable, ftp->flen);
 
     // init the tabread
     tabread_init(&obj->tab, &obj->wt);

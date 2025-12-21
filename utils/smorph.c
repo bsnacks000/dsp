@@ -1,19 +1,19 @@
+#include <dsp/ftable/sinesum.h>
 #include <dsp/oscil.h>
-#include <dsp/wavetable/sinesum.h>
 #include <stdint.h>
 #include "common.h"
 
+#include "dsp/ftable/deck.h"
+#include "dsp/ftable/ftable.h"
+#include "dsp/ftable/ramp.h"
 #include "dsp/utils.h"
-#include "dsp/wavetable/deck.h"
-#include "dsp/wavetable/ramp.h"
-#include "dsp/wavetable/wavetable.h"
 #include "wavio.h"
 
 // TODO: while this works its not great...
 // need to experiment with interpolating table generator.
 
 #define TARGET_SAMPLERATE 48000.0f
-#define WAVETABLE_BUF_SZ 8194
+#define ftable_BUF_SZ 8194
 
 typedef enum {
     APP_OK = 0,
@@ -21,7 +21,7 @@ typedef enum {
     APP_DSP_ERR,
 } app_err;
 
-void cleanup(wavetable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -54,13 +54,13 @@ app_err entrypoint(const char* outfile) {
     wt_sinesum_args_init(args[1], amps_sqr, amps_sz, 0.0, true, amps_sz);
     wt_sinesum_args_init(args[2], amps_tri, amps_sz, 0.0, true, amps_sz);
 
-    // create the wavetable deck
-    wavetable* wavtabs[3] = {0};
+    // create the ftable deck
+    ftable* wavtabs[3] = {0};
     for (int i = 0; i < 3; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
-        float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
-        memset(buf, 0, sizeof(float) * WAVETABLE_BUF_SZ);
-        wavetable_init(wt, buf, WAVETABLE_BUF_SZ);
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
+        float* buf = (float*) malloc(sizeof(float) * ftable_BUF_SZ);
+        memset(buf, 0, sizeof(float) * ftable_BUF_SZ);
+        ftable_init(wt, buf, ftable_BUF_SZ);
         wavtabs[i] = wt;
     }
 
@@ -75,8 +75,8 @@ app_err entrypoint(const char* outfile) {
 
     float* lintab_buf = (float*) malloc(sizeof(float) * lintab_buf_sz);
     memset(lintab_buf, 0, sizeof(float) * lintab_buf_sz);
-    wavetable lintab;
-    wavetable_init(&lintab, lintab_buf, lintab_buf_sz);
+    ftable lintab;
+    ftable_init(&lintab, lintab_buf, lintab_buf_sz);
 
     // pos ramp between 0 - 1
     wt_ramp_args ramp_args = {

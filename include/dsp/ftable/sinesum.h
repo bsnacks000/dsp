@@ -1,7 +1,7 @@
 /**
  * @brief Sum of sinusoids.
  *
- * - Generates a buffers of summed sinusoids for use with wavetable oscillators. Similar
+ * - Generates a buffers of summed sinusoids for use with ftable oscillators. Similar
  *  to GEN10 in csound.
  * - Based on implementations by Lazzarinni in Audio Programming Book.
  */
@@ -17,7 +17,7 @@ extern "C" {
 #include <stdint.h>
 
 #include <dsp/constants.h>
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/ftable.h>
 
 #include <dsp/xfade.h>
 
@@ -47,7 +47,7 @@ dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
 /**
  * @brief fill the wt with a sum of weighted sinusoids.
  */
-dsp_err wt_sinesum(wavetable* wt, void* args);
+dsp_err wt_sinesum(ftable* wt, void* args);
 
 /**
  * @brief helper functions
@@ -138,25 +138,25 @@ static inline void exp_decay_amps(float* amps, uint32_t amps_sz) {
  * Below is functionality for generating decks with sinesum based on a fundamental
  * set of waveform amplitudes.
  *
- * This API can be used to create band limited wavetable oscillators using
- * crossfading w/ blxoscil. In order to do this each wavetable must set its max
+ * This API can be used to create band limited ftable oscillators using
+ * crossfading w/ blxoscil. In order to do this each ftable must set its max
  * fundamental frequency (f0) that should be used before aliasing.
  *
  * Usage to create a band limited deck:
- *  - calculate desired n_bands and build the appropriate number of wavetables and args.
+ *  - calculate desired n_bands and build the appropriate number of ftables and args.
  *  - Share the desired *amps* amongst the args.
  *  - reduce the number of nharms across the arguments
  *      - Ex. nharms = 64, 32, 16, 8, 4, 2, 1
  *  - call sinesum_deck_generate(...)
- *  - wrap wavetable** to a wt_deck and initialize with blxoscil.
+ *  - wrap ftable** to a wt_deck and initialize with blxoscil.
  *
- * sinesum_deck_generate has the important side effect of setting f0 on the wavetable
+ * sinesum_deck_generate has the important side effect of setting f0 on the ftable
  * which will work with blxoscil's frequency lookup. The above reduction formula will
  * guarantee a deck with a continuous frequency range and gradual reduction of
  * harmonics up until nyquist.
  *
  * If we vary the above logic (different args/harmonics) per frame we will produce
- * a set of wavetables that may not be guaranteed to work with blxoscil.
+ * a set of ftables that may not be guaranteed to work with blxoscil.
  *
  * Instead at this step these tables can be extracted for use with xoscil which does
  * crossfade morphing. Since no anti-aliasing is in effect care should be taken to
@@ -199,10 +199,10 @@ static inline uint32_t calculate_n_bands(uint32_t nharms) {
 }
 
 /**
- * @brief generate a wavetable deck with sinesum. Based on the nharms specified
- * in sinesum args will set sr and f0 on the target wavetable frame.
+ * @brief generate a ftable deck with sinesum. Based on the nharms specified
+ * in sinesum args will set sr and f0 on the target ftable frame.
  */
-dsp_err sinesum_deck_generate(wavetable** wt,
+dsp_err sinesum_deck_generate(ftable** wt,
                               wt_sinesum_args** args,
                               uint32_t n_bands,
                               float sr);

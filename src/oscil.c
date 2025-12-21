@@ -1,10 +1,10 @@
 #include <math.h>
 #include <stdint.h>
 
+#include <dsp/ftable/deck.h>
 #include <dsp/interpolate.h>
 #include <dsp/oscil.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/deck.h>
 
 // NOTE: some extra guard like this would avoid potential drift for long running
 // (days/weeks) if (self->index_ >= self->wt->len || self->index_ < 0.0)
@@ -105,8 +105,8 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
  * @brief represents a low/high pair. The tables used for the actual crossfade.
  */
 // typedef struct {
-//     wavetable* low;
-//     wavetable* high;
+//     ftable* low;
+//     ftable* high;
 // } wt_frame_pair;
 
 /**
@@ -134,7 +134,7 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
  * @brief query the deck and return the correct band_pair given the freq. To provide
  * smooth frequency transition regions its on the caller to supply a deck in the
  * application layer that contains:
- *  - wavetables sorted by max fundamental (wt->f0)
+ *  - ftables sorted by max fundamental (wt->f0)
  *  - complete freq coverage up to nyquist across frames.
  *
  * NOTE: If there are gaps or unsorted regions this lookup will behave inconsistently.
@@ -258,7 +258,7 @@ static inline void xoscil_update_(xoscil* self) {
 // public oscil API
 //
 
-dsp_err oscil_init(oscil* self, wavetable* wt, float freq, float phase, float sr) {
+dsp_err oscil_init(oscil* self, ftable* wt, float freq, float phase, float sr) {
     if (!wt->is_pow2) {
         return DSP_ERR;
     }
