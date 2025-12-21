@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/ftable.h>
 
 typedef enum {
     WINDOW_HAMMING,
@@ -26,7 +26,7 @@ typedef struct {
     wt_window_type type;
 } wt_window_args;
 
-dsp_err wt_window(wavetable* wt, void* args);
+dsp_err wt_window(ftable* wt, void* args);
 
 #ifdef __cplusplus
 }

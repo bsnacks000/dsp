@@ -1,14 +1,14 @@
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/ftable.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/maths.h>
 #include <dsp/rmap.h>
-#include <dsp/wavetable/deck.h>
-#include <dsp/wavetable/sinesum.h>
-#include <dsp/wavetable/wavetable.h>
 
 /**
  * @brief init a wt_deck. We check that frames is at least 2 so that we can iterate
  * and determine if all frames in the deck are equal.
  */
-void wt_deck_init(wt_deck* self, wavetable** frames, uint32_t frames_sz) {
+void wt_deck_init(wt_deck* self, ftable** frames, uint32_t frames_sz) {
     self->frames = frames;
     self->frames_sz = frames_sz;
 }

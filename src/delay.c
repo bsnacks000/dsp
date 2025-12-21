@@ -3,7 +3,7 @@
 #include <dsp/interpolate.h>
 #include <dsp/utils.h>
 
-// TODO: unify with wavetable ... better pow2 semantics
+// TODO: unify with ftable ... better pow2 semantics
 
 uint32_t delay_line_calculate_buf_sz(float sr, float ms) {
     float samp_ms = samps_per_ms(sr);

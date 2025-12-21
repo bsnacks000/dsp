@@ -1,14 +1,14 @@
 
 #include <csound.h>
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/interpolate.h>
 #include <dsp/oscil.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/deck.h>
-#include <dsp/wavetable/sinesum.h>
 
 #include "oscil.h"
 
-#define WAVETABLE_BUF_SZ 8194
+#define ftable_BUF_SZ 8194
 #define INTERP_FRAME_SZ 256
 #define AMPS_SZ 64
 
@@ -23,7 +23,7 @@
 // }
 
 // interpolated wavtabs for the deck.
-wavetable* wavtabs[INTERP_FRAME_SZ] = {0};
+ftable* wavtabs[INTERP_FRAME_SZ] = {0};
 static void wavtabs_destroy(void) {
     for (int i = 0; i < INTERP_FRAME_SZ; i++)
         free(wavtabs[i]);
@@ -58,13 +58,13 @@ int smorph_deck_init(CSOUND* csound) {
     wt_sinesum_args_init(args[1], amps_saw, amps_sz, 0.0, true, amps_sz);
     wt_sinesum_args_init(args[2], amps_sqr, amps_sz, 0.0, true, amps_sz);
 
-    // create the initial wavetable deck
-    wavetable* initial_wavtabs[3] = {0};
+    // create the initial ftable deck
+    ftable* initial_wavtabs[3] = {0};
     for (int i = 0; i < 3; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
-        float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
-        memset(buf, 0, sizeof(float) * WAVETABLE_BUF_SZ);
-        wavetable_init(wt, buf, WAVETABLE_BUF_SZ);
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
+        float* buf = (float*) malloc(sizeof(float) * ftable_BUF_SZ);
+        memset(buf, 0, sizeof(float) * ftable_BUF_SZ);
+        ftable_init(wt, buf, ftable_BUF_SZ);
         initial_wavtabs[i] = wt;
     }
 
@@ -82,32 +82,31 @@ int smorph_deck_init(CSOUND* csound) {
     wt_deck initial_deck;
     wt_deck_init(&initial_deck, initial_wavtabs, 3);
 
-    // we need alot of memory to facilitate the wavetable interp dance.
+    // we need alot of memory to facilitate the ftable interp dance.
 
-    // m - original matrix from wavtabs shape=(3, WAVETABLE_BUF_SZ)
+    // m - original matrix from wavtabs shape=(3, ftable_BUF_SZ)
     matrix m;
-    float* m_data = (float*) malloc(sizeof(float) * 3 * WAVETABLE_BUF_SZ);
-    memset(m_data, 0, sizeof(float) * 3 * WAVETABLE_BUF_SZ);
-    matrix_init(&m, m_data, 3, WAVETABLE_BUF_SZ);
+    float* m_data = (float*) malloc(sizeof(float) * 3 * ftable_BUF_SZ);
+    memset(m_data, 0, sizeof(float) * 3 * ftable_BUF_SZ);
+    matrix_init(&m, m_data, 3, ftable_BUF_SZ);
 
     // fill the matrix from the existing deck
     wt_deck_matrix_fill(&initial_deck, &m);
 
-    // t - transpose matrix  shape=(WAVETABLE_BUF_SZ, 3)
+    // t - transpose matrix  shape=(ftable_BUF_SZ, 3)
     matrix t;
-    float* t_data = (float*) malloc(sizeof(float) * 3 * WAVETABLE_BUF_SZ);
-    memset(t_data, 0, sizeof(float) * 3 * WAVETABLE_BUF_SZ);
-    matrix_init(&t, t_data, WAVETABLE_BUF_SZ, 3);
+    float* t_data = (float*) malloc(sizeof(float) * 3 * ftable_BUF_SZ);
+    memset(t_data, 0, sizeof(float) * 3 * ftable_BUF_SZ);
+    matrix_init(&t, t_data, ftable_BUF_SZ, 3);
 
     // initial transpose
     matrix_transpose(&t, &m);
 
-    // tx - extended transpose matrix shape=(WAVETABLE_BUF_SZ, INTERP_FRAME_SZ)
+    // tx - extended transpose matrix shape=(ftable_BUF_SZ, INTERP_FRAME_SZ)
     matrix tx;
-    float* tx_data =
-        (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ * INTERP_FRAME_SZ);
-    memset(tx_data, 0, sizeof(float) * WAVETABLE_BUF_SZ * INTERP_FRAME_SZ);
-    matrix_init(&tx, tx_data, WAVETABLE_BUF_SZ, INTERP_FRAME_SZ);
+    float* tx_data = (float*) malloc(sizeof(float) * ftable_BUF_SZ * INTERP_FRAME_SZ);
+    memset(tx_data, 0, sizeof(float) * ftable_BUF_SZ * INTERP_FRAME_SZ);
+    matrix_init(&tx, tx_data, ftable_BUF_SZ, INTERP_FRAME_SZ);
 
     // iter over each row of the transpose and project cols from in to out
     for (size_t row = 0; row < tx.n_rows; row++) {
@@ -116,24 +115,24 @@ int smorph_deck_init(CSOUND* csound) {
         npinterp(out_row_ptr, tx.n_cols, in_row_ptr, t.n_cols);
     }
 
-    // u - final matrix shape=(INTERP_FRAME_SZ, WAVETABLE_BUF_SZ)
+    // u - final matrix shape=(INTERP_FRAME_SZ, ftable_BUF_SZ)
     matrix u;
-    float* u_data = (float*) malloc(sizeof(float) * INTERP_FRAME_SZ * WAVETABLE_BUF_SZ);
-    memset(u_data, 0, sizeof(float) * WAVETABLE_BUF_SZ * INTERP_FRAME_SZ);
-    matrix_init(&u, u_data, INTERP_FRAME_SZ, WAVETABLE_BUF_SZ);
+    float* u_data = (float*) malloc(sizeof(float) * INTERP_FRAME_SZ * ftable_BUF_SZ);
+    memset(u_data, 0, sizeof(float) * ftable_BUF_SZ * INTERP_FRAME_SZ);
+    matrix_init(&u, u_data, INTERP_FRAME_SZ, ftable_BUF_SZ);
 
     // final transpose back to the original
     matrix_transpose(&u, &tx);
 
     // new wavtabs - these are the bois that go to xoscil
     for (int i = 0; i < INTERP_FRAME_SZ; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
-        float* buf = (float*) malloc(sizeof(float) * WAVETABLE_BUF_SZ);
-        memset(buf, 0, sizeof(float) * WAVETABLE_BUF_SZ);
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
+        float* buf = (float*) malloc(sizeof(float) * ftable_BUF_SZ);
+        memset(buf, 0, sizeof(float) * ftable_BUF_SZ);
 
-        wavetable_init(wt, buf, WAVETABLE_BUF_SZ);
+        ftable_init(wt, buf, ftable_BUF_SZ);
         float* row_ptr = matrix_get_row(&u, i);
-        wavetable_write(wt, row_ptr, WAVETABLE_BUF_SZ, 0);
+        ftable_write(wt, row_ptr, ftable_BUF_SZ, 0);
         wavtabs[i] = wt;
     }
 

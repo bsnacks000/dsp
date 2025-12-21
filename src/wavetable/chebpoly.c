@@ -1,6 +1,6 @@
 
-#include <dsp/wavetable/chebpoly.h>
-#include <dsp/wavetable/wavetable.h>
+#include <dsp/ftable/chebpoly.h>
+#include <dsp/ftable/ftable.h>
 
 #include <stdint.h>
 #include <sys/types.h>
@@ -38,7 +38,7 @@ static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz)
     return s;
 }
 
-dsp_err wt_chebpoly(wavetable* wt, void* args) {
+dsp_err wt_chebpoly(ftable* wt, void* args) {
     wt_chebpoly_args* args_ = (wt_chebpoly_args*) args;
 
     const float* h = args_->h;
@@ -60,19 +60,17 @@ dsp_err wt_chebpoly(wavetable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err chebpoly_deck_generate(wavetable** wt,
-                               wt_chebpoly_args** args,
-                               uint32_t n_bands) {
+dsp_err chebpoly_deck_generate(ftable** wt, wt_chebpoly_args** args, uint32_t n_bands) {
 
     for (uint32_t i = 0; i < n_bands; i++) {
         dsp_err err;
-        wavetable* w = wt[i];
+        ftable* w = wt[i];
         wt_chebpoly_args* arg = args[i];
         if ((err = wt_chebpoly(w, arg)) != DSP_OK) {
             return err;
         }
 
-        wavetable_add_guard_point(w);
+        ftable_add_guard_point(w);
     }
 
     return DSP_OK;

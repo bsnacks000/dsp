@@ -1,7 +1,7 @@
 #include <csound.h>
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/deck.h>
-#include <dsp/wavetable/sinesum.h>
 
 #include "csdl.h"
 #include "dsp/oscil.h"
@@ -21,7 +21,7 @@ static void sinesum_args_destroy(void) {
         free(args[i]);
 }
 
-static wavetable* wavtabs[N_FRAMES] = {0};
+static ftable* wavtabs[N_FRAMES] = {0};
 static void wavtabs_destroy(void) {
     for (int i = 0; i < N_FRAMES; i++)
         free(wavtabs[i]);
@@ -65,15 +65,15 @@ static dsp_err fill_sinesum_args(void) {
 static void alloc_wavtabs(void) {
 
     for (size_t i = 0; i < N_FRAMES; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
         check_malloc(wt, "fill_wavtabs:wt");
-        memset(wt, 0, sizeof(wavetable));
+        memset(wt, 0, sizeof(ftable));
 
         float* buf = (float*) malloc(sizeof(float) * WT_BUF_SZ);
         check_malloc(wt, "fill_wavtabs:buf");
         memset(buf, 0, sizeof(float) * WT_BUF_SZ);
 
-        wavetable_init(wt, buf, WT_BUF_SZ);
+        ftable_init(wt, buf, WT_BUF_SZ);
         wavtabs[i] = wt;
     }
 }
