@@ -12,18 +12,11 @@ nchnls  = 1
 
 ; note that --opcode-lib and other csnd options set at command line
 
-instr 1 ; mult
-    ; test your audio maths...
-    a1 oscili 0.5, 440
-    a2 oscili 0.5, 356
-    a3 mult a1, a2
-    out a3
-endin
 
-instr 4 ; ddelay2 test static
-    ; test input
+; ddelay -- test static delay line
+instr 1
     aenv linseg 1, 0.05, 0
-    asig oscili 0.4 * aenv, 440
+    asig oscili 0.7 * aenv, 440
 
     kdel init p4
     kfb  init p5
@@ -34,9 +27,10 @@ instr 4 ; ddelay2 test static
 
     aout ddelay2 asig, adel, afb, idelmax
     out aout * 0.5 + asig * 0.5
-endin;
+endin
 
-instr 5 ; ddelay2 test modulation
+; ddelay -- test modulation
+instr 2
     ; test input
     aenv linseg 1, 0.05, 0
     asig oscili 0.4 * aenv, 440
@@ -47,16 +41,14 @@ instr 5 ; ddelay2 test modulation
 
     aout ddelay2 asig, adel, afb, idelmax
     out aout * 0.5 + asig * 0.5
-endin;
-
-
-
+endin
 
 </CsInstruments>
 <CsScore>
 
-    i4 0 2  200 0.6
-    i5 2 5  100 800 0.7 0.5
+    i1 0 2  200 0.6
+    i2 2 3  100 800 0.7 0.3
+    i2 5 2  200 10  0.6 0.8
 
 </CsScore>
 </CsoundSynthesizer>
