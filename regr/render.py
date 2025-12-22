@@ -22,7 +22,11 @@ CSDS_DIR = THIS_DIR / "csds"
 
 
 def main(name: str):
-    csdfile = CSDS_DIR / (name + ".csd")
+    if not name.endswith(".csd"):
+        csdfile = CSDS_DIR / (name + ".csd")
+    else:
+        csdfile = CSDS_DIR / (name)
+
     if not csdfile.exists():
         raise ValueError(f"{csdfile} not in {CSDS_DIR}")
 

@@ -48,7 +48,9 @@ def main():
             if not correct_sum:
                 raise ValueError(f"Could not find {test_name} in {SUMS_DIR}")
 
-            print(f"check: {test_name}...\n========================\n")
+            print(
+                f"\033[1m checking: {test_name}...\033[0m \n========================\n"
+            )
 
             subprocess.run(
                 [
@@ -69,7 +71,7 @@ def main():
                 raise ValueError(
                     f"{test_name} : checksums don't match\n {correct_sum} != {tmp_sum}"
                 )
-            print(f"{test_name}... \tOK.\n=========================\n")
+            print(f"\033[1m {test_name}... \tOK.\033[0m\n=========================\n")
 
     finally:
         if TMP_WAV.exists():

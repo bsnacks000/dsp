@@ -43,6 +43,9 @@ build-clean: clean build
 csound: clean
 	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
 
+regr: csound
+	./regr/test.py
+
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	# Run tests from build directory
