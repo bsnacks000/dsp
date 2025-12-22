@@ -10,10 +10,7 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
-; note that --opcode-lib and other csnd options set at command line
-
 instr 1 ; mult
-    ; test your audio maths...
     a1 oscili 0.5, 440
     a2 oscili 0.5, 356
     a3 mult a1, a2
@@ -22,7 +19,6 @@ endin
 
 </CsInstruments>
 <CsScore>
-
     i1 0 1
 </CsScore>
 </CsoundSynthesizer>
