@@ -49,6 +49,34 @@ static inline void fill_impulse_response(float* buf, uint32_t nsmps) {
 }
 
 /**
+ * @brief fill the buffer with a cosine cycle
+ */
+static inline void fill_cos(float* buf, uint32_t nsmps) {
+    float pi = 3.14159265358979323846;
+    for (uint32_t i = 0; i < nsmps; i++) {
+        float angle = (2.0 * pi) / nsmps;
+        buf[i] = cosf(angle * i);
+    }
+}
+
+/**
+ * @brief fill the buffer with a sine cycle
+ */
+static inline void fill_sin(float* buf, uint32_t nsmps) {
+    float pi = 3.14159265358979323846;
+    for (uint32_t i = 0; i < nsmps; i++) {
+        float angle = (2.0 * pi) / nsmps;
+        buf[i] = sinf(angle * i);
+    }
+}
+
+static inline void fill_line(float* buf, float start, float end, uint32_t nsmps) {
+    for (uint32_t i = 0; i < nsmps; i++) {
+        buf[i] = start + ((end - start) / (nsmps - 1)) * i;
+    }
+}
+
+/**
  * @brief memcpy wrapper
  */
 static inline void copy_buf(float* dest, float* src, uint32_t nsmps) {
@@ -109,6 +137,20 @@ static inline void check_any_nonzero(float* buf, uint32_t nsmps) {
         }
     }
     munit_assert_true(any_nonzero);
+}
+
+/**
+ * @brief - assert all values are within the inclusive range
+ */
+static inline void check_range_inclusive(float* buf, float s, float e, uint32_t nsmps) {
+    bool out_of_range = false;
+    for (uint32_t i = 0; i < nsmps; i++) {
+        float val = buf[i];
+        if ((val < s) || (val > e))
+            out_of_range = true;
+    }
+
+    munit_assert_false(out_of_range);
 }
 
 #ifdef __cplusplus

@@ -55,14 +55,23 @@ typedef struct {
     float pos, l_amp_, r_amp_;
 } xtabread;
 
+/**
+ * @brief init xtabread.
+ */
 void xtabread_init(xtabread* self, wt_deck* deck, tabread* l, tabread* r, float pos);
 
+/**
+ * @brief linear interpolating xtabread
+ */
 void xtabreadi_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
                           uint32_t nsmps);
 
+/**
+ * @brief cubic interpolating xtabread
+ */
 void xtabread3_tick_block(xtabread* self,
                           float* out,
                           float* idx,
