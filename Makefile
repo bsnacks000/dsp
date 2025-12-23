@@ -31,21 +31,23 @@ endif
 clean:
 	rm -rf ./build
 
-build:
+# custom build -- set appropriate flags
+build: clean
 	echo building $(BUILD_TYPE)
 	mkdir -p build \
 	&& cd build \
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
 
-build-clean: clean build
-
+# build the csound plugin
 csound: clean
 	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
 
-regr: csound
+# rebuild lib for the csound plugin and run the regression tests
+regr-csnd: csound
 	./regr/test.py
 
+# rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	# Run tests from build directory
@@ -63,10 +65,6 @@ coverage: clean
        	llvm-cov report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
 	fi
 
-test:
-	./build/tests/dsp_unit_tests --seed 0x526af79e
-
+# view last coverage report
 html-cov:
 	open ./coverage/index.html
-
-all: clean build

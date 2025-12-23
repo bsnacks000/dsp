@@ -13,19 +13,17 @@ nchnls  = 1
 
 instr 1
 
-    ain rand 1, 2
-    adur random 0.1, 1.0
+    ain rand 1
     agate mpulse 1, p4
     agate_thresh = 0.5
 
-
-    aout ssampi ain, agate, agate_thresh, adur, 0, 0, 0
+    aout ssamph ain, agate, agate_thresh
     out (aout * 0.5) + 0.5
 endin
 
 
 </CsInstruments>
 <CsScore>
-i1 0 5 0.5
+i1 0 5 0.25
 </CsScore>
 </CsoundSynthesizer>

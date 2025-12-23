@@ -11,6 +11,8 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
+; ar-line and ar-curve -- static and modulating tests
+
 instr 1
     agate mpulse p4, 1
 
@@ -75,9 +77,9 @@ endin
 </CsInstruments>
 <CsScore>
     f1 0 8192 10 1
-    ;i1 0 3 1;
-    ;i2 0 25
-    i3 0 5 1
+    i1 0 3 1
+    i2 3 6
+    i3 9 3 1
 
 </CsScore>
 </CsoundSynthesizer>

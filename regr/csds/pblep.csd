@@ -11,6 +11,11 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
+
+; pblep - basic sweeps to look for aliasing
+; should be minimal and only at high range
+; inst3 checks modulates the duty of the square wave
+
 instr 1
     afreq line 1, p3, 1000
     aout blepsaw afreq, 0

@@ -11,6 +11,9 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
+
+; ladder - this script compares our zdf ladder with csound's written by steve yi.
+; the tone and warble are identical. Ours is even a bit brighter in high resonance.
 instr 1
 
     ifreq = 100.0
@@ -30,8 +33,6 @@ instr 1
     out aout
 
 endin
-
-
 
 instr 2;
 

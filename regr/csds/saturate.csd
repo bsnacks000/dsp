@@ -11,7 +11,8 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
-
+; saturate - programmed with 4 modes for different levels
+; of distortion -- exercises cheby waveshaping + tabread
 instr 1;
     asig oscili 1.0, 220, 1
 
@@ -25,9 +26,9 @@ endin;
 <CsScore>
     f1 0 8192 10 1
     i1 0  4  0
-    i1 4  .  1
-    i1 8  .  2
-    i1 12 .  3
+    i1 +  4  1
+    i1 +  4  2
+    i1 +  4  3
     e
 </CsScore>
 </CsoundSynthesizer>

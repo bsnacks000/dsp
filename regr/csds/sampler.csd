@@ -11,15 +11,18 @@
 ; we can't dynamically set this internally (gen01args not populating)
 ; would need to use *filesr* opcode and pass in at runtime.
 
-sr      = 44100
+sr      = 48000
 ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
 gift ftgen 0, 0, 0, 1, "almostjungle1.wav", 0, 0, 1
 
-instr 1 ; test sampler
-    aspd line 2.0, p3, -2.0
+
+; sampler -- really exercises tabread3 under the hood
+; modulation starts at 4x down to 0 and the reverse 4x
+instr 1
+    aspd line 4.0, p3, -4.0
     aout sampler aspd, 0, gift
     out aout * 0.75
 endin

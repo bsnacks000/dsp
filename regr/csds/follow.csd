@@ -14,7 +14,7 @@ nchnls  = 1
 instr 1 ; test envfol -
 
     ; consts
-    kfreq = 220.0
+    kfreq = 120.0
     kres = 0.75
     acf init 220.0
     aatk init 50
@@ -48,7 +48,7 @@ endin
 </CsInstruments>
 <CsScore>
 f1 0 65536 10 1
-i1 0 5  0.25 0.5 500.0
+i1 0 5  0.25 0.5 1500.0
 
 </CsScore>
 </CsoundSynthesizer>

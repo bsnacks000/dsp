@@ -11,8 +11,6 @@ nchnls  = 1
 0dbfs   = 1
 
 ; basic filter sweep tests for svf, rc and biquad modules
-; TODO -- break this out into multiple tests
-
 
 ; svf (lowpass only)
 ; Q [0.25, 4.0]
@@ -129,29 +127,42 @@ endin
 </CsInstruments>
 <CsScore>
 
-i1  0 3        ; svflp
-i2  3 3        ; rclp
-i3  6 3 0      ; bqres lp
-i3  9 3 1      ; bqres hp
-i3  12 3 2      ; bqres bp
-i3  15 3 3      ; bqres bs
-i3  18 3 4      ; bqres sa
-i3  21 3 5      ; bqres ap
-i4  24 3 0      ; bqnres lp 1p
-i4  27 3 1      ; bqnres hp 1p
-i4  30 3 2      ; bqnres ap 1p
-i4  33 3 3      ; bqnres bw
-i4  36 3 4      ; bqnres lr
-i5  39 3 0      ; bqpara low
-i5  42 3 1      ; bqpara high
-i5  45 3 2      ; bqpara band
-i6  48 3 0      ; rc lp
-i6  51 3 1      ; rc hp
-i6  54 3 2      ; rc ap
-i7  57 3 0      ; svf lp
-i7  60 3 1      ; svf hp
-i7  63 3 2      ; svf bp
-i7  66 3 3      ; svf bs
+s
+i1  + 3        ; svflp
+
+s
+i2  0 3        ; rclp
+
+s
+i3  0 3 0      ; bqres lp
+i3  + . 1      ; bqres hp
+i3  + . 2      ; bqres bp
+i3  + . 3      ; bqres bs
+i3  + . 4      ; bqres sa
+i3  + . 5      ; bqres ap
+
+s
+i4  0 3 0      ; bqnres lp 1p
+i4  + . 1      ; bqnres hp 1p
+i4  + . 2      ; bqnres ap 1p
+i4  + . 3      ; bqnres bw
+i4  + . 4      ; bqnres lr
+
+s
+i5  0 3 0      ; bqpara low
+i5  + . 1      ; bqpara high
+i5  + . 2      ; bqpara band
+
+s
+i6  0 3 0      ; rc lp
+i6  + . 1      ; rc hp
+i6  + . 2      ; rc ap
+
+s
+i7  0 3 0      ; svf lp
+i7  + . 1      ; svf hp
+i7  + . 2      ; svf bp
+i7  + . 3      ; svf bs
 
 
 </CsScore>

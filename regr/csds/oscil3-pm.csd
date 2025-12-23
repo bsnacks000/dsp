@@ -11,6 +11,8 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
+; oscil3-pm -- tests phase modulation capabilities added to oscil3
+
 instr 1
     idur = p3
     ioscil_freq = p4
@@ -20,7 +22,7 @@ instr 1
     afreq init ioscil_freq      ;init the carrier freq
 
     amod_frq line imodf_lo, idur, imodf_hi      ;mod freq line over event
-    aphs_mod poscil3 1.0, amod_frq   ;phs mod signal
+    aphs_mod poscil3 1.0, amod_frq      ;phs mod signal
     aphs_mod = (aphs_mod + 1) * 0.5     ; unipolar .. technically not neccessary
 
     aout ftoscil3_pm afreq, aphs_mod, 1
