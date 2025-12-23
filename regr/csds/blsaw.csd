@@ -20,7 +20,7 @@ endin
 
 </CsInstruments>
 <CsScore>
-i1 0 3 1000;
+i1 0 3 2000;
 
 </CsScore>
 </CsoundSynthesizer>
