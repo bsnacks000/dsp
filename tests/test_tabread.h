@@ -28,7 +28,7 @@ static MunitTest tabread_test_module[] = {
     {"/xtabread_init", test_xtabread_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/xtabreadi_tick_block", test_xtabreadi_tick_block, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
-    {"/xtabread3_tick_block", test_tabread3_tick_block, NULL, NULL,
+    {"/xtabread3_tick_block", test_xtabread3_tick_block, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
 
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
