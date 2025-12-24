@@ -73,7 +73,7 @@ void oscil3_pm_tick_block(oscil* self,
  * be used with a band limited deck.
  */
 typedef struct {
-    wt_deck* deck;
+    ft_deck* deck;
     oscil *l, *r;
     float freq, phase, sr, l_amp_, r_amp_;
 } blxoscil;
@@ -84,7 +84,7 @@ typedef struct {
  * Runtime check for l and r to be configured with the same sample rate.
  */
 dsp_err blxoscil_init(blxoscil* self,
-                      wt_deck* deck,
+                      ft_deck* deck,
                       oscil* l,
                       oscil* r,
                       float freq,
@@ -105,7 +105,7 @@ void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmp
  * morphing and crossfade synthesis
  */
 typedef struct {
-    wt_deck* deck;
+    ft_deck* deck;
     oscil *l, *r;
     float freq, pos, phase, sr, l_amp_, r_amp_;
 } xoscil;
@@ -115,7 +115,7 @@ typedef struct {
  * with the same sample rate.
  */
 dsp_err xoscil_init(xoscil* self,
-                    wt_deck* deck,
+                    ft_deck* deck,
                     oscil* l,
                     oscil* r,
                     float freq,

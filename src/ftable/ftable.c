@@ -44,7 +44,7 @@ void ftable_add_guard_point(ftable* self) {
     self->buf[self->len + 1] = self->buf[1];
 }
 
-dsp_err ftable_func(ftable* self, wt_f f, void* args) {
+dsp_err ftable_func(ftable* self, ft_f f, void* args) {
     ftable_zero_buf(self);
 
     dsp_err err;

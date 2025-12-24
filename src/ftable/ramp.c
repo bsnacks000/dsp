@@ -3,8 +3,8 @@
 #include <dsp/utils.h>
 #include <stdint.h>
 
-dsp_err wt_linspace(ftable* wt, void* args) {
-    wt_ramp_args* args_ = (wt_ramp_args*) args;
+dsp_err ft_linspace(ftable* wt, void* args) {
+    ft_ramp_args* args_ = (ft_ramp_args*) args;
 
     float start = args_->start;
     float stop = args_->stop;
@@ -29,8 +29,8 @@ dsp_err wt_linspace(ftable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err wt_geomspace(ftable* wt, void* args) {
-    wt_ramp_args* args_ = (wt_ramp_args*) args;
+dsp_err ft_geomspace(ftable* wt, void* args) {
+    ft_ramp_args* args_ = (ft_ramp_args*) args;
 
     float start = args_->start;
     float stop = args_->stop;
@@ -44,7 +44,7 @@ dsp_err wt_geomspace(ftable* wt, void* args) {
     float log_start = log10(fabs(start));
     float log_stop = log10(fabs(stop));
 
-    wt_ramp_args log_args = {
+    ft_ramp_args log_args = {
         .start = log_start,
         .stop = log_stop,
         .endpoint = args_->endpoint,
@@ -52,7 +52,7 @@ dsp_err wt_geomspace(ftable* wt, void* args) {
 
     // first build linear space;
     dsp_err err;
-    if ((err = wt_linspace(wt, (void*) &log_args)) != DSP_OK) {
+    if ((err = ft_linspace(wt, (void*) &log_args)) != DSP_OK) {
         return DSP_ERR;
     }
 

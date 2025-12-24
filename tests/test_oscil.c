@@ -22,7 +22,7 @@ static inline void set_ftable_fixture(ftable* ft,
     ftable_init(ft, buf, buf_sz);
 }
 
-static inline void set_deck_fixture(wt_deck* deck,
+static inline void set_deck_fixture(ft_deck* deck,
                                     ftable** frames,
                                     uint32_t frames_sz,
                                     ftable* ft1,
@@ -49,7 +49,7 @@ static inline void set_deck_fixture(wt_deck* deck,
     ft2->sr = sr;
     ft2->nharms = 1.0;
 
-    wt_deck_init(deck, frames, frames_sz);
+    ft_deck_init(deck, frames, frames_sz);
 }
 
 MunitResult test_osciln_tick_block(const MunitParameter params[], void* data) {
@@ -183,7 +183,7 @@ MunitResult test_blxoscili_tick_block(const MunitParameter params[], void* data)
     ftable* frames[2];
 
     float sr = 48000;
-    wt_deck deck;
+    ft_deck deck;
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin, sr);
 
@@ -228,7 +228,7 @@ MunitResult test_blxoscil3_tick_block(const MunitParameter params[], void* data)
     ftable* frames[2];
 
     float sr = 48000;
-    wt_deck deck;
+    ft_deck deck;
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin, sr);
 
@@ -274,7 +274,7 @@ MunitResult test_xoscili_tick_block(const MunitParameter params[], void* data) {
     ftable* frames[2];
 
     float sr = 48000;
-    wt_deck deck;
+    ft_deck deck;
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin, sr);
 
@@ -322,7 +322,7 @@ MunitResult test_xoscil3_tick_block(const MunitParameter params[], void* data) {
     ftable* frames[2];
 
     float sr = 48000;
-    wt_deck deck;
+    ft_deck deck;
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin, sr);
 

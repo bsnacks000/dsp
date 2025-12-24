@@ -30,7 +30,7 @@ static void wavtabs_destroy(void) {
 }
 
 // the main deck
-static wt_deck deck;
+static ft_deck deck;
 
 // TODO: clean this up
 // break out logic into smaller pieces
@@ -48,15 +48,15 @@ int smorph_deck_init(CSOUND* csound) {
     sqr_amps(amps_sqr, amps_sz);
     tri_amps(amps_tri, amps_sz);
 
-    wt_sinesum_args* args[3] = {0};
+    ft_sinesum_args* args[3] = {0};
 
-    args[0] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[1] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[2] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
+    args[0] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[1] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[2] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
 
-    wt_sinesum_args_init(args[0], amps_tri, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[1], amps_saw, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[2], amps_sqr, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[0], amps_tri, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[1], amps_saw, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[2], amps_sqr, amps_sz, 0.0, true, amps_sz);
 
     // create the initial ftable deck
     ftable* initial_wavtabs[3] = {0};
@@ -79,8 +79,8 @@ int smorph_deck_init(CSOUND* csound) {
     }
 
     // we initialize this deck so we can use the matrix fill method
-    wt_deck initial_deck;
-    wt_deck_init(&initial_deck, initial_wavtabs, 3);
+    ft_deck initial_deck;
+    ft_deck_init(&initial_deck, initial_wavtabs, 3);
 
     // we need alot of memory to facilitate the ftable interp dance.
 
@@ -91,7 +91,7 @@ int smorph_deck_init(CSOUND* csound) {
     matrix_init(&m, m_data, 3, ftable_BUF_SZ);
 
     // fill the matrix from the existing deck
-    wt_deck_matrix_fill(&initial_deck, &m);
+    ft_deck_matrix_fill(&initial_deck, &m);
 
     // t - transpose matrix  shape=(ftable_BUF_SZ, 3)
     matrix t;
@@ -138,7 +138,7 @@ int smorph_deck_init(CSOUND* csound) {
 
     // set this on the static deck .. this is what is going into
     // xoscil instances at runtime.
-    wt_deck_init(&deck, wavtabs, INTERP_FRAME_SZ);
+    ft_deck_init(&deck, wavtabs, INTERP_FRAME_SZ);
 
     // free initial memory
     free(u_data);

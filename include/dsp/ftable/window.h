@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef DSP_WT_WINDOW_H
-#define DSP_WT_WINDOW_H
+#ifndef DSP_ft_WINDOW_H
+#define DSP_ft_WINDOW_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,13 +20,13 @@ typedef enum {
     WINDOW_BLACKMAN_HARRIS,
     WINDOW_GAUSS,
     WINDOW_SINC
-} wt_window_type;
+} ft_window_type;
 
 typedef struct {
-    wt_window_type type;
-} wt_window_args;
+    ft_window_type type;
+} ft_window_args;
 
-dsp_err wt_window(ftable* wt, void* args);
+dsp_err ft_window(ftable* wt, void* args);
 
 #ifdef __cplusplus
 }

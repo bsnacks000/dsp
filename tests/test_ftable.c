@@ -80,7 +80,7 @@ MunitResult test_ftable_write(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
-static dsp_err wt_test_func(ftable* wt, void* args) {
+static dsp_err ft_test_func(ftable* wt, void* args) {
     (void) args;
     // fill table with 3 values
     float x = 1.0;
@@ -101,7 +101,7 @@ MunitResult test_ftable_func(const MunitParameter params[], void* data) {
 
     ftable_init(&wt1, x, 5);
 
-    ftable_func(&wt1, wt_test_func, NULL);
+    ftable_func(&wt1, ft_test_func, NULL);
 
     return MUNIT_OK;
 }

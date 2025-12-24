@@ -6,7 +6,7 @@
 #include <sys/types.h>
 
 // TODO: check : sz >= 2; sum of coeffs != 0.0
-dsp_err wt_chebpoly_args_init(wt_chebpoly_args* self, const float* h, uint32_t h_sz) {
+dsp_err ft_chebpoly_args_init(ft_chebpoly_args* self, const float* h, uint32_t h_sz) {
     self->h = h;
     self->h_sz = h_sz;
 
@@ -38,8 +38,8 @@ static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz)
     return s;
 }
 
-dsp_err wt_chebpoly(ftable* wt, void* args) {
-    wt_chebpoly_args* args_ = (wt_chebpoly_args*) args;
+dsp_err ft_chebpoly(ftable* wt, void* args) {
+    ft_chebpoly_args* args_ = (ft_chebpoly_args*) args;
 
     const float* h = args_->h;
     uint32_t h_sz = args_->h_sz;
@@ -60,13 +60,13 @@ dsp_err wt_chebpoly(ftable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err chebpoly_deck_generate(ftable** wt, wt_chebpoly_args** args, uint32_t n_bands) {
+dsp_err chebpoly_deck_generate(ftable** wt, ft_chebpoly_args** args, uint32_t n_bands) {
 
     for (uint32_t i = 0; i < n_bands; i++) {
         dsp_err err;
         ftable* w = wt[i];
-        wt_chebpoly_args* arg = args[i];
-        if ((err = wt_chebpoly(w, arg)) != DSP_OK) {
+        ft_chebpoly_args* arg = args[i];
+        if ((err = ft_chebpoly(w, arg)) != DSP_OK) {
             return err;
         }
 

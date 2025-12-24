@@ -21,7 +21,7 @@ static inline void set_ftable_fixture(ftable* ft,
     ftable_init(ft, buf, buf_sz);
 }
 
-static inline void set_deck_fixture(wt_deck* deck,
+static inline void set_deck_fixture(ft_deck* deck,
                                     ftable** frames,
                                     uint32_t frames_sz,
                                     ftable* ft1,
@@ -40,7 +40,7 @@ static inline void set_deck_fixture(wt_deck* deck,
     frames[0] = ft1;
     frames[1] = ft2;
 
-    wt_deck_init(deck, frames, frames_sz);
+    ft_deck_init(deck, frames, frames_sz);
 }
 
 MunitResult test_tabread_init(const MunitParameter params[], void* data) {
@@ -144,7 +144,7 @@ MunitResult test_xtabread_init(const MunitParameter params[], void* data) {
 
     ftable* frames[2];
 
-    wt_deck deck;
+    ft_deck deck;
 
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin);
@@ -168,7 +168,7 @@ MunitResult test_xtabreadi_tick_block(const MunitParameter params[], void* data)
 
     ftable* frames[2];
 
-    wt_deck deck;
+    ft_deck deck;
 
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin);
@@ -205,7 +205,7 @@ MunitResult test_xtabread3_tick_block(const MunitParameter params[], void* data)
 
     ftable* frames[2];
 
-    wt_deck deck;
+    ft_deck deck;
 
     set_deck_fixture(&deck, frames, 2, &ft1, &ft2, buf1, buf2, BUF_SZ, fill_cos,
                      fill_sin);

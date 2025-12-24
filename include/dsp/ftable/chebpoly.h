@@ -16,27 +16,27 @@ extern "C" {
 #include <dsp/ftable/ftable.h>
 
 /**
- * @brief state for wt_cheby_args
+ * @brief state for ft_cheby_args
  */
 typedef struct {
     const float* h;
     uint32_t h_sz;
-} wt_chebpoly_args;
+} ft_chebpoly_args;
 
 /**
- * @brief init wt_cheby_args
+ * @brief init ft_cheby_args
  */
-dsp_err wt_chebpoly_args_init(wt_chebpoly_args* self, const float* h, uint32_t h_sz);
+dsp_err ft_chebpoly_args_init(ft_chebpoly_args* self, const float* h, uint32_t h_sz);
 
 /**
  * @brief fill the wt with an nth order chebyshev polynomial series.
  */
-dsp_err wt_chebpoly(ftable* wt, void* args);
+dsp_err ft_chebpoly(ftable* wt, void* args);
 
 /**
  * @brief generate a deck with a set of chebypoly args.
  */
-dsp_err chebpoly_deck_generate(ftable** wt, wt_chebpoly_args** args, uint32_t n_bands);
+dsp_err chebpoly_deck_generate(ftable** wt, ft_chebpoly_args** args, uint32_t n_bands);
 
 #ifdef __cplusplus
 }

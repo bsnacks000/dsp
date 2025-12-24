@@ -39,7 +39,7 @@ void ftable_init(ftable* self, float* buf, uint32_t buf_sz);
 /**
  * @brief an interface that fills a ftable buffer.
  */
-typedef dsp_err (*wt_f)(ftable* wt, void* args);
+typedef dsp_err (*ft_f)(ftable* wt, void* args);
 
 /**
  * @brief write nsmps at offset directly into the ftable buffer
@@ -54,11 +54,11 @@ void ftable_write(ftable* self, float* in, uint32_t nsmps, uint32_t offset);
 void ftable_add_guard_point(ftable* self);
 
 /**
- * @brief runs the wt_f over the entire ftable, potentially filling or updating the
- * ftable buffer depending on the function. Propagates dsp_err from wt_f. Will
+ * @brief runs the ft_f over the entire ftable, potentially filling or updating the
+ * ftable buffer depending on the function. Propagates dsp_err from ft_f. Will
  * automatically add the guard points as a convenience.
  */
-dsp_err ftable_func(ftable* self, wt_f f, void* args);
+dsp_err ftable_func(ftable* self, ft_f f, void* args);
 
 /**
  * @brief Safely copy other into self. Runtime check for equal buffer size.

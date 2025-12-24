@@ -50,7 +50,7 @@ void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
  * @brief xfade tabreader.
  */
 typedef struct {
-    wt_deck* deck;
+    ft_deck* deck;
     tabread *l, *r;
     float pos, l_amp_, r_amp_;
 } xtabread;
@@ -58,7 +58,7 @@ typedef struct {
 /**
  * @brief init xtabread.
  */
-void xtabread_init(xtabread* self, wt_deck* deck, tabread* l, tabread* r, float pos);
+void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float pos);
 
 /**
  * @brief linear interpolating xtabread

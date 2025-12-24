@@ -19,7 +19,7 @@ static inline float lanczos_smoothing(uint32_t i, uint32_t n) {
     return sin(x) / x;
 }
 
-dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
+dsp_err ft_sinesum_args_init(ft_sinesum_args* self,
                              const float* amps,
                              uint32_t amps_sz,
                              float phase,
@@ -38,8 +38,8 @@ dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
     return DSP_OK;
 }
 
-dsp_err wt_sinesum(ftable* wt, void* args) {
-    wt_sinesum_args* args_ = (wt_sinesum_args*) args;
+dsp_err ft_sinesum(ftable* wt, void* args) {
+    ft_sinesum_args* args_ = (ft_sinesum_args*) args;
 
     float* buf = wt->buf;
     const float* amps = args_->amps;
@@ -66,15 +66,15 @@ dsp_err wt_sinesum(ftable* wt, void* args) {
 }
 
 dsp_err sinesum_deck_generate(ftable** wt,
-                              wt_sinesum_args** args,
+                              ft_sinesum_args** args,
                               uint32_t n_bands,
                               float sr) {
     for (uint32_t i = 0; i < n_bands; i++) {
         dsp_err err;
         ftable* w = wt[i];
-        wt_sinesum_args* arg = args[i];
+        ft_sinesum_args* arg = args[i];
 
-        if ((err = wt_sinesum(w, (void*) arg)) != DSP_OK) {
+        if ((err = ft_sinesum(w, (void*) arg)) != DSP_OK) {
             return err;
         }
         // manually wrap guard points here ..

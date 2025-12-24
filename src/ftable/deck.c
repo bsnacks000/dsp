@@ -5,10 +5,10 @@
 #include <dsp/rmap.h>
 
 /**
- * @brief init a wt_deck. We check that frames is at least 2 so that we can iterate
+ * @brief init a ft_deck. We check that frames is at least 2 so that we can iterate
  * and determine if all frames in the deck are equal.
  */
-void wt_deck_init(wt_deck* self, ftable** frames, uint32_t frames_sz) {
+void ft_deck_init(ft_deck* self, ftable** frames, uint32_t frames_sz) {
     self->frames = frames;
     self->frames_sz = frames_sz;
 }
@@ -18,7 +18,7 @@ void wt_deck_init(wt_deck* self, ftable** frames, uint32_t frames_sz) {
  * using decks, but there could be impls that might want decks with frames of different
  * sizes.
  */
-bool wt_deck_frames_equal(wt_deck* self) {
+bool ft_deck_frames_equal(ft_deck* self) {
 
     uint32_t frame_width = self->frames[0]->buf_sz;
     for (uint32_t i = 1; i < self->frames_sz; i++) {
@@ -33,8 +33,8 @@ bool wt_deck_frames_equal(wt_deck* self) {
  * @brief fill a matrix from the underlying frames ptr. All frames must be equally
  * sized and the matrix should be initialized with the correct buffer
  */
-dsp_err wt_deck_matrix_fill(wt_deck* self, matrix* out) {
-    if (!wt_deck_frames_equal(self)) {
+dsp_err ft_deck_matrix_fill(ft_deck* self, matrix* out) {
+    if (!ft_deck_frames_equal(self)) {
         return DSP_ERR;
     }
     size_t n_rows = self->frames_sz;

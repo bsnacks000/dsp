@@ -6,8 +6,8 @@
  * - Based on implementations by Lazzarinni in Audio Programming Book.
  */
 
-#ifndef DSP_WT_SINESUM_H
-#define DSP_WT_SINESUM_H
+#ifndef DSP_ft_SINESUM_H
+#define DSP_ft_SINESUM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +22,7 @@ extern "C" {
 #include <dsp/xfade.h>
 
 /**
- * @brief args for wt_sinesum.
+ * @brief args for ft_sinesum.
  */
 typedef struct {
     const float* amps;  // a list of harmonic amplitudes.
@@ -30,14 +30,14 @@ typedef struct {
     float phase;        // btwn -1 and 1; normalized internally to TWO_PI
     bool smooth;        // w/ smoothing
     uint32_t nharms;    // should be 1 -> amps_sz; if 0 skipped and amps_sz is used.
-} wt_sinesum_args;
+} ft_sinesum_args;
 
 /**
- * @brief init wt_sinesum_args. amps_sz should be pow2. Phase is clamped between (-1, 1)
+ * @brief init ft_sinesum_args. amps_sz should be pow2. Phase is clamped between (-1, 1)
  * runtime error:
  *  -  if amps_sz != pow2
  */
-dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
+dsp_err ft_sinesum_args_init(ft_sinesum_args* self,
                              const float* amps,
                              uint32_t amps_sz,
                              float phase,
@@ -47,7 +47,7 @@ dsp_err wt_sinesum_args_init(wt_sinesum_args* self,
 /**
  * @brief fill the wt with a sum of weighted sinusoids.
  */
-dsp_err wt_sinesum(ftable* wt, void* args);
+dsp_err ft_sinesum(ftable* wt, void* args);
 
 /**
  * @brief helper functions
@@ -148,7 +148,7 @@ static inline void exp_decay_amps(float* amps, uint32_t amps_sz) {
  *  - reduce the number of nharms across the arguments
  *      - Ex. nharms = 64, 32, 16, 8, 4, 2, 1
  *  - call sinesum_deck_generate(...)
- *  - wrap ftable** to a wt_deck and initialize with blxoscil.
+ *  - wrap ftable** to a ft_deck and initialize with blxoscil.
  *
  * sinesum_deck_generate has the important side effect of setting f0 on the ftable
  * which will work with blxoscil's frequency lookup. The above reduction formula will
@@ -203,7 +203,7 @@ static inline uint32_t calculate_n_bands(uint32_t nharms) {
  * in sinesum args will set sr and f0 on the target ftable frame.
  */
 dsp_err sinesum_deck_generate(ftable** wt,
-                              wt_sinesum_args** args,
+                              ft_sinesum_args** args,
                               uint32_t n_bands,
                               float sr);
 

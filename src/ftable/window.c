@@ -3,9 +3,9 @@
 
 // ref: https://github.com/csound/csound/blob/develop/Engine/fgens.c#L1043
 
-dsp_err wt_window(ftable* wt, void* args) {
-    wt_window_args* args_ = (wt_window_args*) args;
-    wt_window_type type = args_->type;
+dsp_err ft_window(ftable* wt, void* args) {
+    ft_window_args* args_ = (ft_window_args*) args;
+    ft_window_type type = args_->type;
 
     if (!wt->is_pow2) {
         return DSP_ERR;  // code: 1

@@ -81,7 +81,7 @@ void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) 
 static inline void xtabread_update_(xtabread* self) {
 
     // draw the correct bandpair from the deck using pos..
-    wt_frame_pair bpair = wt_deck_pos_lookup(self->deck, self->pos);
+    ft_frame_pair bpair = ft_deck_pos_lookup(self->deck, self->pos);
 
     // use the freqs from the band pair to calculate the xfade value
     xfade_pair amps = xfade_from_pos(self->pos, self->deck->frames_sz);
@@ -103,7 +103,7 @@ static inline void xtabread_update_(xtabread* self) {
     }
 }
 
-void xtabread_init(xtabread* self, wt_deck* deck, tabread* l, tabread* r, float pos) {
+void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float pos) {
     self->deck = deck;
     self->l = l;
     self->r = r;

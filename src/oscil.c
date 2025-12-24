@@ -93,12 +93,12 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
  *
  * NOTE: If there are gaps or unsorted regions this lookup will behave inconsistently.
  */
-static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
+static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
     // TODO maybe clamp freq.
 
     // lower then first band
     if (freq < self->frames[0]->f0) {
-        return (wt_frame_pair) {
+        return (ft_frame_pair) {
             .low = self->frames[0],
             .high = self->frames[1],
         };
@@ -106,7 +106,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
 
     // higher then last band
     if (freq > self->frames[self->frames_sz - 1]->f0) {
-        return (wt_frame_pair) {
+        return (ft_frame_pair) {
             .low = self->frames[self->frames_sz - 2],
             .high = self->frames[self->frames_sz - 1],
         };
@@ -116,7 +116,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
     // its on caller to make sure the deck
     for (uint32_t i = 1; i < self->frames_sz; i++) {
         if (self->frames[i - 1]->f0 <= freq && freq < self->frames[i]->f0) {
-            return (wt_frame_pair) {
+            return (ft_frame_pair) {
                 .low = self->frames[i - 1],
                 .high = self->frames[i],
             };
@@ -126,7 +126,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
     // if we get here there are gaps in the freq bands so we just return
     // the first pair
     // TODO: warning (debug)
-    return (wt_frame_pair) {
+    return (ft_frame_pair) {
         .low = self->frames[0],
         .high = self->frames[1],
     };
@@ -145,7 +145,7 @@ static inline void blxoscil_update_(blxoscil* self) {
     oscil_update_(self->r);
 
     // draw the correct bandpair from the deck using freq..
-    wt_frame_pair bpair = wt_deck_freq_lookup(self->deck, self->freq);
+    ft_frame_pair bpair = ft_deck_freq_lookup(self->deck, self->freq);
     float lo_freq = bpair.low->f0;
     float hi_freq = bpair.high->f0;
 
@@ -186,7 +186,7 @@ static inline void xoscil_update_(xoscil* self) {
     oscil_update_(self->r);
 
     // draw the correct bandpair from the deck using pos..
-    wt_frame_pair bpair = wt_deck_pos_lookup(self->deck, self->pos);
+    ft_frame_pair bpair = ft_deck_pos_lookup(self->deck, self->pos);
 
     // use the freqs from the band pair to calculate the xfade value
     xfade_pair amps = xfade_from_pos(self->pos, self->deck->frames_sz);
@@ -310,7 +310,7 @@ void oscil3_pm_tick_block(oscil* self,
 
 // TODO: maybe refactor so that blxoscil controls full initilization
 dsp_err blxoscil_init(blxoscil* self,
-                      wt_deck* deck,
+                      ft_deck* deck,
                       oscil* l,
                       oscil* r,
                       float freq,
@@ -372,7 +372,7 @@ void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmp
 }
 
 dsp_err xoscil_init(xoscil* self,
-                    wt_deck* deck,
+                    ft_deck* deck,
                     oscil* l,
                     oscil* r,
                     float freq,

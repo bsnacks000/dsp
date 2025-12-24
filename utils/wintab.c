@@ -9,7 +9,7 @@
 #include "common.h"
 #include "wavio.h"
 
-#define WT_BUF_SZ 1024  // size of the window buffer
+#define ft_BUF_SZ 1024  // size of the window buffer
 
 typedef enum {
     APP_OK = 0,
@@ -18,14 +18,14 @@ typedef enum {
     APP_DSP_ERR
 } app_err;
 
-bool validate_window(wt_window_type w) {
+bool validate_window(ft_window_type w) {
     if (w >= 0 && w <= 5) {
         return true;
     }
     return false;
 }
 
-app_err entrypoint(const char* outfile, wt_window_type wind) {
+app_err entrypoint(const char* outfile, ft_window_type wind) {
 
     if (!validate_path(outfile, ".wav")) {
         return APP_ERR_INVALID_PATH;
@@ -35,14 +35,14 @@ app_err entrypoint(const char* outfile, wt_window_type wind) {
         return APP_ERR_INVALID_WIND;
     }
 
-    wt_window_args args = {.type = wind};
+    ft_window_args args = {.type = wind};
 
-    float wt_buf[WT_BUF_SZ + 2] = {0};
+    float ft_buf[ft_BUF_SZ + 2] = {0};
     ftable wt;
-    ftable_init(&wt, wt_buf, WT_BUF_SZ + 2);
+    ftable_init(&wt, ft_buf, ft_BUF_SZ + 2);
 
     dsp_err err;
-    if ((err = wt_window(&wt, &args)) != DSP_OK) {
+    if ((err = ft_window(&wt, &args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
@@ -53,8 +53,8 @@ app_err entrypoint(const char* outfile, wt_window_type wind) {
     }
 
     wavio w;
-    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, 1, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
-                     WT_BUF_SZ);
+    wavio_open_write(&w, malloc, outfile, ft_BUF_SZ, 1, SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+                     ft_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
         exit_app_cli_err(c, err);
     }
 
-    wt_window_type wind = WINDOW_HAMMING;
+    ft_window_type wind = WINDOW_HAMMING;
     const char* wind_usage =
         "Window: 0=hamming,1=hanning,2=blackman,3=blackman-harris,4=gauss,5=sinc";
     if ((err = cli_add_int_option(c, "w", wind_usage, (int*) &wind, false)) != CLI_OK) {
