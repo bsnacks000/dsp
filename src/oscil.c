@@ -308,6 +308,7 @@ void oscil3_pm_tick_block(oscil* self,
     }
 }
 
+// TODO: maybe refactor so that blxoscil controls full initilization
 dsp_err blxoscil_init(blxoscil* self,
                       wt_deck* deck,
                       oscil* l,

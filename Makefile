@@ -51,7 +51,7 @@ regr-csnd: csound
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	# Run tests from build directory
-	./build/tests/dsp_unit_tests --seed 0x526af79e
+	./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork
 	# GCC / lcov branch
 	@if [ "$(shell $(CC) -v 2>&1 | grep -c "gcc")" -gt 0 ]; then \
        	lcov --capture --directory build --output-file coverage.info; \
