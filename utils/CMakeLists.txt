@@ -2,19 +2,9 @@
 # - depends on libsndfile system install
 #
 
-# Prefer system packages
-set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 
-# Try to find libsndfile
-find_package(SndFile REQUIRED)
-
-
-# SndFile::sndfile
-if (NOT SndFile_FOUND)
-    message(FATAL_ERROR "libsndfile not found.")
-endif()
-
-message("Found sndfile!")
 
 # make ourselves an executable...
 # for now we limit ourselves to one src per exe
@@ -25,7 +15,7 @@ function(make_exe name src)
         cli.c
         wavio.c
     )
-    target_link_libraries(${name} PRIVATE ${PROJECT_NAME} m SndFile::sndfile)
+    target_link_libraries(${name} PRIVATE ${PROJECT_NAME} m PkgConfig::SNDFILE)
     target_compile_options(${name} PRIVATE -Wextra -Wall -Wpedantic -Werror)
 
 endfunction()
@@ -38,4 +28,4 @@ make_exe(blsawtab blsawtab.c)
 make_exe(smorph smorph.c)
 make_exe(smorph2 smorph2.c)
 make_exe(chebytab chebytab.c)
-make_exe(wintab wintab.c)
+#make_exe(wintab wintab.c)
