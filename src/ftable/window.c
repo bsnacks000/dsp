@@ -1,5 +1,6 @@
 #include <dsp/constants.h>
 #include <dsp/ftable/window.h>
+#include "dsp/ftable/ftable.h"
 
 // ref: https://github.com/csound/csound/blob/develop/Engine/fgens.c#L1043
 
@@ -87,6 +88,8 @@ dsp_err ft_window(ftable* wt, void* args) {
         buf[i] = (float) (xarg * (cf[0] - cf[1] * cos(x) + cf[2] * cos(2.0 * x) -
                                   cf[3] * cos(3.0 * x)));
     }
+
+    ftable_add_guard_point(wt);
 
     return DSP_OK;
 }

@@ -53,6 +53,6 @@ dsp_err ftable_func(ftable* self, ft_f f, void* args) {
     }
 
     // guardpoint
-    ftable_add_guard_point(self);
+    // ftable_add_guard_point(self);
     return DSP_OK;
 }

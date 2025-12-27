@@ -44,6 +44,7 @@ dsp_err ft_sinesum(ftable* wt, void* args) {
     float* buf = wt->buf;
     const float* amps = args_->amps;
 
+    // use wt->len as the end
     uint32_t len = wt->len, nharms = args_->nharms;
 
     bool smooth = args_->smooth;
@@ -62,6 +63,38 @@ dsp_err ft_sinesum(ftable* wt, void* args) {
     }
 
     normalize(buf, len);
+    // wrap for oscillator use
+    ftable_add_guard_point(wt);
+    return DSP_OK;
+}
+
+dsp_err ft_sinesum1(ftable* wt, void* args) {
+
+    ft_sinesum_args* args_ = (ft_sinesum_args*) args;
+
+    float* buf = wt->buf;
+    const float* amps = args_->amps;
+
+    // here we use wt->buf_sz as the end of the interpolation
+    uint32_t len = wt->buf_sz, nharms = args_->nharms;
+
+    bool smooth = args_->smooth;
+    float phase = args_->phase;
+
+    phase *= TWO_PI;
+    float sigma = 1.0;
+    for (uint32_t i = 0; i < nharms; i++) {
+        if (smooth) {
+            sigma = lanczos_smoothing(i, nharms);
+        }
+        for (uint32_t j = 0; j < len; j++) {
+            float freq = (i + 1) * (j * TWO_PI / len);
+            buf[j] += amps[i] * sin(freq + phase) * sigma;
+        }
+    }
+
+    // no wrap. This is for a single scan.
+    normalize(buf, len);
     return DSP_OK;
 }
 
@@ -77,8 +110,6 @@ dsp_err sinesum_deck_generate(ftable** wt,
         if ((err = ft_sinesum(w, (void*) arg)) != DSP_OK) {
             return err;
         }
-        // manually wrap guard points here ..
-        ftable_add_guard_point(w);
         // NOTE: 0.707 seems to be the sweet spot to avoid aliasing
         w->f0 = max_fundamental(arg->nharms, sr, 0.707);
         w->sr = sr;

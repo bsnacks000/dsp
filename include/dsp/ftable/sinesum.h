@@ -4,6 +4,10 @@
  * - Generates a buffers of summed sinusoids for use with ftable oscillators. Similar
  *  to GEN10 in csound.
  * - Based on implementations by Lazzarinni in Audio Programming Book.
+ *
+ *  Fill policies:
+ *  - ft_sinesum -> guard point wrap around
+ *  - ft_sinesum1 -> no wrap around (for single scans/envelopes)
  */
 
 #ifndef DSP_ft_SINESUM_H
@@ -48,6 +52,12 @@ dsp_err ft_sinesum_args_init(ft_sinesum_args* self,
  * @brief fill the wt with a sum of weighted sinusoids.
  */
 dsp_err ft_sinesum(ftable* wt, void* args);
+
+/**
+ * @brief fill the wt with a sum of sinusoids. The guard point is filled with the
+ * supplied function.
+ */
+dsp_err ft_sinesum1(ftable* wt, void* args);
 
 /**
  * @brief helper functions

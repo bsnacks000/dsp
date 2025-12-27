@@ -9,7 +9,7 @@ dsp_err ft_linspace(ftable* wt, void* args) {
     float start = args_->start;
     float stop = args_->stop;
     bool endpoint = args_->endpoint;
-    uint32_t num = wt->len;
+    uint32_t num = wt->buf_sz;
 
     if (num < 2) {
         return DSP_ERR;
@@ -34,7 +34,7 @@ dsp_err ft_geomspace(ftable* wt, void* args) {
 
     float start = args_->start;
     float stop = args_->stop;
-    uint32_t num = wt->len;
+    uint32_t num = wt->buf_sz;
 
     // assure 0.0 does not introduce ub.
     start += 1e-9;

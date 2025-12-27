@@ -1,6 +1,7 @@
 /**
  * @brief simple ramp function generators
  *  - modeled on numpy *space functions.
+ *  - the guard point is carried over from the function call
  */
 #ifndef DSP_ft_RAMP_H
 #define DSP_ft_RAMP_H

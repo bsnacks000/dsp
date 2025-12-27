@@ -4,6 +4,7 @@
  *  - the signal from wt->buf is clipped between  [-1, 1].
  *  - for typical waveshaping synthesis pass in linspace(-1, 1)
  *  - h can be arbitrarily large; yaxis is normalized between
+ *  - the guard point carries over from the transfer function (no wrap)
  */
 
 #ifndef DSP_CHEBYTAB_H

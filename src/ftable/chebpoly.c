@@ -49,7 +49,8 @@ dsp_err ft_chebpoly(ftable* wt, void* args) {
     }
 
     float* buf = wt->buf;
-    uint32_t len = wt->len;
+    uint32_t len =
+        wt->buf_sz;  // for chebyshev we always write to the end of the buffer.
 
     for (uint32_t i = 0; i < len; i++) {
         buf[i] = chebyshev_polynomial(buf[i], h, h_sz);
