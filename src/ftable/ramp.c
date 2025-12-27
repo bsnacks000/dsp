@@ -29,37 +29,37 @@ dsp_err ft_linspace(ftable* wt, void* args) {
     return DSP_OK;
 }
 
-dsp_err ft_geomspace(ftable* wt, void* args) {
-    ft_ramp_args* args_ = (ft_ramp_args*) args;
+// dsp_err ft_geomspace(ftable* wt, void* args) {
+//     ft_ramp_args* args_ = (ft_ramp_args*) args;
 
-    float start = args_->start;
-    float stop = args_->stop;
-    uint32_t num = wt->buf_sz;
+//     float start = args_->start;
+//     float stop = args_->stop;
+//     uint32_t num = wt->buf_sz;
 
-    // assure 0.0 does not introduce ub.
-    start += 1e-9;
-    stop += 1e-9;
+//     // assure 0.0 does not introduce ub.
+//     start += 1e-9;
+//     stop += 1e-9;
 
-    // rebuild log args - take abs to assure we are non-negative.
-    float log_start = log10(fabs(start));
-    float log_stop = log10(fabs(stop));
+//     // rebuild log args - take abs to assure we are non-negative.
+//     float log_start = log10(fabs(start));
+//     float log_stop = log10(fabs(stop));
 
-    ft_ramp_args log_args = {
-        .start = log_start,
-        .stop = log_stop,
-        .endpoint = args_->endpoint,
-    };
+//     ft_ramp_args log_args = {
+//         .start = log_start,
+//         .stop = log_stop,
+//         .endpoint = args_->endpoint,
+//     };
 
-    // first build linear space;
-    dsp_err err;
-    if ((err = ft_linspace(wt, (void*) &log_args)) != DSP_OK) {
-        return DSP_ERR;
-    }
+//     // first build linear space;
+//     dsp_err err;
+//     if ((err = ft_linspace(wt, (void*) &log_args)) != DSP_OK) {
+//         return DSP_ERR;
+//     }
 
-    // now re project across log space
-    for (uint32_t i = 0; i < num; i++) {
-        wt->buf[i] = pow(10.0, wt->buf[i]);
-    }
+//     // now re project across log space
+//     for (uint32_t i = 0; i < num; i++) {
+//         wt->buf[i] = pow(10.0, wt->buf[i]);
+//     }
 
-    return DSP_OK;
-}
+//     return DSP_OK;
+// }

@@ -70,8 +70,6 @@ dsp_err chebpoly_deck_generate(ftable** wt, ft_chebpoly_args** args, uint32_t n_
         if ((err = ft_chebpoly(w, arg)) != DSP_OK) {
             return err;
         }
-
-        ftable_add_guard_point(w);
     }
 
     return DSP_OK;

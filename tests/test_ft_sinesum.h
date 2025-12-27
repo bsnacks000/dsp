@@ -9,12 +9,14 @@ extern "C" {
 #include "munit.h"
 
 MunitResult test_sinesum(const MunitParameter params[], void* data);
+MunitResult test_sinesum1(const MunitParameter params[], void* data);
 MunitResult test_sinesum_deck_generate(const MunitParameter params[], void* data);
 
 static MunitTest ft_sinesum_test_module[] = {
     {"/sinesum", test_sinesum, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/deck_generate", test_sinesum_deck_generate, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
+    {"/sinesum1", test_sinesum1, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/sinesum_deck_generate", test_sinesum_deck_generate, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
 

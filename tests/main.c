@@ -7,6 +7,8 @@
 #include "test_deck.h"
 #include "test_delay.h"
 #include "test_follow.h"
+#include "test_ft_chebpoly.h"
+#include "test_ft_sinesum.h"
 #include "test_ftable.h"
 #include "test_interpolate.h"
 #include "test_lag.h"
@@ -51,6 +53,8 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
         tabread_test_suite,
         oscil_test_suite,
         deck_test_suite,
+        ft_sinesum_test_suite,
+        ft_chebpoly_test_suite,
         {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
