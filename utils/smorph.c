@@ -21,7 +21,7 @@ typedef enum {
     APP_DSP_ERR,
 } app_err;
 
-void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, ft_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -44,15 +44,15 @@ app_err entrypoint(const char* outfile) {
     sqr_amps(amps_sqr, amps_sz);
     tri_amps(amps_tri, amps_sz);
 
-    wt_sinesum_args* args[3] = {0};
+    ft_sinesum_args* args[3] = {0};
 
-    args[0] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[1] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[2] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
+    args[0] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[1] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[2] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
 
-    wt_sinesum_args_init(args[0], amps_saw, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[1], amps_sqr, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[2], amps_tri, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[0], amps_saw, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[1], amps_sqr, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[2], amps_tri, amps_sz, 0.0, true, amps_sz);
 
     // create the ftable deck
     ftable* wavtabs[3] = {0};
@@ -79,13 +79,13 @@ app_err entrypoint(const char* outfile) {
     ftable_init(&lintab, lintab_buf, lintab_buf_sz);
 
     // pos ramp between 0 - 1
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = 0.0,
         .stop = 1.0,
         .endpoint = true,
     };
     // nsmps long linear ramp
-    if ((err = wt_linspace(&lintab, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&lintab, &ramp_args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
@@ -107,8 +107,8 @@ app_err entrypoint(const char* outfile) {
     }
 
     xoscil morph;
-    wt_deck deck;
-    wt_deck_init(&deck, wavtabs, 3);
+    ft_deck deck;
+    ft_deck_init(&deck, wavtabs, 3);
 
     xoscil_init(&morph, &deck, &left, &right, 220.0, 0.0, 0.0);
 

@@ -16,7 +16,7 @@
 #include "wavio.h"
 
 #define HARMS_MAX_SZ 256  // max allowed harmonics to generate
-#define WT_BUF_SZ 1024    // size of resulting waveform buffer
+#define ft_BUF_SZ 1024    // size of resulting waveform buffer
 
 typedef enum {
     APP_OK = 0,
@@ -88,14 +88,14 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
     // }
 
     // // alloc ftable
-    size_t buf_sz = WT_BUF_SZ + 2;  // don't forget guard point
+    size_t buf_sz = ft_BUF_SZ + 2;  // don't forget guard point
     float buf[buf_sz];
     memset(buf, 0, sizeof(float) * buf_sz);
 
     ftable wt;
     ftable_init(&wt, buf, buf_sz);
 
-    wt_sinesum_args args = {
+    ft_sinesum_args args = {
         .amps = amps,
         .amps_sz = amps_sz,
         .phase = 0.0,
@@ -105,12 +105,12 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
 
     // // run .. sinesum infalliable but we check for good measure in case it changes.
     dsp_err err;
-    if ((err = ftable_func(&wt, wt_sinesum, (void*) &args)) != DSP_OK) {
+    if ((err = ftable_func(&wt, ft_sinesum, (void*) &args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
     // not sure if i want this or not
-    for (int i = 0; i < WT_BUF_SZ; i++) {
+    for (int i = 0; i < ft_BUF_SZ; i++) {
         printf("%f\n", wt.buf[i]);
     }
 
@@ -119,7 +119,7 @@ static app_err entrypoint(const char* outfile, waveform wf, int nharms) {
     // // sr = nharms for writing oscillator ftables.
     wavio w;
     wavio_open_write(&w, malloc, outfile, nharms, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
-                     WT_BUF_SZ);
+                     ft_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);

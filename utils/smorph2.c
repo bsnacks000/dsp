@@ -46,15 +46,15 @@ static app_err entrypoint(const char* outfile) {
     sqr_amps(amps_sqr, amps_sz);
     tri_amps(amps_tri, amps_sz);
 
-    wt_sinesum_args* args[3] = {0};
+    ft_sinesum_args* args[3] = {0};
 
-    args[0] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[1] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-    args[2] = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
+    args[0] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[1] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+    args[2] = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
 
-    wt_sinesum_args_init(args[0], amps_tri, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[1], amps_saw, amps_sz, 0.0, true, amps_sz);
-    wt_sinesum_args_init(args[2], amps_sqr, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[0], amps_tri, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[1], amps_saw, amps_sz, 0.0, true, amps_sz);
+    ft_sinesum_args_init(args[2], amps_sqr, amps_sz, 0.0, true, amps_sz);
 
     // create the initial ftable deck
     ftable* initial_wavtabs[3] = {0};
@@ -80,8 +80,8 @@ static app_err entrypoint(const char* outfile) {
     }
 
     // we initialize this deck so we can use the matrix fill method
-    wt_deck initial_deck;
-    wt_deck_init(&initial_deck, initial_wavtabs, 3);
+    ft_deck initial_deck;
+    ft_deck_init(&initial_deck, initial_wavtabs, 3);
 
     // we need alot of memory to facilitate the ftable interp dance.
 
@@ -92,7 +92,7 @@ static app_err entrypoint(const char* outfile) {
     matrix_init(&m, m_data, 3, ftable_BUF_SZ);
 
     // fill the matrix from the existing deck
-    wt_deck_matrix_fill(&initial_deck, &m);
+    ft_deck_matrix_fill(&initial_deck, &m);
 
     // t - transpose matrix  shape=(ftable_BUF_SZ, 3)
     matrix t;
@@ -156,13 +156,13 @@ static app_err entrypoint(const char* outfile) {
     ftable_init(&lintab, lintab_buf, lintab_buf_sz);
 
     // pos ramp between 0 - 1
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = 0.0,
         .stop = 1.0,
         .endpoint = true,
     };
     // nsmps long linear ramp
-    if ((err = wt_linspace(&lintab, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&lintab, &ramp_args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
@@ -172,8 +172,8 @@ static app_err entrypoint(const char* outfile) {
     oscil right;
 
     // xoscil deck
-    wt_deck deck;
-    wt_deck_init(&deck, wavtabs, INTERP_FRAME_SZ);
+    ft_deck deck;
+    ft_deck_init(&deck, wavtabs, INTERP_FRAME_SZ);
 
     float freq_ = 120.f;
 

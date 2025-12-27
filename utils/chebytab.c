@@ -17,7 +17,7 @@
 #include "common.h"
 #include "wavio.h"
 
-#define WT_BUF_SZ 1024  // size of resulting waveform buffer
+#define ft_BUF_SZ 1024  // size of resulting waveform buffer
 
 typedef enum {
     APP_OK = 0,
@@ -36,27 +36,27 @@ app_err entrypoint(const char* outfile) {
     // be any function really..
 
     // remeber to add the plus 2 guard point
-    float wt_buf[WT_BUF_SZ + 2] = {0};
+    float ft_buf[ft_BUF_SZ + 2] = {0};
     ftable wt;
-    ftable_init(&wt, wt_buf, WT_BUF_SZ + 2);
+    ftable_init(&wt, ft_buf, ft_BUF_SZ + 2);
 
     // calc a line between -1.0 -> 1.0
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = -1.0,
         .stop = 1.0,
         .endpoint = true,
     };
 
-    if ((err = wt_linspace(&wt, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&wt, &ramp_args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
     float h[4] = {0.0, 0.0, 0.0, 1.0};
 
-    wt_chebpoly_args cheby_args;
-    wt_chebpoly_args_init(&cheby_args, h, 4);
+    ft_chebpoly_args cheby_args;
+    ft_chebpoly_args_init(&cheby_args, h, 4);
 
-    if ((err = wt_chebpoly(&wt, &cheby_args)) != DSP_OK) {
+    if ((err = ft_chebpoly(&wt, &cheby_args)) != DSP_OK) {
         return APP_DSP_ERR + 1;
     }
 
@@ -64,8 +64,8 @@ app_err entrypoint(const char* outfile) {
     // // this means we do not copy guard point
     // // sr = nharms for writing oscillator ftables.
     wavio w;
-    wavio_open_write(&w, malloc, outfile, WT_BUF_SZ, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
-                     WT_BUF_SZ);
+    wavio_open_write(&w, malloc, outfile, ft_BUF_SZ, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1,
+                     ft_BUF_SZ);
     wavio_fill_block(&w, wt.buf);
     wavio_write_block(&w);
     wavio_close(&w, free);

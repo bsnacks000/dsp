@@ -1,9 +1,10 @@
 /**
  * @brief simple ramp function generators
  *  - modeled on numpy *space functions.
+ *  - the guard point is carried over from the function call
  */
-#ifndef DSP_WT_RAMP_H
-#define DSP_WT_RAMP_H
+#ifndef DSP_ft_RAMP_H
+#define DSP_ft_RAMP_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,13 +21,13 @@ extern "C" {
 typedef struct {
     float start, stop;
     bool endpoint;
-} wt_ramp_args;
+} ft_ramp_args;
 
 /**
  * @brief generates a list of evenly spaced numbers over a specified interval
  *  - requires a pow2 ftable.
  */
-dsp_err wt_linspace(ftable* wt, void* args);
+dsp_err ft_linspace(ftable* wt, void* args);
 
 /**
  * @brief generates a list of numbers spaced evenly on a log scale (a geometric
@@ -34,7 +35,7 @@ dsp_err wt_linspace(ftable* wt, void* args);
  *  - A tolerance is added to avoid 0.0 in case it is given.
  *  - Negative start and stop sign will be flipped.
  */
-dsp_err wt_geomspace(ftable* wt, void* args);
+dsp_err ft_geomspace(ftable* wt, void* args);
 
 #ifdef __cplusplus
 }

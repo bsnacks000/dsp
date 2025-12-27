@@ -4,19 +4,24 @@
 #include "test_bq.h"
 #include "test_conversions.h"
 #include "test_curve.h"
+#include "test_deck.h"
 #include "test_delay.h"
 #include "test_follow.h"
+#include "test_ft_chebpoly.h"
+#include "test_ft_sinesum.h"
 #include "test_ftable.h"
 #include "test_interpolate.h"
 #include "test_lag.h"
 #include "test_line.h"
 #include "test_maths.h"
+#include "test_oscil.h"
 #include "test_pblep.h"
 #include "test_phasor.h"
 #include "test_rc.h"
 #include "test_samph.h"
 #include "test_stft.h"
 #include "test_svf.h"
+#include "test_tabread.h"
 #include "test_utils.h"
 #include "test_xfade.h"
 /// see: https://github.com/nemequ/munit/blob/master/example.c
@@ -26,16 +31,31 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
     // register test_suites
     // sentinel
     MunitSuite all_test_suites[] = {
-        maths_test_suite,       utils_test_suite,
-        interpolate_test_suite, ftable_test_suite,
-        conversions_test_suite, balance_test_suite,
-        bq_test_suite,          curve_test_suite,
-        line_test_suite,        rc_test_suite,
-        svf_test_suite,         xfade_test_suite,
-        delay_test_suite,       stft_test_suite,
-        lag_test_suite,         follow_test_suite,
-        samph_test_suite,       pblep_test_suite,
-        phasor_test_suite,      {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
+        maths_test_suite,
+        utils_test_suite,
+        interpolate_test_suite,
+        ftable_test_suite,
+        conversions_test_suite,
+        balance_test_suite,
+        bq_test_suite,
+        curve_test_suite,
+        line_test_suite,
+        rc_test_suite,
+        svf_test_suite,
+        xfade_test_suite,
+        delay_test_suite,
+        stft_test_suite,
+        lag_test_suite,
+        follow_test_suite,
+        samph_test_suite,
+        pblep_test_suite,
+        phasor_test_suite,
+        tabread_test_suite,
+        oscil_test_suite,
+        deck_test_suite,
+        ft_sinesum_test_suite,
+        ft_chebpoly_test_suite,
+        {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
     MunitSuite test_suite_main = {

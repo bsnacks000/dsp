@@ -22,7 +22,7 @@ typedef enum {
     APP_DSP_ERR,
 } app_err;
 
-void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, ft_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -44,11 +44,11 @@ app_err entrypoint(const char* outfile) {
     // 7 is our magic number for this app
     uint32_t bands[7] = {64, 32, 16, 8, 4, 2, 1};
 
-    wt_sinesum_args* args[7] = {0};
+    ft_sinesum_args* args[7] = {0};
 
     for (int i = 0; i < 7; i++) {
-        wt_sinesum_args* a = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-        wt_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
+        ft_sinesum_args* a = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+        ft_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
         args[i] = a;
     }
 
@@ -76,13 +76,13 @@ app_err entrypoint(const char* outfile) {
     ftable lintab;
     ftable_init(&lintab, lintab_buf, nsmps);
 
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = 1.0,
         .stop = MAX_FREQ,
         .endpoint = true,
     };
     // nsmps long linear ramp
-    if ((err = wt_linspace(&lintab, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&lintab, &ramp_args)) != DSP_OK) {
         return APP_DSP_ERR;
     }
 
@@ -104,8 +104,8 @@ app_err entrypoint(const char* outfile) {
     // printf("oscil left: %f\n", left.freq);
 
     blxoscil blsaw;
-    wt_deck deck;
-    wt_deck_init(&deck, wavtabs, 7);
+    ft_deck deck;
+    ft_deck_init(&deck, wavtabs, 7);
 
     blxoscil_init(&blsaw, &deck, &left, &right, 1.0, 0.0);
 

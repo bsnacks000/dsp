@@ -35,7 +35,7 @@ bool validate_outdir(const char* outdir) {
     return true;
 }
 
-void cleanup(ftable** wavtbs, wt_sinesum_args** args, int n) {
+void cleanup(ftable** wavtbs, ft_sinesum_args** args, int n) {
     for (int i = 0; i < n; i++) {
         free(wavtbs[i]->buf);
         free(wavtbs[i]);
@@ -60,11 +60,11 @@ app_err entrypoint(const char* outdir) {
     // 7 is our magic number for this app
     uint32_t bands[7] = {64, 32, 16, 8, 4, 2, 1};
 
-    wt_sinesum_args* args[7] = {0};
+    ft_sinesum_args* args[7] = {0};
 
     for (int i = 0; i < 7; i++) {
-        wt_sinesum_args* a = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
-        wt_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
+        ft_sinesum_args* a = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
+        ft_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
         args[i] = a;
     }
 

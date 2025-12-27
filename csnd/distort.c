@@ -8,26 +8,26 @@
 #include <stdint.h>
 #include "dsp/shape.h"
 
-#define WT_BUF_SZ 1026
+#define ft_BUF_SZ 1026
 
-static float chebsaw_buf[WT_BUF_SZ] = {0};
+static float chebsaw_buf[ft_BUF_SZ] = {0};
 
 static ftable chebsaw_wt;
 
 int chebsaw_tab_init(CSOUND* csound) {
     (void) csound;
-    ftable_init(&chebsaw_wt, chebsaw_buf, WT_BUF_SZ);
+    ftable_init(&chebsaw_wt, chebsaw_buf, ft_BUF_SZ);
 
     int err;
 
     // first create bipolar linear ramp
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = -1.0,
         .stop = 1.0,
         .endpoint = true,
     };
 
-    if ((err = wt_linspace(&chebsaw_wt, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&chebsaw_wt, &ramp_args)) != DSP_OK) {
         return NOTOK;
     }
 
@@ -37,10 +37,10 @@ int chebsaw_tab_init(CSOUND* csound) {
         12.5, 11.1,  -10.0, -9.09, 8.333, 7.69, -7.14, -6.67,
     };
 
-    wt_chebpoly_args cheby_args;
-    wt_chebpoly_args_init(&cheby_args, h, 16);
+    ft_chebpoly_args cheby_args;
+    ft_chebpoly_args_init(&cheby_args, h, 16);
 
-    if ((err = wt_chebpoly(&chebsaw_wt, &cheby_args)) != DSP_OK) {
+    if ((err = ft_chebpoly(&chebsaw_wt, &cheby_args)) != DSP_OK) {
         return NOTOK;
     }
 
