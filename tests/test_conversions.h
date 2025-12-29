@@ -5,7 +5,6 @@
 extern "C" {
 #endif
 
-#include <dsp/conversions.h>
 #include "munit.h"
 
 MunitResult test_samps_per_ms(const MunitParameter params[], void* data);

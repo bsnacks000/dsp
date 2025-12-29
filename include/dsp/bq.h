@@ -83,7 +83,8 @@ void bq_non_resonant_tick_block(bq_non_resonant* self,
                                 float* out,
                                 float* in,
                                 float freq,
-                                uint32_t sz);
+                                uint32_t start,
+                                uint32_t nsmps);
 
 /***
  * Classic Resonant two pole implementations.
@@ -139,7 +140,8 @@ void bq_resonant_tick_block(bq_resonant* self,
                             float* in,
                             float freq,
                             float q,
-                            uint32_t sz);
+                            uint32_t start,
+                            uint32_t nsmps);
 
 /**
  * Shelving and parametric designs (2nd order)
@@ -191,7 +193,8 @@ void bq_para_eq_tick_block(bq_para_eq* self,
                            float freq,
                            float q,
                            float gain,
-                           uint32_t sz);
+                           uint32_t start,
+                           uint32_t nsmps);
 
 #ifdef __cplusplus
 }

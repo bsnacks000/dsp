@@ -13,7 +13,7 @@ int svflp_vector(CSOUND* csound, svflp* obj) {
     u_int32_t nsamps = GetLocalKsmps(&obj->h);
 
     svf_tick_block(&obj->state, obj->a_out, NULL, NULL, NULL, NULL, obj->a_in,
-                   obj->a_freq, obj->a_q, obj->a_drive, nsamps);
+                   obj->a_freq, obj->a_q, obj->a_drive, 0, nsamps);
     return OK;
 }
 
@@ -30,6 +30,6 @@ int svfmm_vector(CSOUND* csound, svfmm* obj) {
 
     svf_tick_block(&obj->state, obj->a_lp_out, obj->a_hp_out, obj->a_bp_out,
                    obj->a_bs_out, NULL, obj->a_in, obj->a_freq, obj->a_q, obj->a_drive,
-                   nsamps);
+                   0, nsamps);
     return OK;
 }

@@ -8,15 +8,19 @@
 //       while (val < 0) val += buf_sz;
 //       while (val >= buf_sz) val -= buf_sz;
 
-void tabread_init(tabread* self, wavetable* wt) {
+void tabread_init(tabread* self, ftable* wt) {
     self->wt = wt;
 }
 
-void tabreadn_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
+void tabreadn_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
     float* buf = self->wt->buf;
     uint32_t len = self->wt->len;
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float val = idx[i];
         if (val < 0.0 || val >= (float) len) {
             out[i] = 0.0;
@@ -63,15 +67,23 @@ static inline float tabread3_tick_(tabread* self, float val) {
     return interpolate_cubic(a, b, c, d, frac);
 }
 
-void tabreadi_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
+void tabreadi_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = tabreadi_tick_(self, idx[i]);
     }
 }
 
-void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void tabread3_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = tabread3_tick_(self, idx[i]);
     }
 }
@@ -81,7 +93,7 @@ void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) 
 static inline void xtabread_update_(xtabread* self) {
 
     // draw the correct bandpair from the deck using pos..
-    wt_frame_pair bpair = wt_deck_pos_lookup(self->deck, self->pos);
+    ft_frame_pair bpair = ft_deck_pos_lookup(self->deck, self->pos);
 
     // use the freqs from the band pair to calculate the xfade value
     xfade_pair amps = xfade_from_pos(self->pos, self->deck->frames_sz);
@@ -103,7 +115,7 @@ static inline void xtabread_update_(xtabread* self) {
     }
 }
 
-void xtabread_init(xtabread* self, wt_deck* deck, tabread* l, tabread* r, float pos) {
+void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float pos) {
     self->deck = deck;
     self->l = l;
     self->r = r;
@@ -116,8 +128,9 @@ void xtabreadi_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float pos_ = pos[i];
         bool pos_eq = check_float_equal(pos_, self->pos);
         if (!pos_eq) {
@@ -134,8 +147,9 @@ void xtabread3_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float pos_ = pos[i];
         bool pos_eq = check_float_equal(pos_, self->pos);
 

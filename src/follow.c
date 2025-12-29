@@ -7,8 +7,6 @@
 static const float TLD_AUDIO_ENVELOPE_ANALOG_TC = -0.99967234081320612357829304641019;
 
 static inline float calculate_time_(float t_ms, float sr) {
-    dsp_assert(sr <= 0.0, "follow:calculate_time_: sr <= 0.0");
-    dsp_assert(t_ms <= 0.0, "follow:calculate_time: t_ms <= 0.0");
     return exp(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001));
 }
 
@@ -73,9 +71,10 @@ void follow_rms_tick_block(follow* self,
                            float* in,
                            float* atk_ms,
                            float* rel_ms,
+                           uint32_t start,
                            uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float atk_ms_ = atk_ms[i];
         float rel_ms_ = rel_ms[i];
 
@@ -101,9 +100,10 @@ void follow_peak_tick_block(follow* self,
                             float* in,
                             float* atk_ms,
                             float* rel_ms,
+                            uint32_t start,
                             uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float atk_ms_ = atk_ms[i];
         float rel_ms_ = rel_ms[i];
 

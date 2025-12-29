@@ -18,7 +18,7 @@
 // Audio test using the SC-generated Chebyshev shaper
 {
     var input = SinOsc.ar(200);
-    var shaped = Shaper.ar(Buffer.sendCollection(s, ~chebyTable.asWavetable), input);
+    var shaped = Shaper.ar(Buffer.sendCollection(s, ~chebyTable.asftable), input);
     shaped * 0.2 ! 2  // stereo, attenuated
 }.play;
 )

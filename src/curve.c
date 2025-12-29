@@ -66,8 +66,8 @@ void curve_init(curve* self,
     update_(self);
 }
 
-void curve_tick_block(curve* self, float* out, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void curve_tick_block(curve* self, float* out, uint32_t start, uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = curve_tick_(self);
     }
 }
@@ -266,8 +266,9 @@ void curve_ar_tick_block(curve_ar* self,
                          float* rel_sec,
                          float* rel_crv,
                          float* rel_level,
+                         uint32_t start,
                          uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
@@ -333,9 +334,10 @@ void curve_adsr_tick_block(curve_adsr* self,
                            float* rel_sec,
                            float* rel_crv,
                            float* rel_level,
+                           uint32_t start,
                            uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
         self->curr_gate_ = gate[i];

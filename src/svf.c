@@ -5,20 +5,18 @@
 #include <dsp/utils.h>
 
 static inline void update_(svf* self) {
-    float freq = self->freq;
-    float q = self->q;
 
     // warp freq
-    float omega_c = TWO_PI * freq;
-    float omega_warped = self->two_ovr_t_ * tanf(omega_c * self->t_ovr_2_);
-    float g = omega_warped * self->t_ovr_2_;
+    double omega_c = TWO_PI * self->freq;
+    double omega_warped = self->two_ovr_t_ * tan(omega_c * self->t_ovr_2_);
+    double g = omega_warped * self->t_ovr_2_;
 
     // dampening
-    float r = 1.0 / (2.0 * q);
-    float two_r = 2.0 * r;
-    float four_r = 4.0 * r;
-    float two_r_plus_g = two_r + g;
-    float g1 = 1.0 / (1.0 + two_r * g + g * g);
+    double r = 1.0 / (2.0 * self->q);
+    double two_r = 2.0 * r;
+    double four_r = 4.0 * r;
+    double two_r_plus_g = two_r + g;
+    double g1 = 1.0 / (1.0 + two_r * g + g * g);
 
     self->g_ = g;
     self->g1_ = g1;
@@ -73,9 +71,10 @@ void svf_tick_block(svf* self,
                     float* freq,
                     float* q,
                     float* drive,
-                    uint32_t sz) {
+                    uint32_t start,
+                    uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 

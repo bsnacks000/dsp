@@ -62,8 +62,12 @@ typedef enum { DSP_OK = 0, DSP_ERR = 1 } dsp_err;
 /**
  * @brief copy nsmps of in to out (memcpy)
  */
-static inline void copy_nsmps(float* out, const float* in, uint32_t nsmps) {
-    memcpy(out, in, nsmps * sizeof(float));
+static inline void copy_nsmps(float* out,
+                              const float* in,
+                              uint32_t start,
+                              uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++)
+        out[i] = in[i];
 }
 
 /**

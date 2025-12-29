@@ -8,15 +8,15 @@ extern "C" {
 #include <csdl.h>
 
 #include <dsp/bq.h>
+#include <dsp/ftable/ftable.h>
 #include <dsp/oscil.h>
-#include <dsp/wavetable/wavetable.h>
 
 typedef struct {
     OPDS h;
     MYFLT *a_out, *a_freq, *i_phase, *i_fn;  // a-aii
     FUNC* ftp;                               // the ftable pointer
     AUXCH aux;                               // hold our own copy of ftable
-    wavetable wt;
+    ftable wt;
     oscil state;
 } ftoscil3;
 
@@ -28,7 +28,7 @@ typedef struct {
     MYFLT *a_out, *a_freq, *a_phase, *i_fn;  // a-aai
     FUNC* ftp;                               // the ftable pointer
     AUXCH aux;                               // hold our own copy of ftable
-    wavetable wt;
+    ftable wt;
     oscil state;
 } ftoscil3_pm;
 
@@ -49,7 +49,7 @@ typedef struct {
     size_t os_buf_sz;
     bq_non_resonant bank[OFTOSCIL_FILTER_N];  // anti-aliasing bank
     float os_fc;                              // calculated decimate cutoff
-    wavetable wt;
+    ftable wt;
     oscil state;
     // bq_non_resonant smooth;  // smooth freq signal
     float prev;

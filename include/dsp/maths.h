@@ -20,16 +20,24 @@ extern "C" {
 /**
  * @brief add two blocks
  */
-static inline void add_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void add_block(float* out,
+                             float* x,
+                             float* y,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] + y[i];
     }
 }
 /**
  * @brief mult two blocks
  */
-static inline void mult_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void mult_block(float* out,
+                              float* x,
+                              float* y,
+                              uint32_t start,
+                              uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] * y[i];
     }
 }
@@ -37,8 +45,12 @@ static inline void mult_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief subtract two blocks
  */
-static inline void subtract_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void subtract_block(float* out,
+                                  float* x,
+                                  float* y,
+                                  uint32_t start,
+                                  uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] - y[i];
     }
 }
@@ -46,11 +58,17 @@ static inline void subtract_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief divide two blocks
  */
-static inline void div_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void div_block(float* out,
+                             float* x,
+                             float* y,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] / y[i];
     }
 }
+
+// TODO: replace stdlib rand() with more efficient rand number generator
 
 /**
  * @brief return 1 if xn > 0, -1 if xn < 0 and 0 otherwise
@@ -79,8 +97,11 @@ static inline float phase_invert(float x) {
 /**
  * @brief phase invert a block
  */
-static inline void phase_invert_block(float* out, float* x, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void phase_invert_block(float* out,
+                                      float* x,
+                                      uint32_t start,
+                                      uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = phase_invert(x[i]);
     }
 }
@@ -105,8 +126,11 @@ static inline float range_invert(float x, float a, float b) {
 /**
  * @brief invert a unipolar block
  */
-static inline void invert_unipolar_block(float* out, float* x, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void invert_unipolar_block(float* out,
+                                         float* x,
+                                         uint32_t start,
+                                         uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = invert_unipolar(x[i]);
     }
 }
@@ -114,8 +138,11 @@ static inline void invert_unipolar_block(float* out, float* x, uint32_t n) {
 /**
  * @brief invert a bipolar block
  */
-static inline void invert_bipolar_block(float* out, float* x, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void invert_bipolar_block(float* out,
+                                        float* x,
+                                        uint32_t start,
+                                        uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = invert_bipolar(x[i]);
     }
 }
@@ -123,8 +150,8 @@ static inline void invert_bipolar_block(float* out, float* x, uint32_t n) {
 /**
  * @brief random bipolar number (-1, 1)
  */
-static inline void noise_block(float* out, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void noise_block(float* out, uint32_t start, uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = rand_bipolar();
     }
 }
@@ -132,8 +159,12 @@ static inline void noise_block(float* out, uint32_t n) {
 /**
  * @brief scale a block by a factor (*)
  */
-static inline void scale(float* out, float* x, float factor, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void scale_block(float* out,
+                               float* x,
+                               float factor,
+                               uint32_t start,
+                               uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] * factor;
     }
 }
@@ -141,8 +172,12 @@ static inline void scale(float* out, float* x, float factor, uint32_t n) {
 /**
  * @brief add dc offset for a block (+)
  */
-static inline void dc_offset(float* out, float* x, float factor, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void dc_block(float* out,
+                            float* x,
+                            float factor,
+                            uint32_t start,
+                            uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] + factor;
     }
 }
@@ -150,8 +185,8 @@ static inline void dc_offset(float* out, float* x, float factor, uint32_t n) {
 /**
  * @brief abs(*x)
  */
-static inline void abs_block(float* out, float* x, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void abs_block(float* out, float* x, uint32_t start, uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = fabs(x[i]);
     }
 }
@@ -163,8 +198,12 @@ static inline void abs_block(float* out, float* x, uint32_t n) {
 /**
  * @brief *x > *y
  */
-static inline void gt_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void gt_block(float* out,
+                            float* x,
+                            float* y,
+                            uint32_t start,
+                            uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] > y[i]);
     }
 }
@@ -172,8 +211,12 @@ static inline void gt_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x > y
  */
-static inline void gt_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void gt_scalar_block(float* out,
+                                   float* x,
+                                   float y,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] > y);
     }
 }
@@ -181,8 +224,12 @@ static inline void gt_scalar_block(float* out, float* x, float y, uint32_t n) {
 /**
  * @brief *x >= *y
  */
-static inline void gte_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void gte_block(float* out,
+                             float* x,
+                             float* y,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] >= y[i]);
     }
 }
@@ -190,8 +237,12 @@ static inline void gte_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x >= y
  */
-static inline void gte_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void gte_scalar_block(float* out,
+                                    float* x,
+                                    float y,
+                                    uint32_t start,
+                                    uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] >= y);
     }
 }
@@ -199,8 +250,12 @@ static inline void gte_scalar_block(float* out, float* x, float y, uint32_t n) {
 /**
  * @brief *x < *y
  */
-static inline void lt_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void lt_block(float* out,
+                            float* x,
+                            float* y,
+                            uint32_t start,
+                            uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] < y[i]);
     }
 }
@@ -208,8 +263,12 @@ static inline void lt_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x < y
  */
-static inline void lt_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void lt_scalar_block(float* out,
+                                   float* x,
+                                   float y,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] < y);
     }
 }
@@ -217,8 +276,12 @@ static inline void lt_scalar_block(float* out, float* x, float y, uint32_t n) {
 /**
  * @brief *x <= *y
  */
-static inline void lte_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void lte_block(float* out,
+                             float* x,
+                             float* y,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] <= y[i]);
     }
 }
@@ -226,8 +289,12 @@ static inline void lte_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x <= y
  */
-static inline void lte_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void lte_scalar_block(float* out,
+                                    float* x,
+                                    float y,
+                                    uint32_t start,
+                                    uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) (x[i] <= y);
     }
 }
@@ -235,8 +302,12 @@ static inline void lte_scalar_block(float* out, float* x, float y, uint32_t n) {
 /**
  * @brief *x == *y
  */
-static inline void ee_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void ee_block(float* out,
+                            float* x,
+                            float* y,
+                            uint32_t start,
+                            uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) check_float_equal(x[i], y[i]);
     }
 }
@@ -244,8 +315,12 @@ static inline void ee_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x == y
  */
-static inline void ee_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void ee_scalar_block(float* out,
+                                   float* x,
+                                   float y,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) check_float_equal(x[i], y);
     }
 }
@@ -253,8 +328,12 @@ static inline void ee_scalar_block(float* out, float* x, float y, uint32_t n) {
 /**
  * @brief *x != *y
  */
-static inline void ne_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void ne_block(float* out,
+                            float* x,
+                            float* y,
+                            uint32_t start,
+                            uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) !check_float_equal(x[i], y[i]);
     }
 }
@@ -262,8 +341,12 @@ static inline void ne_block(float* out, float* x, float* y, uint32_t n) {
 /**
  * @brief *x != *y
  */
-static inline void ne_scalar_block(float* out, float* x, float y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void ne_scalar_block(float* out,
+                                   float* x,
+                                   float y,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = (float) !check_float_equal(x[i], y);
     }
 }

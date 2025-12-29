@@ -1,33 +1,33 @@
 #include "distort.h"
 #include <dsp/maths.h>
 
+#include <dsp/ftable/chebpoly.h>
+#include <dsp/ftable/ramp.h>
 #include <dsp/tabread.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/chebpoly.h>
-#include <dsp/wavetable/ramp.h>
 #include <stdint.h>
 #include "dsp/shape.h"
 
-#define WT_BUF_SZ 1026
+#define ft_BUF_SZ 1026
 
-static float chebsaw_buf[WT_BUF_SZ] = {0};
+static float chebsaw_buf[ft_BUF_SZ] = {0};
 
-static wavetable chebsaw_wt;
+static ftable chebsaw_wt;
 
 int chebsaw_tab_init(CSOUND* csound) {
     (void) csound;
-    wavetable_init(&chebsaw_wt, chebsaw_buf, WT_BUF_SZ);
+    ftable_init(&chebsaw_wt, chebsaw_buf, ft_BUF_SZ);
 
     int err;
 
     // first create bipolar linear ramp
-    wt_ramp_args ramp_args = {
+    ft_ramp_args ramp_args = {
         .start = -1.0,
         .stop = 1.0,
         .endpoint = true,
     };
 
-    if ((err = wt_linspace(&chebsaw_wt, &ramp_args)) != DSP_OK) {
+    if ((err = ft_linspace(&chebsaw_wt, &ramp_args)) != DSP_OK) {
         return NOTOK;
     }
 
@@ -37,10 +37,10 @@ int chebsaw_tab_init(CSOUND* csound) {
         12.5, 11.1,  -10.0, -9.09, 8.333, 7.69, -7.14, -6.67,
     };
 
-    wt_chebpoly_args cheby_args;
-    wt_chebpoly_args_init(&cheby_args, h, 16);
+    ft_chebpoly_args cheby_args;
+    ft_chebpoly_args_init(&cheby_args, h, 16);
 
-    if ((err = wt_chebpoly(&chebsaw_wt, &cheby_args)) != DSP_OK) {
+    if ((err = ft_chebpoly(&chebsaw_wt, &cheby_args)) != DSP_OK) {
         return NOTOK;
     }
 
@@ -66,12 +66,12 @@ int chebsaw_vector(CSOUND* csound, chebsaw* obj) {
 
     // covert to unipolar and scale to len wavetab len
     // (-1,1) -> (0, N)
-    scale(a_out, a_in, 0.5, nsmps);
-    dc_offset(a_out, a_out, 0.5, nsmps);
-    scale(a_out, a_out, (float) (chebsaw_wt.len - 1), nsmps);
+    scale_block(a_out, a_in, 0.5, 0, nsmps);
+    dc_block(a_out, a_out, 0.5, 0, nsmps);
+    scale_block(a_out, a_out, (float) (chebsaw_wt.len - 1), 0, nsmps);
 
     // read off the waveshaped value
-    tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);
+    tabread3_tick_block(&obj->tr, a_out, a_out, 0, nsmps);
 
     return OK;
 }
@@ -129,7 +129,7 @@ int saturator_vector(CSOUND* csound, saturator* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
-    obj->func(obj->a_out, obj->a_in, obj->a_amt, nsmps);
+    obj->func(obj->a_out, obj->a_in, obj->a_amt, 0, nsmps);
 
     return OK;
 }

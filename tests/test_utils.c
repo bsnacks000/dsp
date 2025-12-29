@@ -1,4 +1,5 @@
 #include "test_utils.h"
+#include <dsp/utils.h>
 
 MunitResult test_float_underflow(const MunitParameter params[], void* data) {
     (void) params;
@@ -102,7 +103,7 @@ MunitResult test_copy_nsmps(const MunitParameter params[], void* data) {
     }
     float out[4] = {0};
 
-    copy_nsmps(out, in, nsmps);
+    copy_nsmps(out, in, 0, nsmps);
 
     for (uint32_t i = 0; i < nsmps; i++) {
         munit_assert_float(out[i], ==, in[i]);

@@ -12,7 +12,7 @@ int bqres_vector(CSOUND* csound, bqres* obj) {
     (void) csound;
     u_int32_t nsamps = GetLocalKsmps(&obj->h);
     bq_resonant_tick_block(&obj->state, obj->a_out, obj->a_in, *obj->k_freq, *obj->k_q,
-                           nsamps);
+                           0, nsamps);
 
     return OK;
 }
@@ -28,7 +28,7 @@ int bqnres_init(CSOUND* csound, bqnres* obj) {
 int bqnres_vector(CSOUND* csound, bqnres* obj) {
     (void) csound;
     u_int32_t nsamps = GetLocalKsmps(&obj->h);
-    bq_non_resonant_tick_block(&obj->state, obj->a_out, obj->a_in, *obj->k_freq,
+    bq_non_resonant_tick_block(&obj->state, obj->a_out, obj->a_in, *obj->k_freq, 0,
                                nsamps);
 
     return OK;
@@ -46,6 +46,6 @@ int bqpara_vector(CSOUND* csound, bqpara* obj) {
     (void) csound;
     u_int32_t nsamps = GetLocalKsmps(&obj->h);
     bq_para_eq_tick_block(&obj->state, obj->a_out, obj->a_in, *obj->k_freq, *obj->k_q,
-                          *obj->k_gain, nsamps);
+                          *obj->k_gain, 0, nsamps);
     return OK;
 }

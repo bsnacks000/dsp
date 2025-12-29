@@ -14,7 +14,7 @@ int ccurve_vector(CSOUND* csound, ccurve* obj) {
 
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
-    curve_tick_block(&obj->crv, obj->a_out, nsmps);
+    curve_tick_block(&obj->crv, obj->a_out, 0, nsmps);
 
     return OK;
 }

@@ -1,7 +1,7 @@
 #include <csound.h>
+#include <dsp/ftable/deck.h>
+#include <dsp/ftable/sinesum.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/deck.h>
-#include <dsp/wavetable/sinesum.h>
 
 #include "csdl.h"
 #include "dsp/oscil.h"
@@ -11,23 +11,23 @@
 //
 //
 #define N_FRAMES 7
-#define WT_BUF_SZ 8194
+#define ft_BUF_SZ 8194
 
 static const uint32_t bands[N_FRAMES] = {64, 32, 16, 8, 4, 2, 1};
 
-static wt_sinesum_args* args[N_FRAMES] = {0};
+static ft_sinesum_args* args[N_FRAMES] = {0};
 static void sinesum_args_destroy(void) {
     for (int i = 0; i < N_FRAMES; i++)
         free(args[i]);
 }
 
-static wavetable* wavtabs[N_FRAMES] = {0};
+static ftable* wavtabs[N_FRAMES] = {0};
 static void wavtabs_destroy(void) {
     for (int i = 0; i < N_FRAMES; i++)
         free(wavtabs[i]);
 }
 
-static wt_deck deck;
+static ft_deck deck;
 
 /**
  * @brief fail fast on bad malloc.
@@ -47,10 +47,10 @@ static dsp_err fill_sinesum_args(void) {
 
     dsp_err err;
     for (size_t i = 0; i < N_FRAMES; i++) {
-        wt_sinesum_args* a = (wt_sinesum_args*) malloc(sizeof(wt_sinesum_args));
+        ft_sinesum_args* a = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
         check_malloc(a, "fill_sinesum_args");
         err =
-            wt_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
+            ft_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
 
         if (err != DSP_OK) {
             return err;
@@ -65,15 +65,15 @@ static dsp_err fill_sinesum_args(void) {
 static void alloc_wavtabs(void) {
 
     for (size_t i = 0; i < N_FRAMES; i++) {
-        wavetable* wt = (wavetable*) malloc(sizeof(wavetable));
+        ftable* wt = (ftable*) malloc(sizeof(ftable));
         check_malloc(wt, "fill_wavtabs:wt");
-        memset(wt, 0, sizeof(wavetable));
+        memset(wt, 0, sizeof(ftable));
 
-        float* buf = (float*) malloc(sizeof(float) * WT_BUF_SZ);
+        float* buf = (float*) malloc(sizeof(float) * ft_BUF_SZ);
         check_malloc(wt, "fill_wavtabs:buf");
-        memset(buf, 0, sizeof(float) * WT_BUF_SZ);
+        memset(buf, 0, sizeof(float) * ft_BUF_SZ);
 
-        wavetable_init(wt, buf, WT_BUF_SZ);
+        ftable_init(wt, buf, ft_BUF_SZ);
         wavtabs[i] = wt;
     }
 }
@@ -102,7 +102,7 @@ int blsaw_deck_init(CSOUND* csound) {
         return csound->InitError(csound, "generate_deck failed: %d\n", err);
     }
 
-    wt_deck_init(&deck, wavtabs, N_FRAMES);
+    ft_deck_init(&deck, wavtabs, N_FRAMES);
     return OK;
 }
 
@@ -143,6 +143,6 @@ int blsaw_vector(CSOUND* csound, blsaw* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
-    blxoscil3_tick_block(&obj->saw, obj->a_out, obj->a_freq, nsmps);
+    blxoscil3_tick_block(&obj->saw, obj->a_out, obj->a_freq, 0, nsmps);
     return OK;
 }

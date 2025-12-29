@@ -33,6 +33,7 @@ void follow_rms_tick_block(follow* self,
                            float* in,
                            float* atk_ms,
                            float* rel_ms,
+                           uint32_t start,
                            uint32_t nsmps);
 
 /**
@@ -43,6 +44,7 @@ void follow_peak_tick_block(follow* self,
                             float* in,
                             float* atk_ms,
                             float* rel_ms,
+                            uint32_t start,
                             uint32_t nsmps);
 
 #ifdef __cplusplus

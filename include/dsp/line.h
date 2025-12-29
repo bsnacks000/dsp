@@ -31,7 +31,7 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
 /**
  * @brief line tick block.
  */
-void line_tick_block(line* self, float* out, uint32_t nsmps);
+void line_tick_block(line* self, float* out, uint32_t start, uint32_t nsmps);
 
 /**
  * @brief sample and linearly interpolate.
@@ -50,6 +50,7 @@ void sampi_tick_block(sampi* self,
                       float* dur_sec,
                       float* gate,
                       float* gate_thresh,
+                      uint32_t start,
                       uint32_t nsmps);
 
 /**
@@ -91,6 +92,7 @@ void line_ar_tick_block(line_ar* self,
                         float* atk_level,
                         float* rel_sec,
                         float* rel_level,
+                        uint32_t start,
                         uint32_t nsmps);
 
 /**
@@ -141,6 +143,7 @@ void line_adsr_tick_block(line_adsr* self,
                           float* sustain_level,
                           float* rel_sec,
                           float* rel_level,
+                          uint32_t start,
                           uint32_t nsmps);
 
 #ifdef __cplusplus

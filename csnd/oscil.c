@@ -25,7 +25,7 @@ int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
     uint32_t buf_sz = pow2_len + 2;  // add 2 guard points for my cubic
     // interpolation.
 
-    // allocate our own buffer for the wavetable
+    // allocate our own buffer for the ftable
     csound->AuxAlloc(csound, buf_sz * sizeof(MYFLT), &obj->aux);
     if (obj->aux.auxp == NULL) {
         return csound->InitError(csound, "AuxAlloc failed\n");
@@ -46,7 +46,7 @@ int ftoscil3_init(CSOUND* csound, ftoscil3* obj) {
 
     MYFLT sr = GetLocalSr(&obj->h);
 
-    wavetable_init(&obj->wt, buf, buf_sz);
+    ftable_init(&obj->wt, buf, buf_sz);
 
     dsp_err err;
 
@@ -60,7 +60,7 @@ int ftoscil3_vector(CSOUND* csound, ftoscil3* obj) {
     (void) csound;
     uint32_t nsamps = GetLocalKsmps(&obj->h);
 
-    oscil3_tick_block(&obj->state, obj->a_out, obj->a_freq, nsamps);
+    oscil3_tick_block(&obj->state, obj->a_out, obj->a_freq, 0, nsamps);
 
     return OK;
 }
@@ -84,7 +84,7 @@ int ftoscil3_pm_init(CSOUND* csound, ftoscil3_pm* obj) {
     uint32_t buf_sz = pow2_len + 2;  // add 2 guard points for my cubic
     // interpolation.
 
-    // allocate our own buffer for the wavetable
+    // allocate our own buffer for the ftable
     csound->AuxAlloc(csound, buf_sz * sizeof(MYFLT), &obj->aux);
     if (obj->aux.auxp == NULL) {
         return csound->InitError(csound, "AuxAlloc failed\n");
@@ -102,7 +102,7 @@ int ftoscil3_pm_init(CSOUND* csound, ftoscil3_pm* obj) {
 
     MYFLT sr = GetLocalSr(&obj->h);
 
-    wavetable_init(&obj->wt, buf, buf_sz);
+    ftable_init(&obj->wt, buf, buf_sz);
 
     dsp_err err;
     if ((err = oscil_init(&obj->state, &obj->wt, 440.0, 0.0, sr)) != DSP_OK) {
@@ -115,7 +115,7 @@ int ftoscil3_pm_vector(CSOUND* csound, ftoscil3_pm* obj) {
     (void) csound;
     uint32_t nsamps = GetLocalKsmps(&obj->h);
 
-    oscil3_pm_tick_block(&obj->state, obj->a_out, obj->a_freq, obj->a_phase, nsamps);
+    oscil3_pm_tick_block(&obj->state, obj->a_out, obj->a_freq, obj->a_phase, 0, nsamps);
 
     return OK;
 }
@@ -137,7 +137,7 @@ int oftoscil3_init(CSOUND* csound, oftoscil3* obj) {
     uint32_t buf_sz = pow2_len + 2;  // add 2 guard points for my cubic
     // interpolation.
 
-    // allocate our own buffer for the wavetable
+    // allocate our own buffer for the ftable
     csound->AuxAlloc(csound, buf_sz * sizeof(MYFLT), &obj->ft);
     if (obj->ft.auxp == NULL) {
         return csound->InitError(csound, "AuxAlloc failed: ft\n");
@@ -153,8 +153,8 @@ int oftoscil3_init(CSOUND* csound, oftoscil3* obj) {
     buf[pow2_len] = buf[0];
     buf[pow2_len + 1] = buf[1];
 
-    // init wavetable.
-    wavetable_init(&obj->wt, buf, buf_sz);
+    // init ftable.
+    ftable_init(&obj->wt, buf, buf_sz);
 
     // // handle phase
     float phase = clamp(*obj->i_phase, 0.0, 1.0);
@@ -236,11 +236,11 @@ int oftoscil3_vector(CSOUND* csound, oftoscil3* obj) {
     //                            os_buf_sz);
 
     // tick the os block and decimate
-    oscil3_tick_block(&obj->state, os_out_buf, os_freq_buf, os_buf_sz);
+    oscil3_tick_block(&obj->state, os_out_buf, os_freq_buf, 0, os_buf_sz);
 
     // run the cascade
     for (int i = 0; i < OFTOSCIL_FILTER_N; i++) {
-        bq_non_resonant_tick_block(&obj->bank[i], os_out_buf, os_out_buf, obj->os_fc,
+        bq_non_resonant_tick_block(&obj->bank[i], os_out_buf, os_out_buf, obj->os_fc, 0,
                                    os_buf_sz);
     }
 

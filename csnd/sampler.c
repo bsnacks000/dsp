@@ -50,7 +50,7 @@ int sampler_init(CSOUND* csound, sampler* obj) {
     // NOTE: flen gives the full len - guard point
     // wt will wrap the last 2 samples in this setup regardless so
     // we don't have memcopy the whole sample.
-    wavetable_init(&obj->wt, ftp->ftable, ftp->flen);
+    ftable_init(&obj->wt, ftp->ftable, ftp->flen);
 
     // init the tabread
     tabread_init(&obj->tab, &obj->wt);
@@ -74,7 +74,7 @@ int sampler_vector(CSOUND* csound, sampler* obj) {
     }
 
     // collect phasor ticks
-    phasor_tick_block(&obj->ph, ticks, freq, nsmps);
+    phasor_tick_block(&obj->ph, ticks, freq, 0, nsmps);
 
     // scale the ticks to idxs
     for (u_int32_t i = 0; i < nsmps; i++) {
@@ -85,7 +85,7 @@ int sampler_vector(CSOUND* csound, sampler* obj) {
     }
 
     // tick the tabreader
-    tabreadi_tick_block(&obj->tab, obj->a_out, ticks, nsmps);
+    tabreadi_tick_block(&obj->tab, obj->a_out, ticks, 0, nsmps);
 
     return OK;
 }

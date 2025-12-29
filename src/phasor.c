@@ -8,10 +8,11 @@ static inline void update_(phasor* self) {
 }
 
 static inline float tick_(phasor* self) {
+    float out = (float) self->phase_;
     self->phase_ += self->incr_;
     if (self->phase_ >= 1.0)
         self->phase_ -= 1.0;
-    return (float) self->phase_;
+    return out;
 }
 
 void phasor_init(phasor* self, float freq, float iphs, float sr) {
@@ -23,8 +24,12 @@ void phasor_init(phasor* self, float freq, float iphs, float sr) {
     update_(self);
 }
 
-void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void phasor_tick_block(phasor* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -35,8 +40,12 @@ void phasor_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
     }
 }
 
-void impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void impulse_tick_block(phasor* self,
+                        float* out,
+                        float* freq,
+                        uint32_t start,
+                        uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -45,12 +54,17 @@ void impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
         }
         // invert phasor ramp to start impulse on 1st sample
         float x = invert_unipolar(tick_(self));
+        // printf("%.3f\n", x);
         out[i] = (x >= 1.0) ? 1.0 : 0.0;
     }
 }
 
-void rand_impulse_tick_block(phasor* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void rand_impulse_tick_block(phasor* self,
+                             float* out,
+                             float* freq,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {

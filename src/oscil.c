@@ -1,10 +1,10 @@
 #include <math.h>
 #include <stdint.h>
 
+#include <dsp/ftable/deck.h>
 #include <dsp/interpolate.h>
 #include <dsp/oscil.h>
 #include <dsp/utils.h>
-#include <dsp/wavetable/deck.h>
 
 // NOTE: some extra guard like this would avoid potential drift for long running
 // (days/weeks) if (self->index_ >= self->wt->len || self->index_ < 0.0)
@@ -66,23 +66,6 @@ static inline float oscil3_tick_(oscil* self) {
     return out;
 }
 
-/// NOTE: These were moved from deck public API.
-// The reasoning is that other modules may implement different private lookup strategies
-// for decks if needed. These specific strats are more bound to xoscil.
-
-// /**
-//  * @brief given a position and deck_sz calculate a cross fade value over a given
-//  * frame/band pair.
-//  */
-// static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
-//     pos = clamp(pos, 0.0, 1.0);
-
-//     float scaled = pos * (deck_sz - 1);
-//     float fader = scaled - floorf(scaled);
-//     // fprintf(stderr, "%.8f\n", fader);
-//     return xfade_sin(fader);
-// }
-
 /**
  * @brief query the l/r amplitudes for use with xfade given freq for bandlimited
  * crossfades.
@@ -102,49 +85,20 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
 }
 
 /**
- * @brief represents a low/high pair. The tables used for the actual crossfade.
- */
-// typedef struct {
-//     wavetable* low;
-//     wavetable* high;
-// } wt_frame_pair;
-
-/**
- * @brief wt_deck lookup using the position to fill a band_pair.
- */
-// static inline wt_frame_pair wt_deck_pos_lookup(wt_deck* self, float pos) {
-//     pos = clamp(pos, 0.0f, 1.0f);  // ensure [0, 1]
-//     pos = 0.5f - 0.5f * cosf(pos * M_PI);
-
-//     float fidx = pos * (self->frames_sz - 1);  // range: [0, N-1]
-//     uint32_t idx = (int) fidx;
-
-//     if (idx >= self->frames_sz - 1) {
-//         idx = self->frames_sz - 2;
-//         fidx = (float) idx;
-//     }
-
-//     return (wt_frame_pair) {
-//         .low = self->frames[idx],
-//         .high = self->frames[idx + 1],
-//     };
-// }
-
-/**
  * @brief query the deck and return the correct band_pair given the freq. To provide
  * smooth frequency transition regions its on the caller to supply a deck in the
  * application layer that contains:
- *  - wavetables sorted by max fundamental (wt->f0)
+ *  - ftables sorted by max fundamental (wt->f0)
  *  - complete freq coverage up to nyquist across frames.
  *
  * NOTE: If there are gaps or unsorted regions this lookup will behave inconsistently.
  */
-static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
+static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
     // TODO maybe clamp freq.
 
     // lower then first band
     if (freq < self->frames[0]->f0) {
-        return (wt_frame_pair) {
+        return (ft_frame_pair) {
             .low = self->frames[0],
             .high = self->frames[1],
         };
@@ -152,7 +106,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
 
     // higher then last band
     if (freq > self->frames[self->frames_sz - 1]->f0) {
-        return (wt_frame_pair) {
+        return (ft_frame_pair) {
             .low = self->frames[self->frames_sz - 2],
             .high = self->frames[self->frames_sz - 1],
         };
@@ -162,7 +116,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
     // its on caller to make sure the deck
     for (uint32_t i = 1; i < self->frames_sz; i++) {
         if (self->frames[i - 1]->f0 <= freq && freq < self->frames[i]->f0) {
-            return (wt_frame_pair) {
+            return (ft_frame_pair) {
                 .low = self->frames[i - 1],
                 .high = self->frames[i],
             };
@@ -172,7 +126,7 @@ static inline wt_frame_pair wt_deck_freq_lookup(wt_deck* self, float freq) {
     // if we get here there are gaps in the freq bands so we just return
     // the first pair
     // TODO: warning (debug)
-    return (wt_frame_pair) {
+    return (ft_frame_pair) {
         .low = self->frames[0],
         .high = self->frames[1],
     };
@@ -191,7 +145,7 @@ static inline void blxoscil_update_(blxoscil* self) {
     oscil_update_(self->r);
 
     // draw the correct bandpair from the deck using freq..
-    wt_frame_pair bpair = wt_deck_freq_lookup(self->deck, self->freq);
+    ft_frame_pair bpair = ft_deck_freq_lookup(self->deck, self->freq);
     float lo_freq = bpair.low->f0;
     float hi_freq = bpair.high->f0;
 
@@ -232,7 +186,7 @@ static inline void xoscil_update_(xoscil* self) {
     oscil_update_(self->r);
 
     // draw the correct bandpair from the deck using pos..
-    wt_frame_pair bpair = wt_deck_pos_lookup(self->deck, self->pos);
+    ft_frame_pair bpair = ft_deck_pos_lookup(self->deck, self->pos);
 
     // use the freqs from the band pair to calculate the xfade value
     xfade_pair amps = xfade_from_pos(self->pos, self->deck->frames_sz);
@@ -258,7 +212,7 @@ static inline void xoscil_update_(xoscil* self) {
 // public oscil API
 //
 
-dsp_err oscil_init(oscil* self, wavetable* wt, float freq, float phase, float sr) {
+dsp_err oscil_init(oscil* self, ftable* wt, float freq, float phase, float sr) {
     if (!wt->is_pow2) {
         return DSP_ERR;
     }
@@ -275,8 +229,12 @@ dsp_err oscil_init(oscil* self, wavetable* wt, float freq, float phase, float sr
     return DSP_OK;
 }
 
-void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void osciln_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -287,8 +245,12 @@ void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
     }
 }
 
-void oscili_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void oscili_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -303,8 +265,9 @@ void oscili_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -320,8 +283,12 @@ void oscili_pm_tick_block(oscil* self,
     }
 }
 
-void oscil3_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void oscil3_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -337,8 +304,9 @@ void oscil3_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -354,8 +322,9 @@ void oscil3_pm_tick_block(oscil* self,
     }
 }
 
+// TODO: maybe refactor so that blxoscil controls full initilization
 dsp_err blxoscil_init(blxoscil* self,
-                      wt_deck* deck,
+                      ft_deck* deck,
                       oscil* l,
                       oscil* r,
                       float freq,
@@ -380,8 +349,12 @@ dsp_err blxoscil_init(blxoscil* self,
     return DSP_OK;
 }
 
-void blxoscili_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void blxoscili_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
@@ -397,9 +370,13 @@ void blxoscili_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmp
     }
 }
 
-void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps) {
+void blxoscil3_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
@@ -417,7 +394,7 @@ void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmp
 }
 
 dsp_err xoscil_init(xoscil* self,
-                    wt_deck* deck,
+                    ft_deck* deck,
                     oscil* l,
                     oscil* r,
                     float freq,
@@ -449,9 +426,10 @@ void xoscili_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         float pos_ = pos[i];
 
@@ -475,9 +453,10 @@ void xoscil3_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         float pos_ = pos[i];
 

@@ -5,7 +5,6 @@
 extern "C" {
 #endif
 
-#include <dsp/interpolate.h>
 #include "munit.h"
 
 MunitResult test_interpolate_linear(const MunitParameter params[], void* data);

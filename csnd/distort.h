@@ -7,8 +7,8 @@ extern "C" {
 
 #include <csdl.h>
 #include <dsp/balance.h>
+#include <dsp/ftable/ftable.h>
 #include <dsp/tabread.h>
-#include <dsp/wavetable/wavetable.h>
 #include <dsp/xfade.h>
 
 /**
@@ -25,7 +25,8 @@ int chebsaw_tab_init(CSOUND* csound);
 int chebsaw_init(CSOUND* csound, chebsaw* obj);
 int chebsaw_vector(CSOUND* csound, chebsaw* obj);
 
-typedef void (*saturator_func)(float* out, float* x, float* amt, uint32_t nsmps);
+typedef void (
+    *saturator_func)(float* out, float* x, float* amt, uint32_t start, uint32_t nsmps);
 
 /**
  * @brief multi mode saturator

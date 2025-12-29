@@ -17,7 +17,7 @@ int ssaw_init(CSOUND* csound, ssaw* obj) {
 int ssaw_vector(CSOUND* csound, ssaw* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
-    blepsaw_tick_block(&obj->osc, obj->a_out, obj->a_freq, nsmps);
+    blepsaw_tick_block(&obj->osc, obj->a_out, obj->a_freq, 0, nsmps);
     return OK;
 }
 
@@ -34,6 +34,6 @@ int ssqr_init(CSOUND* csound, ssqr* obj) {
 int ssqr_vector(CSOUND* csound, ssqr* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
-    blepsqr_tick_block(&obj->osc, obj->a_out, obj->a_freq, obj->a_duty, nsmps);
+    blepsqr_tick_block(&obj->osc, obj->a_out, obj->a_freq, obj->a_duty, 0, nsmps);
     return OK;
 }

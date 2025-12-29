@@ -21,9 +21,21 @@ typedef struct {
     float alpha_, last_;
 } lag;
 
+/**
+ * @brief lag init
+ */
 void lag_init(lag* self, float t_sec, float sr);
 
-void lag_tick_block(lag* self, float* out, float* in, float* t_sec, uint32_t nsmps);
+/**
+ * @brief lag tick block. t is a signal of time in seconds to converge to -60db of the
+ * input signal
+ */
+void lag_tick_block(lag* self,
+                    float* out,
+                    float* in,
+                    float* t_sec,
+                    uint32_t start,
+                    uint32_t nsmps);
 
 #ifdef __cplusplus
 }

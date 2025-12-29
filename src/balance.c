@@ -27,7 +27,7 @@ inline static void tick_(balance* self, float out, float cmp) {
 }
 
 void balance_init(balance* self, float sr) {
-    self->sr = sr;
+    self->sr = fabs(sr);
     self->coef_ = 0.0;
     self->d0_ = 0.0;
     self->d1_ = 0.0;
@@ -36,8 +36,12 @@ void balance_init(balance* self, float sr) {
     update_(self);
 }
 
-void balance_tick_block(balance* self, float* out, float* cmp, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void balance_tick_block(balance* self,
+                        float* out,
+                        float* cmp,
+                        uint32_t start,
+                        uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         tick_(self, out[i], cmp[i]);
         out[i] *= self->scale_;
     }
