@@ -100,7 +100,7 @@ static void smoke_test_non_resonant_bq(bq_non_resonant* f, bq_non_resonant_type 
 
     float out[NSMPS] = {0.0};
 
-    bq_non_resonant_tick_block(f, out, in, 100.0, NSMPS);
+    bq_non_resonant_tick_block(f, out, in, 100.0, 0, NSMPS);
 
     check_finite(out, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -116,7 +116,7 @@ static void smoke_test_resonant_bq(bq_resonant* f, bq_resonant_type t) {
 
     float out[NSMPS] = {0.0};
 
-    bq_resonant_tick_block(f, out, in, 100.0, 0.707, NSMPS);
+    bq_resonant_tick_block(f, out, in, 100.0, 0.707, 0, NSMPS);
 
     check_finite(out, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -130,7 +130,7 @@ static void smoke_test_bq_para_eq(bq_para_eq* f, bq_para_eq_type t) {
 
     float out[NSMPS] = {0.0};
 
-    bq_para_eq_tick_block(f, out, in, 100.0, 0.707, 1.0, NSMPS);
+    bq_para_eq_tick_block(f, out, in, 100.0, 0.707, 1.0, 0, NSMPS);
 
     check_finite(out, NSMPS);
     check_any_nonzero(out, NSMPS);

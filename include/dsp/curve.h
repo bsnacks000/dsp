@@ -38,7 +38,7 @@ void curve_init(curve* self,
 /**
  * @brief curve tick block.
  */
-void curve_tick_block(curve* self, float* out, uint32_t nsmps);
+void curve_tick_block(curve* self, float* out, uint32_t start, uint32_t nsmps);
 
 /**
  * @brief curve AR envelope. Similar to `line_ar` but each segment has a curve factor.
@@ -84,6 +84,7 @@ void curve_ar_tick_block(curve_ar* self,
                          float* rel_sec,
                          float* rel_crv,
                          float* rel_level,
+                         uint32_t start,
                          uint32_t nsmps);
 
 /**
@@ -140,6 +141,7 @@ void curve_adsr_tick_block(curve_adsr* self,
                            float* rel_sec,
                            float* rel_crv,
                            float* rel_level,
+                           uint32_t start,
                            uint32_t nsmps);
 
 #ifdef __cplusplus

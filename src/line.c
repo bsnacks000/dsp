@@ -34,9 +34,9 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr) {
     line_update_(self);
 }
 
-void line_tick_block(line* self, float* out, uint32_t nsmps) {
+void line_tick_block(line* self, float* out, uint32_t start, uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = line_tick_(self);
     }
 }
@@ -150,8 +150,9 @@ void line_ar_tick_block(line_ar* self,
                         float* atk_level,
                         float* rel_sec,
                         float* rel_level,
+                        uint32_t start,
                         uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
@@ -300,8 +301,9 @@ void line_adsr_tick_block(line_adsr* self,
                           float* sustain_level,
                           float* rel_sec,
                           float* rel_level,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         // update all inputs
         self->prev_gate_ = self->curr_gate_;
@@ -357,9 +359,10 @@ void sampi_tick_block(sampi* self,
                       float* dur_sec,
                       float* gate,
                       float* gate_thresh,
+                      uint32_t start,
                       uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         self->prev_gate_ = self->curr_gate_;
         self->curr_gate_ = gate[i];
         self->gate_thresh = gate_thresh[i];

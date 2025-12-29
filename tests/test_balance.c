@@ -63,7 +63,7 @@ MunitResult test_balance_tick_block(const MunitParameter params[], void* data) {
     balance b;
     balance_init(&b, 48000.0f);
 
-    balance_tick_block(&b, out, cmp, NSMPS);
+    balance_tick_block(&b, out, cmp, 0, NSMPS);
 
     // check output was processed
     munit_assert_memory_not_equal(sizeof(float) * NSMPS, out_copy, out);

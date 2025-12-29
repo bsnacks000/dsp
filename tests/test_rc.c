@@ -47,7 +47,7 @@ MunitResult test_rc_one_pole_tick_block(const MunitParameter params[], void* dat
     float out_hp[NSMPS] = {0.0};
     float out_ap[NSMPS] = {0.0};
 
-    rc_one_pole_tick_block(&rc, in, out_lp, out_hp, out_ap, freq, NSMPS);
+    rc_one_pole_tick_block(&rc, in, out_lp, out_hp, out_ap, freq, 0, NSMPS);
 
     check_finite(out_lp, NSMPS);
     check_any_nonzero(out_lp, NSMPS);
@@ -106,7 +106,7 @@ MunitResult test_rc_ladder_tick_block(const MunitParameter params[], void* data)
 
     float out[NSMPS] = {0.0};
 
-    rc_ladder_tick_block(&lad, out, in, freq, q, NSMPS);
+    rc_ladder_tick_block(&lad, out, in, freq, q, 0, NSMPS);
 
     munit_assert_memory_not_equal(sizeof(float) * NSMPS, out, in);
     check_finite(out, NSMPS);

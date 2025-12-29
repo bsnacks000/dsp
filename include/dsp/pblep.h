@@ -39,7 +39,11 @@ void blepsaw_init(blepsaw* self, float freq, float iphs, float sr);
 /**
  * @brief tick one block of blepsaw.
  */
-void blepsaw_tick_block(blepsaw* self, float* out, float* freq, uint32_t sz);
+void blepsaw_tick_block(blepsaw* self,
+                        float* out,
+                        float* freq,
+                        uint32_t start,
+                        uint32_t nsmps);
 
 typedef struct {
     float freq, iphase, duty, sr;
@@ -59,7 +63,8 @@ void blepsqr_tick_block(blepsqr* self,
                         float* out,
                         float* freq,
                         float* duty,
-                        uint32_t sz);
+                        uint32_t start,
+                        uint32_t nsmps);
 
 #ifdef __cplusplus
 }

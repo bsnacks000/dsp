@@ -67,7 +67,7 @@ MunitResult test_xfade_tick_block(const MunitParameter params[], void* data) {
         pos[i] = 0.51;
     }
 
-    xfade_tick_block(&x, out, in_l, in_r, pos, NSMPS);
+    xfade_tick_block(&x, out, in_l, in_r, pos, 0, NSMPS);
 
     check_finite(out, NSMPS);
 

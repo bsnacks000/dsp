@@ -56,9 +56,13 @@ void blepsaw_init(blepsaw* self, float freq, float iphs, float sr) {
     update_blepsaw_(self);
 }
 
-void blepsaw_tick_block(blepsaw* self, float* out, float* freq, uint32_t nsmps) {
+void blepsaw_tick_block(blepsaw* self,
+                        float* out,
+                        float* freq,
+                        uint32_t start,
+                        uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -82,8 +86,9 @@ void blepsqr_tick_block(blepsqr* self,
                         float* out,
                         float* freq,
                         float* duty,
+                        uint32_t start,
                         uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         float duty_ = duty[i];
         bool freq_eq = check_float_equal(freq_, self->freq);

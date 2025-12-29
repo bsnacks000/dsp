@@ -5,7 +5,7 @@
 
 #define NSMPS 64
 
-#include <stdio.h>
+// #include <stdio.h>
 
 MunitResult test_phasor_tick_block(const MunitParameter params[], void* data) {
     (void) params;
@@ -19,7 +19,7 @@ MunitResult test_phasor_tick_block(const MunitParameter params[], void* data) {
 
     fill_dc(freq, 120.0, NSMPS);
 
-    phasor_tick_block(&ph, out, freq, NSMPS);
+    phasor_tick_block(&ph, out, freq, 0, NSMPS);
 
     check_any_nonzero(out, NSMPS);
     check_energy(out, 1.2, NSMPS);
@@ -39,7 +39,7 @@ MunitResult test_impulse_tick_block(const MunitParameter params[], void* data) {
     fill_dc(freq, 120.0, NSMPS);
 
     // for (int i = 0; i < 10; i++)
-    impulse_tick_block(&ph, out, freq, NSMPS);
+    impulse_tick_block(&ph, out, freq, 0, NSMPS);
 
     // for (int i = 0; i < NSMPS; i++)
     //     printf("%.3f", out[i]);
@@ -64,7 +64,7 @@ MunitResult test_rand_impulse_tick_block(const MunitParameter params[], void* da
 
     fill_dc(freq, 880.0, NSMPS);
 
-    rand_impulse_tick_block(&ph, out, freq, NSMPS);
+    rand_impulse_tick_block(&ph, out, freq, 0, NSMPS);
 
     check_energy(out, 1.2, NSMPS);
     return MUNIT_OK;

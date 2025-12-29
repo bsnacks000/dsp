@@ -75,7 +75,7 @@ MunitResult test_tabreadn_tick_block(const MunitParameter params[], void* data) 
     float idx[NSMPS] = {0.0};
     fill_line(idx, 0, ft.len, NSMPS);
 
-    tabreadn_tick_block(&tb, out, idx, NSMPS);
+    tabreadn_tick_block(&tb, out, idx, 0, NSMPS);
 
     /// TODO worth asserting exact
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
@@ -100,7 +100,7 @@ MunitResult test_tabreadi_tick_block(const MunitParameter params[], void* data) 
     float idx[NSMPS] = {0.0};
     fill_line(idx, 0, ft.len, NSMPS);
 
-    tabreadi_tick_block(&tb, out, idx, NSMPS);
+    tabreadi_tick_block(&tb, out, idx, 0, NSMPS);
 
     /// TODO worth asserting exact
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
@@ -125,7 +125,7 @@ MunitResult test_tabread3_tick_block(const MunitParameter params[], void* data) 
     float idx[NSMPS] = {0.0};
     fill_line(idx, 0, ft.len, NSMPS);
 
-    tabread3_tick_block(&tb, out, idx, NSMPS);
+    tabread3_tick_block(&tb, out, idx, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -186,7 +186,7 @@ MunitResult test_xtabreadi_tick_block(const MunitParameter params[], void* data)
     float pos[NSMPS] = {0.0};
     fill_line(pos, 0.0, 1.0, NSMPS);
 
-    xtabreadi_tick_block(&xtb, out, idx, pos, NSMPS);
+    xtabreadi_tick_block(&xtb, out, idx, pos, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -223,7 +223,7 @@ MunitResult test_xtabread3_tick_block(const MunitParameter params[], void* data)
     float pos[NSMPS] = {0.0};
     fill_line(pos, 0.0, 1.0, NSMPS);
 
-    xtabread3_tick_block(&xtb, out, idx, pos, NSMPS);
+    xtabread3_tick_block(&xtb, out, idx, pos, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);

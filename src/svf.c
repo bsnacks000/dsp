@@ -71,9 +71,10 @@ void svf_tick_block(svf* self,
                     float* freq,
                     float* q,
                     float* drive,
-                    uint32_t sz) {
+                    uint32_t start,
+                    uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 

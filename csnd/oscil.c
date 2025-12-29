@@ -60,7 +60,7 @@ int ftoscil3_vector(CSOUND* csound, ftoscil3* obj) {
     (void) csound;
     uint32_t nsamps = GetLocalKsmps(&obj->h);
 
-    oscil3_tick_block(&obj->state, obj->a_out, obj->a_freq, nsamps);
+    oscil3_tick_block(&obj->state, obj->a_out, obj->a_freq, 0, nsamps);
 
     return OK;
 }
@@ -115,7 +115,7 @@ int ftoscil3_pm_vector(CSOUND* csound, ftoscil3_pm* obj) {
     (void) csound;
     uint32_t nsamps = GetLocalKsmps(&obj->h);
 
-    oscil3_pm_tick_block(&obj->state, obj->a_out, obj->a_freq, obj->a_phase, nsamps);
+    oscil3_pm_tick_block(&obj->state, obj->a_out, obj->a_freq, obj->a_phase, 0, nsamps);
 
     return OK;
 }
@@ -236,11 +236,11 @@ int oftoscil3_vector(CSOUND* csound, oftoscil3* obj) {
     //                            os_buf_sz);
 
     // tick the os block and decimate
-    oscil3_tick_block(&obj->state, os_out_buf, os_freq_buf, os_buf_sz);
+    oscil3_tick_block(&obj->state, os_out_buf, os_freq_buf, 0, os_buf_sz);
 
     // run the cascade
     for (int i = 0; i < OFTOSCIL_FILTER_N; i++) {
-        bq_non_resonant_tick_block(&obj->bank[i], os_out_buf, os_out_buf, obj->os_fc,
+        bq_non_resonant_tick_block(&obj->bank[i], os_out_buf, os_out_buf, obj->os_fc, 0,
                                    os_buf_sz);
     }
 

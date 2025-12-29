@@ -29,7 +29,7 @@ dsp_err ftable_shallow_copy(ftable* self, ftable* other) {
 dsp_err ftable_deep_copy(ftable* self, ftable* other) {
     if (self->buf_sz != other->buf_sz)
         return DSP_ERR;
-    copy_nsmps(self->buf, other->buf, self->buf_sz);
+    copy_nsmps(self->buf, other->buf, 0, self->buf_sz);
     return DSP_OK;
 }
 

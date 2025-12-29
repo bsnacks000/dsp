@@ -122,7 +122,7 @@ app_err entrypoint(const char* outfile) {
     for (uint32_t i = 0; i < nsmps; i++)
         freq[i] = 220.0;
 
-    xoscil3_tick_block(&morph, out, freq, lintab.buf, nsmps);
+    xoscil3_tick_block(&morph, out, freq, lintab.buf, 0, nsmps);
 
     // for (uint32_t i = 0; i < nsmps; i++) {
     //     fprintf(stderr, "%.6f\n", lintab.buf[i]);

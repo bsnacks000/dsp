@@ -13,7 +13,7 @@ MunitResult test_mult(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    mult_block(z, x, y, 5);
+    mult_block(z, x, y, 0, 5);
 
     float expected[] = {0.0, 1.0, 4.0, 9.0, 16.0};
 
@@ -31,7 +31,7 @@ MunitResult test_add(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    add_block(z, x, y, 5);
+    add_block(z, x, y, 0, 5);
 
     float expected[] = {0.0, 2.0, 4.0, 6.0, 8.0};
 
@@ -49,7 +49,7 @@ MunitResult test_subtract(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    subtract_block(z, x, y, 5);
+    subtract_block(z, x, y, 0, 5);
 
     float expected[] = {0.0, 0.0, 0.0, 0.0, 0.0};
 
@@ -67,7 +67,7 @@ MunitResult test_div(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    div_block(z, x, y, 5);
+    div_block(z, x, y, 0, 5);
 
     float expected[5] = {1.0, 1.0, 1.0, 1.0, 1.0};
 
@@ -228,7 +228,7 @@ MunitResult test_noise_block(const MunitParameter params[], void* data) {
     (void) data;
 
     float buf[128];
-    noise_block(buf, 128);
+    noise_block(buf, 0, 128);
 
     // Check values are within [-1, 1]
     for (uint32_t i = 0; i < 128; i++) {
@@ -247,7 +247,7 @@ MunitResult test_scale(const MunitParameter params[], void* data) {
     float out[4];
     const float factor = 2.0f;
 
-    scale(out, in, factor, 4);
+    scale_block(out, in, factor, 0, 4);
 
     munit_assert_float(out[0], ==, 2.0f);
     munit_assert_float(out[1], ==, -4.0f);
@@ -265,7 +265,7 @@ MunitResult test_dc_offset(const MunitParameter params[], void* data) {
     float out[4];
     const float offset = 1.0f;
 
-    dc_offset(out, in, offset, 4);
+    dc_block(out, in, offset, 0, 4);
 
     munit_assert_float(out[0], ==, 2.0f);
     munit_assert_float(out[1], ==, -1.0f);

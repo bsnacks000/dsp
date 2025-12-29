@@ -12,6 +12,6 @@ int llag_init(CSOUND* csound, llag* obj) {
 int llag_vector(CSOUND* csound, llag* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
-    lag_tick_block(&obj->ctrl, obj->a_out, obj->a_in, obj->t_sec, nsmps);
+    lag_tick_block(&obj->ctrl, obj->a_out, obj->a_in, obj->t_sec, 0, nsmps);
     return OK;
 }

@@ -54,9 +54,10 @@ void rc_one_pole_tick_block(rc_one_pole* self,
                             float* hp_out,
                             float* ap_out,
                             float* freq,
-                            uint32_t sz) {
+                            uint32_t start,
+                            uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
@@ -165,8 +166,9 @@ void rc_ladder_tick_block(rc_ladder* self,
                           float* in,
                           float* freq,
                           float* q,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);

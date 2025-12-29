@@ -143,6 +143,6 @@ int blsaw_vector(CSOUND* csound, blsaw* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
-    blxoscil3_tick_block(&obj->saw, obj->a_out, obj->a_freq, nsmps);
+    blxoscil3_tick_block(&obj->saw, obj->a_out, obj->a_freq, 0, nsmps);
     return OK;
 }

@@ -111,7 +111,7 @@ app_err entrypoint(const char* outfile) {
 
     // // tick the out block
     float* out = (float*) malloc(sizeof(float) * nsmps);
-    blxoscil3_tick_block(&blsaw, out, lintab.buf, nsmps);
+    blxoscil3_tick_block(&blsaw, out, lintab.buf, 0, nsmps);
 
     wavio w;
     wavio_open_write(&w, malloc, outfile, TARGET_SAMPLERATE,

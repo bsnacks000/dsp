@@ -71,9 +71,10 @@ void follow_rms_tick_block(follow* self,
                            float* in,
                            float* atk_ms,
                            float* rel_ms,
+                           uint32_t start,
                            uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float atk_ms_ = atk_ms[i];
         float rel_ms_ = rel_ms[i];
 
@@ -99,9 +100,10 @@ void follow_peak_tick_block(follow* self,
                             float* in,
                             float* atk_ms,
                             float* rel_ms,
+                            uint32_t start,
                             uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float atk_ms_ = atk_ms[i];
         float rel_ms_ = rel_ms[i];
 

@@ -73,6 +73,7 @@ void xfade_tick_block(xfade* self,
                       float* in_l,
                       float* in_r,
                       float* position,
+                      uint32_t start,
                       uint32_t nsmps);
 
 #ifdef __cplusplus

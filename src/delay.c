@@ -24,14 +24,14 @@ void delay_line_advance(delay_line* self, uint32_t nsmps) {
     self->write_idx = (self->write_idx + nsmps) & self->mask_;
 }
 
-void delay_line_write(delay_line* self, float* in, uint32_t nsmps) {
+void delay_line_write(delay_line* self, float* in, uint32_t start, uint32_t nsmps) {
 
     uint32_t mask = self->mask_;
     uint32_t idx = self->write_idx;
     uint32_t wrap_sz = self->wrap_sz_;
     float* buf = self->buf;
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         uint32_t i_ = (idx + i) & mask;
         buf[i_] = in[i];
         if (i_ == 0) {
@@ -41,10 +41,14 @@ void delay_line_write(delay_line* self, float* in, uint32_t nsmps) {
     }
 }
 
-void delay_line_tapi(delay_line* self, float* out, float* offset, uint32_t nsmps) {
+void delay_line_tapi(delay_line* self,
+                     float* out,
+                     float* offset,
+                     uint32_t start,
+                     uint32_t nsmps) {
     uint32_t mask = self->mask_;
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float initial_pos = (float) self->write_idx - offset[i];
         // wrap if negative
         while (initial_pos < 0)
@@ -61,10 +65,14 @@ void delay_line_tapi(delay_line* self, float* out, float* offset, uint32_t nsmps
     }
 }
 
-void delay_line_tap3(delay_line* self, float* out, float* offset, uint32_t nsmps) {
+void delay_line_tap3(delay_line* self,
+                     float* out,
+                     float* offset,
+                     uint32_t start,
+                     uint32_t nsmps) {
     uint32_t mask = self->mask_;
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float initial_pos = (float) self->write_idx - offset[i];
         // wrap if negative
         while (initial_pos < 0)

@@ -73,7 +73,7 @@ MunitResult test_osciln_tick_block(const MunitParameter params[], void* data) {
 
     fill_dc(freq, 440.0, NSMPS);
 
-    osciln_tick_block(&osc, out, freq, NSMPS);
+    osciln_tick_block(&osc, out, freq, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -102,7 +102,7 @@ MunitResult test_oscili_tick_block(const MunitParameter params[], void* data) {
 
     fill_dc(freq, 440.0, NSMPS);
 
-    oscili_tick_block(&osc, out, freq, NSMPS);
+    oscili_tick_block(&osc, out, freq, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -131,7 +131,7 @@ MunitResult test_oscil3_tick_block(const MunitParameter params[], void* data) {
 
     fill_dc(freq, 440.0, NSMPS);
 
-    oscil3_tick_block(&osc, out, freq, NSMPS);
+    oscil3_tick_block(&osc, out, freq, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -162,7 +162,7 @@ MunitResult test_oscil3_pm_tick_block(const MunitParameter params[], void* data)
     fill_dc(freq, 440.0, NSMPS);
     fill_line(phs, 0.0, 1.0, NSMPS);
 
-    oscil3_pm_tick_block(&osc, out, freq, phs, NSMPS);
+    oscil3_pm_tick_block(&osc, out, freq, phs, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -207,7 +207,7 @@ MunitResult test_blxoscili_tick_block(const MunitParameter params[], void* data)
 
     // this line should be enough to cross the positional threshold for the xfade
     fill_line(freq, 100.0, 300.0, NSMPS);
-    blxoscili_tick_block(&osc, out, freq, NSMPS);
+    blxoscili_tick_block(&osc, out, freq, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -253,7 +253,7 @@ MunitResult test_blxoscil3_tick_block(const MunitParameter params[], void* data)
     // this line should be enough to cross the positional threshold for the xfade
     fill_line(freq, 100.0, 300.0, NSMPS);
 
-    blxoscil3_tick_block(&osc, out, freq, NSMPS);
+    blxoscil3_tick_block(&osc, out, freq, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
     check_any_nonzero(out, NSMPS);
@@ -300,7 +300,7 @@ MunitResult test_xoscili_tick_block(const MunitParameter params[], void* data) {
     fill_line(freq, 100.0, 300.0, NSMPS);
     fill_line(pos, 0.0, 1.0, NSMPS);
 
-    xoscili_tick_block(&osc, out, freq, pos, NSMPS);
+    xoscili_tick_block(&osc, out, freq, pos, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
 
@@ -348,7 +348,7 @@ MunitResult test_xoscil3_tick_block(const MunitParameter params[], void* data) {
     fill_line(freq, 100.0, 300.0, NSMPS);
     fill_line(pos, 0.0, 1.0, NSMPS);
 
-    xoscil3_tick_block(&osc, out, freq, pos, NSMPS);
+    xoscil3_tick_block(&osc, out, freq, pos, 0, NSMPS);
 
     check_range_inclusive(out, -1.0, 1.0, NSMPS);
 

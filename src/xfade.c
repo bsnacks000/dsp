@@ -21,8 +21,9 @@ void xfade_tick_block(xfade* self,
                       float* in_l,
                       float* in_r,
                       float* position,
+                      uint32_t start,
                       uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float position_ = position[i];
         bool pos_eq = check_float_equal(position_, self->position);
         if (!pos_eq) {
