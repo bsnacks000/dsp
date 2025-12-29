@@ -202,7 +202,7 @@ static app_err entrypoint(const char* outfile) {
     for (uint32_t i = 0; i < nsmps; i++)
         freq[i] = freq_;
 
-    xoscil3_tick_block(&morph, out, freq, lintab.buf, nsmps);
+    xoscil3_tick_block(&morph, out, freq, lintab.buf, 0, nsmps);
 
     // oscil3_tick_block(&left, out, freq, nsmps);
 
