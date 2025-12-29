@@ -44,9 +44,9 @@ endin
 </CsInstruments>
 <CsScore>
 
-    i1 0.0127 2  200 0.6
-    i2 2.0123 3  100 800 0.7 0.3
-    i2 5.742 2  200 10  0.6 0.8
+    i1 0 2  200 0.6
+    i2 2 3  100 800 0.7 0.3
+    i2 5 2  200 10  0.6 0.8
 
 </CsScore>
 </CsoundSynthesizer>

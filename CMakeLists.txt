@@ -47,7 +47,7 @@ endif()
 file(GLOB_RECURSE SRC_FILES src/*.c)
 
 # note the build tree includes the generated headers
-add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
+add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
