@@ -12,8 +12,6 @@ extern "C" {
 
 #include <stdint.h>
 
-// TODO: unify API with single tick version
-
 typedef struct {
     float* buf;
     uint32_t buf_sz, write_idx, mask_, wrap_sz_;
@@ -40,19 +38,27 @@ void delay_line_advance(delay_line* self, uint32_t nsmps);
  * @brief write nsmps into the delay_line. This should be called sometime after
  * delay_line_advance in the graph.
  */
-void delay_line_write(delay_line* self, float* in, uint32_t nsmps);
+void delay_line_write(delay_line* self, float* in, uint32_t start, uint32_t nsmps);
 
 /**
  * @brief read using linear interpolation at fractional offset index. This should be
  * in between delay_line_advance and delay_line_write in the graph.
  */
-void delay_line_tapi(delay_line* self, float* out, float* offset, uint32_t nsmps);
+void delay_line_tapi(delay_line* self,
+                     float* out,
+                     float* offset,
+                     uint32_t start,
+                     uint32_t nsmps);
 
 /**
  * @brief read using cubic interpolation at fractional offset index. This should be
  * called in between delay_line_advance and delay_line_write in the graph.
  */
-void delay_line_tap3(delay_line* self, float* out, float* offset, uint32_t nsmps);
+void delay_line_tap3(delay_line* self,
+                     float* out,
+                     float* offset,
+                     uint32_t start,
+                     uint32_t nsmps);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,7 @@ MunitResult test_blepsaw(const MunitParameter params[], void* data) {
 
     fill_dc(freq, 440.0, NSMPS);
 
-    blepsaw_tick_block(&osc, out, freq, NSMPS);
+    blepsaw_tick_block(&osc, out, freq, 0, NSMPS);
 
     return MUNIT_OK;
 }
@@ -37,7 +37,7 @@ MunitResult test_blepsqr(const MunitParameter params[], void* data) {
     fill_dc(freq, 440.0, NSMPS);
     fill_dc(duty, 0.5, NSMPS);
 
-    blepsqr_tick_block(&osc, out, freq, duty, NSMPS);
+    blepsqr_tick_block(&osc, out, freq, duty, 0, NSMPS);
 
     return MUNIT_OK;
 }

@@ -38,12 +38,20 @@ dsp_err oscil_init(oscil* self, ftable* wt, float freq, float phase, float sr);
 /**
  * @brief truncating oscil. guard point = 0
  */
-void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
+void osciln_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps);
 
 /**
  * @brief linear interpolating oscil. guard point = 1
  */
-void oscili_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
+void oscili_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps);
 
 /**
  * @brief linear interpolating oscil that allows phase mod.
@@ -52,12 +60,17 @@ void oscili_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps);
 
 /**
  * @brief cubic interpolating oscil. guard point = 2
  */
-void oscil3_tick_block(oscil* self, float* out, float* freq, uint32_t sz);
+void oscil3_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps);
 
 /**
  * @brief cubic interpolating oscil that allows phase mod.
@@ -66,6 +79,7 @@ void oscil3_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps);
 
 /**
@@ -93,12 +107,20 @@ dsp_err blxoscil_init(blxoscil* self,
 /**
  * @brief linear interpolating blxoscil.
  */
-void blxoscili_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps);
+void blxoscili_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps);
 
 /**
  * @brief cubic interpolating blxoscil.
  */
-void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps);
+void blxoscil3_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps);
 
 /**
  * @brief General purpse xfade oscillator by position. Useful for creative spectral
@@ -126,12 +148,14 @@ void xoscili_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps);
 
 void xoscil3_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps);
 
 #ifdef __cplusplus

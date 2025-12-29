@@ -66,9 +66,9 @@ int chebsaw_vector(CSOUND* csound, chebsaw* obj) {
 
     // covert to unipolar and scale to len wavetab len
     // (-1,1) -> (0, N)
-    scale(a_out, a_in, 0.5, nsmps);
+    scale_block(a_out, a_in, 0.5, 0, nsmps);
     dc_offset(a_out, a_out, 0.5, nsmps);
-    scale(a_out, a_out, (float) (chebsaw_wt.len - 1), nsmps);
+    scale_block(a_out, a_out, (float) (chebsaw_wt.len - 1), 0, nsmps);
 
     // read off the waveshaped value
     tabread3_tick_block(&obj->tr, a_out, a_out, nsmps);

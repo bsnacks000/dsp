@@ -185,6 +185,6 @@ int smorph_init(CSOUND* csound, smorph* obj) {
 int smorph_vector(CSOUND* csound, smorph* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
-    xoscil3_tick_block(&obj->xosc, obj->a_out, obj->a_freq, obj->a_pos, nsmps);
+    xoscil3_tick_block(&obj->xosc, obj->a_out, obj->a_freq, obj->a_pos, 0, nsmps);
     return OK;
 }

@@ -13,7 +13,7 @@ MunitResult test_mult(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    mult_block(z, x, y, 5);
+    mult_block(z, x, y, 0, 5);
 
     float expected[] = {0.0, 1.0, 4.0, 9.0, 16.0};
 
@@ -31,7 +31,7 @@ MunitResult test_add(const MunitParameter params[], void* data) {
 
     float z[5] = {0.0};
 
-    add_block(z, x, y, 5);
+    add_block(z, x, y, 0, 5);
 
     float expected[] = {0.0, 2.0, 4.0, 6.0, 8.0};
 
@@ -247,7 +247,7 @@ MunitResult test_scale(const MunitParameter params[], void* data) {
     float out[4];
     const float factor = 2.0f;
 
-    scale(out, in, factor, 4);
+    scale_block(out, in, factor, 0, 4);
 
     munit_assert_float(out[0], ==, 2.0f);
     munit_assert_float(out[1], ==, -4.0f);

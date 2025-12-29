@@ -60,7 +60,7 @@ MunitResult test_delay_line_write(const MunitParameter params[], void* data) {
     fill_dc(in, 1.0, NSMPS);
 
     delay_line_advance(&d, NSMPS);
-    delay_line_write(&d, in, NSMPS);
+    delay_line_write(&d, in, 0, NSMPS);
 
     // start writing 64 nsmps in
     for (int i = NSMPS; i < NSMPS; i++)
@@ -70,7 +70,7 @@ MunitResult test_delay_line_write(const MunitParameter params[], void* data) {
     // run over BUF_SZ and make sure we set
     for (int i = 0; i < 100; i++) {
         delay_line_advance(&d, NSMPS);
-        delay_line_write(&d, in, NSMPS);
+        delay_line_write(&d, in, 0, NSMPS);
     }
 
     munit_assert_double_equal(d.buf[d.wrap_sz_], 1.0, 1);
@@ -97,8 +97,8 @@ MunitResult test_delay_line_tapi(const MunitParameter params[], void* data) {
 
     for (int i = 0; i < 100; i++) {
         delay_line_advance(&d, NSMPS);
-        delay_line_tapi(&d, out, offset, NSMPS);
-        delay_line_write(&d, in, NSMPS);
+        delay_line_tapi(&d, out, offset, 0, NSMPS);
+        delay_line_write(&d, in, 0, NSMPS);
     }
 
     check_any_nonzero(out, NSMPS);
@@ -124,8 +124,8 @@ MunitResult test_delay_line_tap3(const MunitParameter params[], void* data) {
 
     for (int i = 0; i < 100; i++) {
         delay_line_advance(&d, NSMPS);
-        delay_line_tap3(&d, out, offset, NSMPS);
-        delay_line_write(&d, in, NSMPS);
+        delay_line_tap3(&d, out, offset, 0, NSMPS);
+        delay_line_write(&d, in, 0, NSMPS);
     }
 
     check_any_nonzero(out, NSMPS);

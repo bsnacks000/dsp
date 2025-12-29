@@ -229,8 +229,12 @@ dsp_err oscil_init(oscil* self, ftable* wt, float freq, float phase, float sr) {
     return DSP_OK;
 }
 
-void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void osciln_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -241,8 +245,12 @@ void osciln_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
     }
 }
 
-void oscili_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void oscili_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
         if (!freq_eq) {
@@ -257,8 +265,9 @@ void oscili_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -274,8 +283,12 @@ void oscili_pm_tick_block(oscil* self,
     }
 }
 
-void oscil3_tick_block(oscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void oscil3_tick_block(oscil* self,
+                       float* out,
+                       float* freq,
+                       uint32_t start,
+                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -291,8 +304,9 @@ void oscil3_pm_tick_block(oscil* self,
                           float* out,
                           float* freq,
                           float* phs,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
 
@@ -335,8 +349,12 @@ dsp_err blxoscil_init(blxoscil* self,
     return DSP_OK;
 }
 
-void blxoscili_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void blxoscili_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
@@ -352,9 +370,13 @@ void blxoscili_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmp
     }
 }
 
-void blxoscil3_tick_block(blxoscil* self, float* out, float* freq, uint32_t nsmps) {
+void blxoscil3_tick_block(blxoscil* self,
+                          float* out,
+                          float* freq,
+                          uint32_t start,
+                          uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
 
         float freq_ = freq[i];
         bool freq_eq = check_float_equal(freq_, self->freq);
@@ -404,9 +426,10 @@ void xoscili_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         float pos_ = pos[i];
 
@@ -430,9 +453,10 @@ void xoscil3_tick_block(xoscil* self,
                         float* out,
                         float* freq,
                         float* pos,
+                        uint32_t start,
                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float freq_ = freq[i];
         float pos_ = pos[i];
 

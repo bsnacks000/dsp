@@ -20,16 +20,24 @@ extern "C" {
 /**
  * @brief add two blocks
  */
-static inline void add_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void add_block(float* out,
+                             float* x,
+                             float* y,
+                             uint32_t start,
+                             uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] + y[i];
     }
 }
 /**
  * @brief mult two blocks
  */
-static inline void mult_block(float* out, float* x, float* y, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void mult_block(float* out,
+                              float* x,
+                              float* y,
+                              uint32_t start,
+                              uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] * y[i];
     }
 }
@@ -132,8 +140,12 @@ static inline void noise_block(float* out, uint32_t n) {
 /**
  * @brief scale a block by a factor (*)
  */
-static inline void scale(float* out, float* x, float factor, uint32_t n) {
-    for (uint32_t i = 0; i < n; i++) {
+static inline void scale_block(float* out,
+                               float* x,
+                               float factor,
+                               uint32_t start,
+                               uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = x[i] * factor;
     }
 }

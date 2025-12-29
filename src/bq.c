@@ -370,13 +370,14 @@ void bq_non_resonant_tick_block(bq_non_resonant* self,
                                 float* out,
                                 float* in,
                                 float freq,
-                                uint32_t sz) {
+                                uint32_t start,
+                                uint32_t nsmps) {
 
     if (!check_float_equal(freq, self->freq)) {
         self->freq = freq;
         self->update_(&self->state_, freq);
     }
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = dfII_tick(&self->state_, in[i]);
     }
 }
@@ -408,7 +409,8 @@ void bq_resonant_tick_block(bq_resonant* self,
                             float* in,
                             float freq,
                             float q,
-                            uint32_t sz) {
+                            uint32_t start,
+                            uint32_t nsmps) {
 
     bool freq_eq = check_float_equal(freq, self->freq);
     bool q_eq = check_float_equal(q, self->q);
@@ -419,7 +421,7 @@ void bq_resonant_tick_block(bq_resonant* self,
         self->update_(&self->state_, freq, q);
     }
 
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = dfII_tick(&self->state_, in[i]);
     }
 }
@@ -455,7 +457,8 @@ void bq_para_eq_tick_block(bq_para_eq* self,
                            float freq,
                            float q,
                            float gain,
-                           uint32_t sz) {
+                           uint32_t start,
+                           uint32_t nsmps) {
 
     bool freq_eq = check_float_equal(freq, self->freq);
     bool q_eq = check_float_equal(q, self->q);
@@ -468,7 +471,7 @@ void bq_para_eq_tick_block(bq_para_eq* self,
         self->update_(&self->state_, freq, q, gain);
     }
 
-    for (uint32_t i = 0; i < sz; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = dfII_tick(&self->state_, in[i]);
     }
 }
