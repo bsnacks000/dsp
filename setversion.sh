@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+make build -DCMAKE_BUILD_TYPE=Release
+
 # path to generated header
 VERSION_HEADER="./build/include/dsp/version.h"
 
