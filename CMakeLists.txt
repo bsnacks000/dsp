@@ -13,7 +13,7 @@ configure_file(
     @ONLY
 )
 
-message("Generated version.h: ${DSP_VERSION}")
+message(STATUS "Generated version.h: ${DSP_VERSION}")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -35,9 +35,9 @@ if (APPLE)
 endif()
 
 
-option(COVERAGE "Enable coverage reporting" OFF)
+option(DSP_COVERAGE "Enable coverage reporting" OFF)
 
-if(COVERAGE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(DSP_COVERAGE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(WARNING "Coverage is most useful in Debug mode; forcing Debug build")
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
@@ -46,8 +46,17 @@ endif()
 # always build the main shared library
 file(GLOB_RECURSE SRC_FILES src/*.c)
 
-# note the build tree includes the generated headers
-add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
+option(DSP_BUILD_SHARED "Build a shared library instead of static." OFF)
+
+if (DSP_BUILD_SHARED)
+    set(PROJECT_LIB_TYPE SHARED)
+    message(STATUS "dsp: building SHARED library.")
+else()
+    set(PROJECT_LIB_TYPE STATIC)
+    message(STATUS "dsp: building STATIC library.")
+endif()
+
+add_library(${PROJECT_NAME} ${PROJECT_LIB_TYPE} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_BINARY_DIR}/include"
@@ -56,7 +65,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wextra -Wall -Wpedantic -Werror
         -Wmissing-declarations -Wmissing-prototypes
 )
 
-if(COVERAGE)
+if(DSP_COVERAGE)
     message(STATUS "Building with coverage instrumentation")
     if(CMAKE_C_COMPILER_ID MATCHES "Clang")
         target_compile_options(${PROJECT_NAME} PRIVATE -fprofile-instr-generate -fcoverage-mapping)
@@ -70,17 +79,17 @@ if(COVERAGE)
 endif()
 
 # build the tests
-if (BUILD_TESTS)
+if (DSP_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
 
 # build csound opcodes (currently only linux)
-if (BUILD_CSOUND)
+if (DSP_BUILD_CSOUND)
     add_subdirectory(csnd)
 endif()
 
 # build the cli utils
-if (BUILD_UTILS)
+if (DSP_BUILD_UTILS)
     add_subdirectory(utils)
 endif()

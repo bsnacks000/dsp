@@ -14,7 +14,7 @@ target_compile_options(${UNIT_TEST_NAME} PRIVATE
 )
 
 # coverage options are compiler specific
-if(COVERAGE)
+if(DSP_COVERAGE)
     if(CMAKE_C_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
         target_compile_options(${UNIT_TEST_NAME} PRIVATE -O0 -g --coverage)
         target_link_options(${UNIT_TEST_NAME} PRIVATE --coverage)

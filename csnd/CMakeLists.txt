@@ -1,10 +1,4 @@
-
 # Csound opcode build
-#
-# ref: https://github.com/csound/opcode_sdk/blob/master/6.x/CMakeLists.txt
-# this is a stripped down version of the cmake module ^^
-
-# currently only works on linux!
 
 if(APPLE)
     find_library(CSOUND_LIBRARY CsoundLib
@@ -42,12 +36,8 @@ file(GLOB PLUGIN_SRC_FILES *.c)
 add_library(${CSND_PLUGIN_LIB} SHARED ${PLUGIN_SRC_FILES})
 
 
-# set_target_properties(${CSND_PLUGIN_LIB} PROPERTIES
-#     LINK_FLAGS "-Wl,--no-as-needed"
-# )
 target_compile_options(${CSND_PLUGIN_LIB} PRIVATE -Wextra -Wall)
 target_link_options(${CSND_PLUGIN_LIB} PRIVATE -Wno-undef)
-
 
 target_include_directories(${CSND_PLUGIN_LIB} PRIVATE
     ${CSOUND_INCLUDE_DIR}
