@@ -16,13 +16,20 @@ typedef struct {
     float curr_out_, curr_gate_, prev_gate_;
 } samph;
 
+/**
+ * @brief samph init
+ */
 void samph_init(samph* self, float gate_thresh);
 
+/**
+ * @brief samph tick block. Triggered by gate signal.
+ */
 void samph_tick_block(samph* self,
                       float* out,
                       float* in,
                       float* gate,
                       float* gate_thresh,
+                      uint32_t start,
                       uint32_t nsmps);
 
 #ifdef __cplusplus

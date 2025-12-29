@@ -12,7 +12,7 @@ int lline_vector(CSOUND* csound, lline* obj) {
     (void) csound;
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
-    line_tick_block(&obj->l, obj->a_out, nsmps);
+    line_tick_block(&obj->l, obj->a_out, 0, nsmps);
     return OK;
 }
 
@@ -29,6 +29,6 @@ int ssampi_vector(CSOUND* csound, ssampi* obj) {
     uint32_t nsmps = GetLocalKsmps(&obj->h);
 
     sampi_tick_block(&obj->s, obj->a_out, obj->a_in, obj->a_dur, obj->a_gate,
-                     obj->a_gate_thresh, nsmps);
+                     obj->a_gate_thresh, 0, nsmps);
     return OK;
 }

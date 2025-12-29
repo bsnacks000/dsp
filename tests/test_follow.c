@@ -32,7 +32,7 @@ MunitResult test_follow_peak_tick_block(const MunitParameter params[], void* dat
 
     follow filt;
     follow_init(&filt, 0.0, 0.0, 48000.0);
-    follow_peak_tick_block(&filt, out, in, atk_ms, rel_ms, NSMPS);
+    follow_peak_tick_block(&filt, out, in, atk_ms, rel_ms, 0, NSMPS);
 
     check_energy(out, 10.0, NSMPS);
 
@@ -54,7 +54,7 @@ MunitResult test_follow_rms_tick_block(const MunitParameter params[], void* data
 
     follow filt;
     follow_init(&filt, 0.0, 0.0, 48000.0);
-    follow_rms_tick_block(&filt, out, in, atk_ms, rel_ms, NSMPS);
+    follow_rms_tick_block(&filt, out, in, atk_ms, rel_ms, 0, NSMPS);
 
     check_energy(out, 10.0, NSMPS);
 

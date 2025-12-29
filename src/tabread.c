@@ -12,11 +12,15 @@ void tabread_init(tabread* self, ftable* wt) {
     self->wt = wt;
 }
 
-void tabreadn_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
+void tabreadn_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
     float* buf = self->wt->buf;
     uint32_t len = self->wt->len;
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float val = idx[i];
         if (val < 0.0 || val >= (float) len) {
             out[i] = 0.0;
@@ -63,15 +67,23 @@ static inline float tabread3_tick_(tabread* self, float val) {
     return interpolate_cubic(a, b, c, d, frac);
 }
 
-void tabreadi_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
+void tabreadi_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = tabreadi_tick_(self, idx[i]);
     }
 }
 
-void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+void tabread3_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = tabread3_tick_(self, idx[i]);
     }
 }
@@ -116,8 +128,9 @@ void xtabreadi_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float pos_ = pos[i];
         bool pos_eq = check_float_equal(pos_, self->pos);
         if (!pos_eq) {
@@ -134,8 +147,9 @@ void xtabread3_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float pos_ = pos[i];
         bool pos_eq = check_float_equal(pos_, self->pos);
 

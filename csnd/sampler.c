@@ -85,7 +85,7 @@ int sampler_vector(CSOUND* csound, sampler* obj) {
     }
 
     // tick the tabreader
-    tabreadi_tick_block(&obj->tab, obj->a_out, ticks, nsmps);
+    tabreadi_tick_block(&obj->tab, obj->a_out, ticks, 0, nsmps);
 
     return OK;
 }

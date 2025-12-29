@@ -23,9 +23,14 @@ void lag_init(lag* self, float t_sec, float sr) {
     update_(self);
 }
 
-void lag_tick_block(lag* self, float* out, float* in, float* t_sec, uint32_t nsmps) {
+void lag_tick_block(lag* self,
+                    float* out,
+                    float* in,
+                    float* t_sec,
+                    uint32_t start,
+                    uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         float t_sec_ = t_sec[i];
         bool t_sec_eq = check_float_equal(self->t_sec, t_sec_);
 

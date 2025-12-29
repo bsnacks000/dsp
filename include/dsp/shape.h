@@ -28,9 +28,10 @@ static inline void clamp_block(float* out,
                                float* x,
                                float min,
                                float max,
+                               uint32_t start,
                                uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = clamp(x[i], min, max);
     }
 }
@@ -43,8 +44,12 @@ static inline float hard_clip(float xn, float amt) {
     return clamp(amt * xn, -1.0, 1.0) / clamp(amt, -1.0, 1.0);
 }
 
-static inline void hard_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+static inline void hard_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = hard_clip(x[i], amt[i]);
     }
 }
@@ -59,8 +64,9 @@ static inline float exp_clip(float xn, float pregain) {
 static inline void exp_clip_block(float* out,
                                   float* x,
                                   float* pregain,
+                                  uint32_t start,
                                   uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = exp_clip(x[i], pregain[i]);
     }
 }
@@ -79,8 +85,12 @@ static inline float tanh_clip(float xn, float amt) {
     return tanh(amt * xn) / tanh(amt);
 }
 
-static inline void tanh_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+static inline void tanh_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = tanh_clip(x[i], amt[i]);
     }
 }
@@ -96,8 +106,9 @@ static inline float fast_tanh_clip(float xn, float amt) {
 static inline void fast_tanh_clip_block(float* out,
                                         float* x,
                                         float* amt,
+                                        uint32_t start,
                                         uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = fast_tanh_clip(x[i], amt[i]);
     }
 }
@@ -110,8 +121,12 @@ static inline float atan_clip(float xn, float amt) {
     return atan(xn * amt) / atan(amt);
 }
 
-static inline void atan_clip_block(float* out, float* x, float* amt, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+static inline void atan_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = atan_clip(x[i], amt[i]);
     }
 }
@@ -127,8 +142,9 @@ static inline float fast_atan_clip(float xn, float amt) {
 static inline void fast_atan_clip_block(float* out,
                                         float* x,
                                         float* amt,
+                                        uint32_t start,
                                         uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         out[i] = fast_atan_clip(x[i], amt[i]);
     }
 }

@@ -35,7 +35,7 @@ MunitResult test_samph_tick_block(const MunitParameter params[], void* data) {
     for (int i = NSMPS / 2; i < NSMPS; i++)
         gate[i] = 1.0;
 
-    samph_tick_block(&sh, out, in, gate, gate_thresh, NSMPS);
+    samph_tick_block(&sh, out, in, gate, gate_thresh, 0, NSMPS);
 
     for (int i = 0; i < NSMPS / 2; i++)
         munit_assert_double_equal(out[i], 0.0, 6);

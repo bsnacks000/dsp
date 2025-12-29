@@ -22,9 +22,10 @@ void samph_tick_block(samph* self,
                       float* in,
                       float* gate,
                       float* gate_thresh,
+                      uint32_t start,
                       uint32_t nsmps) {
 
-    for (uint32_t i = 0; i < nsmps; i++) {
+    for (uint32_t i = start; i < nsmps; i++) {
         self->prev_gate_ = self->curr_gate_;
         self->curr_gate_ = gate[i];
         self->gate_thresh = gate_thresh[i];

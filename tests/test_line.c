@@ -31,7 +31,7 @@ MunitResult test_line_tick_block(const MunitParameter params[], void* data) {
     line_init(&l, 0.0, 1.0, ms / 1000.0, sr);
 
     float out[NSMPS] = {0};
-    line_tick_block(&l, out, NSMPS);
+    line_tick_block(&l, out, 0, NSMPS);
 
     return MUNIT_OK;
 }
@@ -80,7 +80,7 @@ MunitResult test_line_ar_tick_block(const MunitParameter params[], void* data) {
     line_ar_init(&env, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, sr);
 
     line_ar_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_level,
-                       rel_sec, rel_level, NSMPS);
+                       rel_sec, rel_level, 0, NSMPS);
 
     return MUNIT_OK;
 }
@@ -144,7 +144,7 @@ MunitResult test_line_adsr_tick_block(const MunitParameter params[], void* data)
     line_adsr_init(&env, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, sr);
 
     line_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_level,
-                         dcy_sec, sustain_level, rel_sec, rel_level, NSMPS);
+                         dcy_sec, sustain_level, rel_sec, rel_level, 0, NSMPS);
 
     return MUNIT_OK;
 }

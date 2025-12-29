@@ -35,7 +35,7 @@ MunitResult test_curve_tick_block(const MunitParameter params[], void* data) {
     curve_init(&c, 0.0, 1.0, ms / 1000.0, 0.0, sr);
 
     float out[NSMPS] = {0};
-    curve_tick_block(&c, out, NSMPS);
+    curve_tick_block(&c, out, 0, NSMPS);
 
     return MUNIT_OK;
 }
@@ -90,7 +90,7 @@ MunitResult test_ar_tick_block(const MunitParameter params[], void* data) {
     curve_ar_init(&env, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, sr);
 
     curve_ar_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_crv,
-                        atk_level, rel_sec, rel_crv, rel_level, NSMPS);
+                        atk_level, rel_sec, rel_crv, rel_level, 0, NSMPS);
 
     return MUNIT_OK;
 }
@@ -155,7 +155,7 @@ MunitResult test_adsr_tick_block(const MunitParameter params[], void* data) {
 
     curve_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_crv,
                           atk_level, dcy_sec, dcy_crv, sustain_level, rel_sec, rel_crv,
-                          rel_level, NSMPS);
+                          rel_level, 0, NSMPS);
 
     return MUNIT_OK;
 }

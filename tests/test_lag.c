@@ -33,7 +33,7 @@ MunitResult test_lag_tick_block(const MunitParameter params[], void* data) {
     lag filt;
     lag_init(&filt, 0.0, sr);
 
-    lag_tick_block(&filt, out, in, t_sec, NSMPS);
+    lag_tick_block(&filt, out, in, t_sec, 0, NSMPS);
 
     check_energy(out, 1.0, NSMPS);
 

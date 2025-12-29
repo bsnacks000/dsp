@@ -60,7 +60,7 @@ MunitResult test_svf_tick_block(const MunitParameter params[], void* data) {
     float out_bs[NSMPS] = {0.0};
     float out_ap[NSMPS] = {0.0};
 
-    svf_tick_block(&f, out_lp, out_hp, out_bp, out_bs, out_ap, in, freq, q, drive,
+    svf_tick_block(&f, out_lp, out_hp, out_bp, out_bs, out_ap, in, freq, q, drive, 0,
                    NSMPS);
 
     check_finite(out_lp, NSMPS);

@@ -15,7 +15,7 @@ int ar_line_vector(CSOUND* csound, ar_line* obj) {
 
     line_ar_tick_block(&obj->env, obj->a_out, obj->a_gate, obj->a_gate_thresh,
                        obj->a_start_level, obj->a_atk_sec, obj->a_atk_level,
-                       obj->a_rel_sec, obj->a_rel_level, nsmps);
+                       obj->a_rel_sec, obj->a_rel_level, 0, nsmps);
     return OK;
 }
 
@@ -34,7 +34,7 @@ int adsr_line_vector(CSOUND* csound, adsr_line* obj) {
     line_adsr_tick_block(&obj->env, obj->a_out, obj->a_gate, obj->a_gate_thresh,
                          obj->a_start_level, obj->a_atk_sec, obj->a_atk_level,
                          obj->a_dcy_sec, obj->a_sustain_level, obj->a_rel_sec,
-                         obj->a_rel_level, nsmps);
+                         obj->a_rel_level, 0, nsmps);
     return OK;
 }
 
@@ -53,7 +53,7 @@ int ar_curve_vector(CSOUND* csound, ar_curve* obj) {
     curve_ar_tick_block(&obj->env, obj->a_out, obj->a_gate, obj->a_gate_thresh,
                         obj->a_start_level, obj->a_atk_sec, obj->a_atk_crv,
                         obj->a_atk_level, obj->a_rel_sec, obj->a_rel_crv,
-                        obj->a_rel_level, nsmps);
+                        obj->a_rel_level, 0, nsmps);
     return OK;
 }
 
@@ -74,6 +74,6 @@ int adsr_curve_vector(CSOUND* csound, adsr_curve* obj) {
                           obj->a_start_level, obj->a_atk_sec, obj->a_atk_level,
                           obj->a_atk_crv, obj->a_dcy_sec, obj->a_dcy_crv,
                           obj->a_sustain_level, obj->a_rel_sec, obj->a_rel_crv,
-                          obj->a_rel_level, nsmps);
+                          obj->a_rel_level, 0, nsmps);
     return OK;
 }

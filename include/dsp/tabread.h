@@ -34,17 +34,29 @@ void tabread_init(tabread* self, ftable* wt);
 /**
  * @brief truncating tabread.
  */
-void tabreadn_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
+void tabreadn_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps);
 
 /**
  * @brief linear interpolating tabread.
  */
-void tabreadi_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
+void tabreadi_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps);
 
 /**
  * @brief cubic interpolating tabread.
  */
-void tabread3_tick_block(tabread* self, float* out, float* idx, uint32_t nsmps);
+void tabread3_tick_block(tabread* self,
+                         float* out,
+                         float* idx,
+                         uint32_t start,
+                         uint32_t nsmps);
 
 /**
  * @brief xfade tabreader.
@@ -67,6 +79,7 @@ void xtabreadi_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps);
 
 /**
@@ -76,6 +89,7 @@ void xtabread3_tick_block(xtabread* self,
                           float* out,
                           float* idx,
                           float* pos,
+                          uint32_t start,
                           uint32_t nsmps);
 
 #ifdef __cplusplus

@@ -39,7 +39,8 @@ void rc_one_pole_tick_block(rc_one_pole* self,
                             float* out_hp,
                             float* out_ap,
                             float* freq,
-                            uint32_t sz);
+                            uint32_t start,
+                            uint32_t nsmps);
 
 /**
  * @brief 4 pole rc ladder lowpass (Zavalishin / Pirkle) ..
@@ -67,6 +68,7 @@ void rc_ladder_tick_block(rc_ladder* self,
                           float* in,
                           float* freq,
                           float* q,
+                          uint32_t start,
                           uint32_t nsmps);
 
 #ifdef __cplusplus
