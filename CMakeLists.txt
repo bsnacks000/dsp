@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 set(PROJECT_NAME dsp)
-project(${PROJECT_NAME} LANGUAGES C VERSION 0.1.0)
+project(${PROJECT_NAME} LANGUAGES C VERSION 0.1.1)
 
 # extend semver prerelease tag .. Ex. -alpha.0, -rc.1
 set(DSP_VERSION "${PROJECT_VERSION}")
@@ -58,8 +58,8 @@ endif()
 
 add_library(${PROJECT_NAME} ${PROJECT_LIB_TYPE} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_CURRENT_BINARY_DIR}/include"
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wextra -Wall -Wpedantic -Werror
         -Wmissing-declarations -Wmissing-prototypes
