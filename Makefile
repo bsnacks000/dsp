@@ -60,9 +60,11 @@ coverage: clean
        	lcov --summary coverage.info; \
 	else \
        	echo "Collecting coverage with llvm-cov..."; \
+        LLVM_COV='/opt/homebrew/opt/llvm/bin/llvm-cov'; \
+        LLVM_PROFDATA='/opt/homebrew/opt/llvm/bin/llvm-profdata';\
        	LLVM_PROFILE_FILE="coverage.profraw" ./build/tests/dsp_unit_tests; \
-       	llvm-profdata merge -sparse coverage.profraw -o coverage.profdata; \
-       	llvm-cov report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
+        $$LLVM_PROFDATA merge -sparse coverage.profraw -o coverage.profdata; \
+       	$$LLVM_COV report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
 	fi
 
 # view last coverage report

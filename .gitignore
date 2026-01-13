@@ -17,8 +17,13 @@ data/
 .cache
 *.log
 _local/
+
+# coverage artifacts
 coverage/
 coverage.info
+coverage.profdata
+coverage.profraw
+default.profraw
 
 # Compiled object files
 *.o
