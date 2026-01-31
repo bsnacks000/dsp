@@ -15,7 +15,7 @@ function(make_exe name src)
         cli.c
         wavio.c
     )
-    target_link_libraries(${name} PRIVATE ${PROJECT_NAME} m PkgConfig::SNDFILE)
+    target_link_libraries(${name} PRIVATE dsp::objects m PkgConfig::SNDFILE)
     target_compile_options(${name} PRIVATE -Wextra -Wall -Wpedantic -Werror)
 
 endfunction()

@@ -45,7 +45,7 @@ csound: clean
 
 # rebuild lib for the csound plugin and run the regression tests
 rgr: csound
-	./rgr/test.py
+	uv run ./rgr/test.py
 
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean

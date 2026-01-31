@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 set(PROJECT_NAME dsp)
-project(${PROJECT_NAME} LANGUAGES C VERSION 0.1.1)
+project(dsp LANGUAGES C VERSION 0.1.1)
 
 # extend semver prerelease tag .. Ex. -alpha.0, -rc.1
 set(DSP_VERSION "${PROJECT_VERSION}")
@@ -34,88 +34,30 @@ if (APPLE)
     add_compile_definitions(-DMACOS=1)
 endif()
 
-# objects
+# objects lib
+# use as dsp::objects
 file(GLOB_RECURSE SRC_FILES
     CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 )
 
-add_library(${PROJECT_NAME}_objects OBJECT)
-add_library(${PROJECT_NAME}::objects ALIAS ${PROJECT_NAME}_objects)
+add_library(dsp_objects OBJECT)
+add_library(dsp::objects ALIAS dsp_objects)
 
-target_sources(${PROJECT_NAME}_objects PRIVATE ${SRC_FILES})
+target_sources(dsp_objects PRIVATE ${SRC_FILES})
 
-target_include_directories(${PROJECT_NAME}_objects
+target_include_directories(dsp_objects
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 
-target_compile_options(${PROJECT_NAME}_objects
+target_compile_options(dsp_objects
     PRIVATE
         -Wextra -Wall -Wpedantic -Werror
         -Wmissing-declarations -Wmissing-prototypes
 )
 
-# lto
-#
-option(DSP_ENABLE_LTO "Enable LTO if supported." ON)
-
-include(CheckIPOSupported)
-check_ipo_supported(RESULT lto_supported OUTPUT lto_err)
-
-if (DSP_ENABLE_LTO)
-    message(STATUS "dsp: LTO Supported")
-    set_property(TARGET ${PROJECT_NAME}_objects PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
-    message(STATUS "dsp: LTO Not supported : ${lto_err}")
-endif()
-
-
-# library .a/.so
-#
-option(DSP_BUILD_LIB "Build a static library target by default." ON)
-option(DSP_BUILD_SHARED "Build a shared library instead of static." OFF)
-
-
-if (DSP_BUILD_LIB)
-    if (DSP_BUILD_SHARED)
-        message(STATUS "dsp: building SHARED library.")
-        add_library(${PROJECT_NAME} SHARED)
-    else()
-        message(STATUS "dsp: building STATIC library.")
-        add_library(${PROJECT_NAME} STATIC)
-    endif()
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objects)
-
-    target_include_directories(${PROJECT_NAME}
-        PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-    )
-endif()
-
-# coverage options on the target
-option(DSP_COVERAGE "Enable coverage reporting" OFF)
-
-if(DSP_COVERAGE AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(WARNING "Coverage is most useful in Debug mode; forcing Debug build")
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
-endif()
-
-if(DSP_COVERAGE)
-    message(STATUS "Building with coverage instrumentation")
-    if(CMAKE_C_COMPILER_ID MATCHES "Clang")
-        target_compile_options(${PROJECT_NAME} PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-        target_link_options(${PROJECT_NAME} PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-    elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
-        target_compile_options(${PROJECT_NAME} PRIVATE --coverage -O0 -g)
-        target_link_options(${PROJECT_NAME} PRIVATE --coverage)
-    else()
-        message(FATAL_ERROR "Coverage not supported with this compiler")
-    endif()
-endif()
 
 # build the tests
 if (DSP_BUILD_TESTS)
@@ -123,7 +65,7 @@ if (DSP_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-# build csound opcodes (currently only linux)
+# build csound opcodes
 if (DSP_BUILD_CSOUND)
     add_subdirectory(csnd)
 endif()

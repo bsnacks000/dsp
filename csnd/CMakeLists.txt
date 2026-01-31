@@ -45,7 +45,12 @@ target_include_directories(${CSND_PLUGIN_LIB} PRIVATE
 )
 
 target_link_libraries(${CSND_PLUGIN_LIB} ${CSOUND_LIBRARY} ${PROJECT_NAME}::objects)
-if (DSP_ENABLE_LTO)
+
+# lto
+include(CheckIPOSupported)
+check_ipo_supported(RESULT lto_supported OUTPUT lto_err)
+
+if (lto_supported)
     message(STATUS "csound: LTO enabled")
     set_property(TARGET ${CSND_PLUGIN_LIB} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
