@@ -14,7 +14,7 @@ if(APPLE)
             ~/Library/Frameworks/CsoundLib.framework/Headers
     )
 else()
-    message("Building Csound on linux...")
+    message(STATUS "Building Csound on linux...")
     find_library(CSOUND_LIBRARY csound
         PATHS /usr/local/lib
     )
@@ -28,8 +28,8 @@ if(NOT CSOUND_INCLUDE_DIR OR NOT CSOUND_LIBRARY)
     message(FATAL_ERROR "Csound not found!")
 endif()
 
-message("csound include dir: ${CSOUND_INCLUDE_DIR}")
-message("csound library: ${CSOUND_LIBRARY}")
+message(STATUS "csound: include dir: ${CSOUND_INCLUDE_DIR}")
+message(STATUS "csound: library: ${CSOUND_LIBRARY}")
 
 set(CSND_PLUGIN_LIB blpcsnd)
 file(GLOB PLUGIN_SRC_FILES *.c)
@@ -44,4 +44,8 @@ target_include_directories(${CSND_PLUGIN_LIB} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
 )
 
-target_link_libraries(${CSND_PLUGIN_LIB} ${CSOUND_LIBRARY} ${PROJECT_NAME})
+target_link_libraries(${CSND_PLUGIN_LIB} ${CSOUND_LIBRARY} ${PROJECT_NAME}::objects)
+if (DSP_ENABLE_LTO)
+    message(STATUS "csound: LTO enabled")
+    set_property(TARGET ${CSND_PLUGIN_LIB} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
