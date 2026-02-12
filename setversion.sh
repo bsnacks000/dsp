@@ -26,3 +26,4 @@ git tag -a "$DSP_VERSION" -m "$DSP_VERSION"
 
 # push tag to origin
 git push origin "$DSP_VERSION"
+git push
