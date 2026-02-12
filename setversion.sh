@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# First make sure DSP_VERSION is set in CMakeLists.txt and the generated header is created.
+
 make build
 
 # path to generated header
@@ -15,6 +17,9 @@ if [[ -z "$DSP_VERSION" ]]; then
 fi
 
 echo "Tag version: $DSP_VERSION"
+
+git add -A
+git commit -m "$DSP_VERSION"
 
 # create annotated tag
 git tag -a "$DSP_VERSION" -m "$DSP_VERSION"

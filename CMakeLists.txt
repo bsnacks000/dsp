@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.26)
 
 set(PROJECT_NAME dsp)
-project(dsp LANGUAGES C VERSION 0.1.1)
+project(dsp LANGUAGES C VERSION 0.2.0)
 
 # extend semver prerelease tag .. Ex. -alpha.0, -rc.1
-set(DSP_VERSION "${PROJECT_VERSION}")
+set(DSP_VERSION "${PROJECT_VERSION}-alpha.0")
 
 # generate and add to build tree
 configure_file(
