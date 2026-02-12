@@ -69,8 +69,3 @@ endif()
 if (DSP_BUILD_CSOUND)
     add_subdirectory(csnd)
 endif()
-
-# build the cli utils
-if (DSP_BUILD_UTILS)
-    add_subdirectory(utils)
-endif()

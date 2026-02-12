@@ -7,7 +7,6 @@
 BUILD_TYPE?=Release
 TESTS?=0
 CSOUND?=0
-UTILS?=0
 COVERAGE?=0
 
 CMAKE_OPTS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
@@ -18,10 +17,6 @@ endif
 
 ifeq ($(TESTS), 1)
 	CMAKE_OPTS += -DDSP_BUILD_TESTS=ON
-endif
-
-ifeq ($(UTILS), 1)
-	CMAKE_OPTS += -DDSP_BUILD_UTILS=ON
 endif
 
 ifeq ($(COVERAGE), 1)
