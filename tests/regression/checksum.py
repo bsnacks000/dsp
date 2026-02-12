@@ -50,6 +50,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     wavname = args.name
 
+    wavname = wavname.replace(".csd", "")
+
     if not wavname.endswith(".wav"):
         fpath = WAVS_DIR / (wavname + ".wav")
     else:

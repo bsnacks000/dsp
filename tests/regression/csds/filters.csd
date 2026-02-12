@@ -101,7 +101,7 @@ instr 6
 endin
 
 instr 7
-    asig rand 0.3
+    asig rand 0.25
 
     iparam = p4
 

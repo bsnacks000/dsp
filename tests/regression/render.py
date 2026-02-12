@@ -30,6 +30,7 @@ def main(name: str):
     if not csdfile.exists():
         raise ValueError(f"{csdfile} not in {CSDS_DIR}")
 
+    name = name.replace(".csd", "")  # in case we're carrying file ext
     wavfile = WAVS_DIR / (name + ".wav")
 
     subprocess.run(
@@ -41,6 +42,7 @@ def main(name: str):
             str(wavfile),
             "--format=float",
             str(csdfile),
+            "-W",
         ],
         check=True,
     )

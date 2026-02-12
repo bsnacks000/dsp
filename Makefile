@@ -39,8 +39,8 @@ csound: clean
 	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
 
 # rebuild lib for the csound plugin and run the regression tests
-rgr: csound
-	uv run ./rgr/test.py
+regression: csound
+	uv run ./tests/regression/test.py
 
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean

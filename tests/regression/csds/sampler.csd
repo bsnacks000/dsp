@@ -16,7 +16,7 @@ ksmps   = 64
 nchnls  = 1
 0dbfs   = 1
 
-gift ftgen 0, 0, 0, 1, "almostjungle1.wav", 0, 0, 1
+gift ftgen 0, 0, 0, 1, "./tests/regression/almostjungle1.wav", 0, 0, 1
 
 
 ; sampler -- really exercises tabread3 under the hood

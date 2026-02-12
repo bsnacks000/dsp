@@ -61,6 +61,7 @@ def main():
                     str(TMP_WAV),
                     "--format=float",
                     str(csd),
+                    "-W",
                 ],
                 check=True,
             )
