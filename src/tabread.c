@@ -23,7 +23,7 @@ void tabreadn_tick_block(tabread* self,
     for (uint32_t i = start; i < nsmps; i++) {
         float val = idx[i];
         if (val < 0.0 || val >= (float) len) {
-            out[i] = 0.0;
+            out[i] = 0.0f;
             continue;
         }
         uint32_t ipos = (uint32_t) idx[i];
@@ -37,7 +37,7 @@ static inline float tabreadi_tick_(tabread* self, float val) {
     uint32_t len = self->wt->len;
 
     if (val < 0.0 || val >= (float) len) {
-        return 0.0;
+        return 0.0f;
     }
     uint32_t ipos = (uint32_t) val;
     float frac = val - ipos;
@@ -54,7 +54,7 @@ static inline float tabread3_tick_(tabread* self, float val) {
     uint32_t len = self->wt->len;
 
     if (val < 0.0 || val >= (float) len) {
-        return 0.0;
+        return 0.0f;
     }
     uint32_t ipos = (uint32_t) val;
     float frac = val - ipos;

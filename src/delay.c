@@ -8,7 +8,7 @@
 uint32_t delay_line_calculate_buf_sz(float sr, float ms) {
     float samp_ms = samps_per_ms(sr);
     // adding 1.0 accounts for fractional size
-    float l = samp_ms * ms + 1.0;
+    float l = samp_ms * ms + 1.0f;
     return (uint32_t) ceiling_pow2(l) + 2;  // add 2 for guard point
 }
 

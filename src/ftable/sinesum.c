@@ -31,9 +31,10 @@ dsp_err ft_sinesum_args_init(ft_sinesum_args* self,
     }
     self->amps = amps;
     self->amps_sz = amps_sz;
-    self->phase = clamp(phase, -1, 1);
+    self->phase = clamp(phase, -1.0f, 1.0f);
     self->smooth = smooth;
-    self->nharms = (uint32_t) clamp(nharms, 1, amps_sz);  // XXX: might need u32 clamp
+    self->nharms =
+        (uint32_t) clamp(nharms, 1.0f, amps_sz);  // XXX: might need u32 clamp
 
     return DSP_OK;
 }

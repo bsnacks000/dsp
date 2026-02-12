@@ -40,8 +40,8 @@ static inline void clamp_block(float* out,
  * @brief hard clip w/ drive amt.
  */
 static inline float hard_clip(float xn, float amt) {
-    amt += 1e-9;
-    return clamp(amt * xn, -1.0, 1.0) / clamp(amt, -1.0, 1.0);
+    amt += 1e-9f;
+    return clamp(amt * xn, -1.0f, 1.0f) / clamp(amt, -1.0f, 1.0f);
 }
 
 static inline void hard_clip_block(float* out,
@@ -58,7 +58,7 @@ static inline void hard_clip_block(float* out,
  * @brief exp soft clip with pre-gain - from Pirkle via Reiss(2014)
  */
 static inline float exp_clip(float xn, float pregain) {
-    return sign_of(xn) * (1.0 - exp(-fabs(pregain * xn)));
+    return sign_of(xn) * (1.0f - exp(-fabsf(pregain * xn)));
 }
 
 static inline void exp_clip_block(float* out,
@@ -81,8 +81,8 @@ static inline void exp_clip_block(float* out,
  * @brief hypertangent monotonic saturator
  */
 static inline float tanh_clip(float xn, float amt) {
-    amt += 1e-9;
-    return tanh(amt * xn) / tanh(amt);
+    amt += 1e-9f;
+    return tanhf(amt * xn) / tanhf(amt);
 }
 
 static inline void tanh_clip_block(float* out,
@@ -99,7 +99,7 @@ static inline void tanh_clip_block(float* out,
  * @brief fast tanh saturator.
  */
 static inline float fast_tanh_clip(float xn, float amt) {
-    amt += 1e-9;
+    amt += 1e-9f;
     return fast_tanh(amt * xn) / fast_tanh(amt);
 }
 
@@ -117,8 +117,8 @@ static inline void fast_tanh_clip_block(float* out,
  * @brief arctangent monotonic saturator
  */
 static inline float atan_clip(float xn, float amt) {
-    amt += 1e-9;
-    return atan(xn * amt) / atan(amt);
+    amt += 1e-9f;
+    return atanf(xn * amt) / atanf(amt);
 }
 
 static inline void atan_clip_block(float* out,
@@ -135,7 +135,7 @@ static inline void atan_clip_block(float* out,
  * @brief arctangent monotonic saturator
  */
 static inline float fast_atan_clip(float xn, float amt) {
-    amt += 1e-9;
+    amt += 1e-9f;
     return fast_atan(xn * amt) / fast_atan(amt);
 }
 

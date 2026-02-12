@@ -157,7 +157,7 @@ static inline float nsmps_dur(float sr, float dur_sec) {
  * @brief a signal guard for exponentials. Adds a small epsilon in case we hit zero.
  */
 static inline float zero_guard(float xn) {
-    return xn + 1e-9;
+    return xn + 1e-9f;
 }
 
 /**
@@ -179,7 +179,7 @@ static inline void normalize(float* buf, uint32_t buf_sz) {
         }
     }
     if (DSP_LIKELY(max)) {
-        float s = 1.0 / max;
+        float s = 1.0f / max;
         for (uint32_t i = 0; i < buf_sz; i++) {
             buf[i] *= s;
         }

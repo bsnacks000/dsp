@@ -26,12 +26,14 @@ static inline void update_(svf* self) {
 }
 
 static inline void tick_(svf* self, float xn) {
-    float hpf = self->g1_ * (xn - self->two_r_plus_g_ * self->z0_ - self->z1_);
+    double hpf = self->g1_ * (xn - self->two_r_plus_g_ * self->z0_ - self->z1_);
 
-    float bpf = self->g_ * hpf + self->z0_;
+    double bpf = self->g_ * hpf + self->z0_;
+    // TODO: 0.2 made the filter registers doubles
+    // so we should really make a double version of fast_tanh_clip
     bpf = self->drive ? fast_tanh_clip(bpf, self->drive) : bpf;
 
-    float lpf = self->g_ * bpf + self->z1_;
+    double lpf = self->g_ * bpf + self->z1_;
     self->z0_ = self->g_ * hpf + bpf;
     self->z1_ = self->g_ * bpf + lpf;
 

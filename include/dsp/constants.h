@@ -29,15 +29,15 @@ extern "C" {
 
 #define E 2.718281828459
 
-static const float TWO_PI = DSP_PI * 2.0;
+static const float TWO_PI = DSP_PI * 2.0f;
 
-static const float HALF_PI = DSP_PI * 0.5;
+static const float HALF_PI = DSP_PI * 0.5f;
 
-static const float QRTR_PI = DSP_PI * 0.25;
+static const float QRTR_PI = DSP_PI * 0.25f;
 
 static const float DSP_PI_SQUARED = DSP_PI * DSP_PI;
 
-static const float TANGENT_THRESHOLD = 0.95 * DSP_PI / 2.0;
+static const float TANGENT_THRESHOLD = 0.95f * DSP_PI / 2.0f;
 
 #ifdef __cplusplus
 }

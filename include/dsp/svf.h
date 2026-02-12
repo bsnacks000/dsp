@@ -17,9 +17,10 @@ extern "C" {
 
 typedef struct {
     // public
-    float freq, q, drive, sr, lp, hp, bp, bs, ap;
+    float freq, q, drive, sr;
+    double lp, hp, bp, bs, ap;
     // private
-    float z0_, z1_, t_, t_ovr_2_, two_ovr_t_, two_r_, four_r_, g_, g1_, two_r_plus_g_;
+    double z0_, z1_, t_, t_ovr_2_, two_ovr_t_, two_r_, four_r_, g_, g1_, two_r_plus_g_;
 } svf;
 
 /**
