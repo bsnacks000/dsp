@@ -13,6 +13,16 @@ typedef struct irdft irdft;
 
 typedef float dft_complex[2];
 
+static inline void dft_complex_mult_frame_accumulate(dft_complex* out,
+                                                     const dft_complex* a,
+                                                     const dft_complex* b,
+                                                     uint32_t sz) {
+    for (uint32_t i = 0; i < sz; i++) {
+        out[i][0] += a[i][0] * b[i][0] - a[i][1] * b[i][1];  // re
+        out[i][1] += a[i][0] * b[i][1] + a[i][1] * b[i][0];  // im
+    }
+}
+
 /**
  * @brief create rdft storage for size n real numbers and size n/2 + 1 complex frame
  * size. n must be a power of 2.
