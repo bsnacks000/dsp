@@ -62,6 +62,23 @@ target_compile_options(dsp_objects
 # build the tests
 if (DSP_BUILD_TESTS)
     enable_testing()
+    if(DSP_COVERAGE)
+        if(CMAKE_C_COMPILER_ID MATCHES "Clang")
+            target_compile_options(dsp_objects PUBLIC
+                -fprofile-instr-generate -fcoverage-mapping
+            )
+            target_link_options(dsp_objects PUBLIC
+                -fprofile-instr-generate -fcoverage-mapping
+            )
+        elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
+            target_compile_options(dsp_objects PUBLIC
+                --coverage -O0 -g
+            )
+            target_link_options(dsp_objects PUBLIC
+                --coverage
+            )
+        endif()
+    endif()
     add_subdirectory(tests)
 endif()
 

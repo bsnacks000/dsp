@@ -2,6 +2,7 @@
 
 #include "test_balance.h"
 #include "test_bq.h"
+#include "test_conv.h"
 #include "test_conversions.h"
 #include "test_curve.h"
 #include "test_deck.h"
@@ -31,31 +32,19 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
     // register test_suites
     // sentinel
     MunitSuite all_test_suites[] = {
-        maths_test_suite,
-        utils_test_suite,
-        interpolate_test_suite,
-        ftable_test_suite,
-        conversions_test_suite,
-        balance_test_suite,
-        bq_test_suite,
-        curve_test_suite,
-        line_test_suite,
-        rc_test_suite,
-        svf_test_suite,
-        xfade_test_suite,
-        delay_test_suite,
-        stft_test_suite,
-        lag_test_suite,
-        follow_test_suite,
-        samph_test_suite,
-        pblep_test_suite,
-        phasor_test_suite,
-        tabread_test_suite,
-        oscil_test_suite,
-        deck_test_suite,
-        ft_sinesum_test_suite,
-        ft_chebpoly_test_suite,
-        {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
+        maths_test_suite,       utils_test_suite,
+        interpolate_test_suite, ftable_test_suite,
+        conversions_test_suite, balance_test_suite,
+        bq_test_suite,          curve_test_suite,
+        line_test_suite,        rc_test_suite,
+        svf_test_suite,         xfade_test_suite,
+        delay_test_suite,       stft_test_suite,
+        lag_test_suite,         follow_test_suite,
+        samph_test_suite,       pblep_test_suite,
+        phasor_test_suite,      tabread_test_suite,
+        oscil_test_suite,       deck_test_suite,
+        ft_sinesum_test_suite,  ft_chebpoly_test_suite,
+        conv_test_suite,        {NULL, NULL, NULL, 1, MUNIT_SUITE_OPTION_NONE},
     };
 
     MunitSuite test_suite_main = {
