@@ -60,8 +60,7 @@ typedef struct {
 
 static inline mpconv_kernel_sz calculate_mpconv_kernel_sz(uint32_t ir_len,
                                                           uint32_t part_sz) {
-
-    dsp_assert(is_pow2(ir_len), "ir_len must be pow2.");
+    dsp_assert(is_pow2(part_sz), "part_sz must be pow2.");
     dsp_assert(part_sz <= ir_len, "part_sz must be <= ir_len.");
 
     uint32_t frame_sz = part_sz;
@@ -113,6 +112,8 @@ void mpconv_kernel_init(mpconv_kernel* self,
                         dft_complex* y,
                         rdft* rfft,
                         irdft* irfft,
+                        rdft_execute forward_fft,
+                        irdft_execute inverse_fft,
                         mpconv_kernel_sz kernel_sz);
 
 /**

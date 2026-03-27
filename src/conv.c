@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <dsp/conv.h>
+#include "dsp/dft.h"
 
 static inline float tick_one_(dconv* self, float xn) {
     float out = 0.0f;
@@ -50,6 +51,8 @@ void mpconv_kernel_init(mpconv_kernel* self,
                         dft_complex* y,
                         rdft* rfft,
                         irdft* irfft,
+                        rdft_execute forward_fft,
+                        irdft_execute inverse_fft,
                         mpconv_kernel_sz kernel_sz) {
     self->block = block;
     self->ola = ola;
@@ -58,6 +61,8 @@ void mpconv_kernel_init(mpconv_kernel* self,
     self->y = y;
     self->rfft = rfft;
     self->irfft = irfft;
+    self->forward_fft = forward_fft;
+    self->inverse_fft = inverse_fft;
     self->kernel_sz = kernel_sz;
     self->ptr = 0;
 }
