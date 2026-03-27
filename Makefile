@@ -47,7 +47,7 @@ coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	@if [ "$(shell $(CC) -v 2>&1 | grep -c "gcc")" -gt 0 ]; then \
         echo "Collecting coverage with lcov..."; \
-	    ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork; \
+	    ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures; \
         lcov --capture --directory build --output-file coverage.info; \
        	lcov --remove coverage.info '/tests/*' --output-file coverage.info; \
        	genhtml coverage.info --output-directory coverage; \
