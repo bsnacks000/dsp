@@ -40,10 +40,6 @@ bool stft_tick(stft* self, dft_complex* frame_out, float* real_in) {
             tmp[i] = self->win[i] * self->buf[idx];
         }
 
-        // for (uint32_t i = 0; i < self->fft_sz; i++)
-        //     printf("\t%.7f", tmp[i]);
-        // printf("\n");
-
         self->forward(self->dft, frame_out, tmp);
         self->write_counter_ -= self->hop_sz;
         return true;
@@ -81,10 +77,6 @@ void istft_tick(istft* self, float* real_out, dft_complex* frame_in) {
     // do inverse fft
     float tmp[self->fft_sz];
     self->inverse(self->idft, tmp, frame_in);
-
-    // for (uint32_t i = 0; i < self->fft_sz; i++)
-    //     printf("%.7f,", tmp[i]);
-    // printf("\n");
 
     // overlap add one fft len into the ola buffer (optional window)
     for (uint32_t i = 0; i < self->fft_sz; i++) {

@@ -49,7 +49,7 @@ coverage: clean
         echo "Collecting coverage with lcov..."; \
 	    ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork; \
         lcov --capture --directory build --output-file coverage.info; \
-       	lcov --remove coverage.info '*/tests/*' '*/munit.c' '/usr/*' --output-file coverage.info; \
+       	lcov --remove coverage.info '/tests/*' --output-file coverage.info; \
        	genhtml coverage.info --output-directory coverage; \
        	lcov --summary coverage.info; \
 	else \

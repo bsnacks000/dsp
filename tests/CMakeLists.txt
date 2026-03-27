@@ -2,7 +2,7 @@ set(UNIT_TEST_NAME dsp_unit_tests)
 
 # static lib
 message(STATUS "dsp: building static lib for tests.")
-add_library(dsp SHARED)
+add_library(dsp STATIC)
 target_link_libraries(dsp PUBLIC dsp::objects)
 target_include_directories(dsp
     PUBLIC
