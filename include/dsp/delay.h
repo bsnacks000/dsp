@@ -60,6 +60,35 @@ void delay_line_tap3(delay_line* self,
                      uint32_t start,
                      uint32_t nsmps);
 
+/**
+ * @brief a one sample delay. z^-1
+ */
+typedef struct {
+    float z1_;
+} z1_delay;
+
+/**
+ * @brief z1_delay_init
+ */
+static inline void z1_delay_init(z1_delay* self) {
+
+    self->z1_ = 0.0f;
+}
+
+/**
+ * @brief z1_delay_tick_block
+ */
+static inline void z1_delay_tick_block(z1_delay* self,
+                                       float* out,
+                                       float* in,
+                                       uint32_t start,
+                                       uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = self->z1_;
+        self->z1_ = in[i];
+    }
+}
+
 #ifdef __cplusplus
 }
 #endif

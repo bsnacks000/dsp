@@ -5,7 +5,7 @@
 #include <dsp/ftable/ftable.h>
 #include <dsp/maths.h>
 
-#include <stdio.h>
+// #include <stdio.h>
 
 #define BUF_SZ 64
 
@@ -36,7 +36,7 @@ MunitResult test_deck_matrix_fill(const MunitParameter params[], void* data) {
     matrix_init(&m, mdat, n_rows, n_cols);
     dsp_err err = ft_deck_matrix_fill(&deck, &m);
 
-    printf("%d\n, %d\n", ft1.buf_sz, ft2.buf_sz);
+    // printf("%d\n, %d\n", ft1.buf_sz, ft2.buf_sz);
 
     munit_assert_int(err, ==, 0);
 

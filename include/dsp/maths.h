@@ -82,7 +82,7 @@ static inline float rand_unipolar(void) {
 }
 
 static inline float rand_bipolar(void) {
-    return ((float) rand() / (float) RAND_MAX) * 2.0 - 1.0;
+    return ((float) rand() / (float) RAND_MAX) * 2.0f - 1.0f;
 }
 
 // // inverversions for unipolar / bipolar signals
@@ -116,12 +116,12 @@ static inline float range_invert(float x, float a, float b) {
 /**
  * @brief invert a unipolar signal (0,1) -> (1,0)
  */
-#define invert_unipolar(x) range_invert(x, 0.0, 1.0)
+#define invert_unipolar(x) range_invert(x, 0.0f, 1.0f)
 
 /**
  * @brief invert a bipolar signal (-1,1) -> (1,-1)
  */
-#define invert_bipolar(x) range_invert(x, -1.0, 1.0)
+#define invert_bipolar(x) range_invert(x, -1.0f, 1.0f)
 
 /**
  * @brief invert a unipolar block

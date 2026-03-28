@@ -23,14 +23,14 @@ extern "C" {
  *
  */
 static inline float samps_per_ms(float sr) {
-    return sr / 1000.0;
+    return sr / 1000.0f;
 }
 
 /**
  * @breif calculate the ms for nsmps
  */
 static inline float ms_per_samps(float nsmps, float sr) {
-    return nsmps / sr * 1000.0;
+    return nsmps / sr * 1000.0f;
 }
 
 /**
@@ -38,7 +38,7 @@ static inline float ms_per_samps(float nsmps, float sr) {
  *
  */
 static inline float db_to_amp(float db) {
-    return pow(10.0, db / 20.0);
+    return powf(10.0f, db / 20.0f);
 }
 
 /**
@@ -46,7 +46,7 @@ static inline float db_to_amp(float db) {
  *
  */
 static inline float db_to_power(float db) {
-    return pow(10.0, db / 10.0);
+    return pow(10.0f, db / 10.0f);
 }
 
 /**
@@ -54,8 +54,8 @@ static inline float db_to_power(float db) {
  *
  */
 static inline float amp_to_db(float lin) {
-    dsp_assert(lin > 0.0, "lin must be > 0.");
-    return 20.0 * log10(lin);
+    dsp_assert(lin > 0.0f, "lin must be > 0.");
+    return 20.0f * log10(lin);
 }
 
 /**
@@ -63,8 +63,8 @@ static inline float amp_to_db(float lin) {
  *
  */
 static inline float power_to_db(float power) {
-    dsp_assert(power > 0.0, "power must be > 0.");
-    return 10.0 * log10(power);
+    dsp_assert(power > 0.0f, "power must be > 0.");
+    return 10.0f * log10(power);
 }
 
 /**
@@ -72,9 +72,9 @@ static inline float power_to_db(float power) {
  *
  */
 static inline float peak_gain_for_q(float q) {
-    if (q <= 0.707)
-        return 1.0;
-    return (q * q) / pow((q * q - 0.25), 0.5);
+    if (q <= 0.707f)
+        return 1.0f;
+    return (q * q) / powf((q * q - 0.25f), 0.5f);
 }
 
 /**
@@ -91,7 +91,7 @@ static inline float db_peak_gain_for_q(float q) {
  *
  */
 static inline float unipolar_to_bipolar(float val) {
-    return 2.0 * val - 1.0;
+    return 2.0f * val - 1.0f;
 }
 
 /**
@@ -99,7 +99,7 @@ static inline float unipolar_to_bipolar(float val) {
  *
  */
 static inline float bipolar_to_unipolar(float val) {
-    return 0.5 * val + 0.5;
+    return 0.5f * val + 0.5f;
 }
 
 /**
@@ -124,14 +124,14 @@ static inline float bipolar_to_unipolar(float val) {
  * @brief mtof - midi to freq - assume 69 = A4 = 440
  */
 static inline float mtof(float m) {
-    return 440.0 * pow(2.0, (m - 69.0) / 12.0);
+    return 440.0f * powf(2.0f, (m - 69.0f) / 12.0f);
 }
 
 /**
  * @brief ftom - freq to midi - assume 69 = A4 = 440
  */
 static inline float ftom(float f) {
-    return 12.0 * log2(f / 440.0) + 69.0;
+    return 12.0f * log2f(f / 440.0f) + 69.0f;
 }
 
 /**

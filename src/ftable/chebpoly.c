@@ -19,7 +19,7 @@ dsp_err ft_chebpoly_args_init(ft_chebpoly_args* self, const float* h, uint32_t h
  */
 static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz) {
     uint32_t n = h_sz - 1;
-    float s = 0.5 * h[0];
+    float s = 0.5f * h[0];
     if (n == 0) {
         return s;
     }
@@ -30,7 +30,7 @@ static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz)
     s += h[1] * t_n;
 
     for (uint32_t k = 2; k < n + 1; k++) {
-        float t_k = 2.0 * x * t_n - t_nm1;
+        float t_k = 2.0f * x * t_n - t_nm1;
         s += h[k] * t_k;
         t_nm1 = t_n;
         t_n = t_k;

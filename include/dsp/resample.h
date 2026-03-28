@@ -93,8 +93,7 @@ static inline void downsample_lin(float* out,
         uint32_t base = i * factor;
         uint32_t left = base + factor / 2 - 1;
         uint32_t right = base + factor / 2;
-        float t = 0.5;
-        out[i] = in[left] + t * (in[right] - in[left]);
+        out[i] = in[left] + 0.5f * (in[right] - in[left]);
     }
 }
 

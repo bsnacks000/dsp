@@ -7,7 +7,6 @@
 BUILD_TYPE?=Release
 TESTS?=0
 CSOUND?=0
-UTILS?=0
 COVERAGE?=0
 
 CMAKE_OPTS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
@@ -18,10 +17,6 @@ endif
 
 ifeq ($(TESTS), 1)
 	CMAKE_OPTS += -DDSP_BUILD_TESTS=ON
-endif
-
-ifeq ($(UTILS), 1)
-	CMAKE_OPTS += -DDSP_BUILD_UTILS=ON
 endif
 
 ifeq ($(COVERAGE), 1)
@@ -44,28 +39,28 @@ csound: clean
 	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
 
 # rebuild lib for the csound plugin and run the regression tests
-rgr: csound
-	./rgr/test.py
+regression: csound
+	uv run ./tests/regression/test.py
 
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
-	# Run tests from build directory
-	./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork
-	# GCC / lcov branch
 	@if [ "$(shell $(CC) -v 2>&1 | grep -c "gcc")" -gt 0 ]; then \
-       	lcov --capture --directory build --output-file coverage.info; \
-       	lcov --remove coverage.info '*/tests/*' '*/munit.c' '/usr/*' --output-file coverage.info; \
+        echo "Collecting coverage with lcov..."; \
+	    ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures; \
+        lcov --capture --directory build --output-file coverage.info; \
+       	lcov --remove coverage.info '/tests/*' --output-file coverage.info; \
        	genhtml coverage.info --output-directory coverage; \
        	lcov --summary coverage.info; \
 	else \
-       	echo "Collecting coverage with llvm-cov..."; \
+		echo "Collecting coverage with llvm-cov..."; \
         LLVM_COV='/opt/homebrew/opt/llvm/bin/llvm-cov'; \
         LLVM_PROFDATA='/opt/homebrew/opt/llvm/bin/llvm-profdata';\
-       	LLVM_PROFILE_FILE="coverage.profraw" ./build/tests/dsp_unit_tests; \
+       	LLVM_PROFILE_FILE="coverage.profraw" ./build/tests/dsp_unit_tests; --seed 0x526af79e --no-fork; \
         $$LLVM_PROFDATA merge -sparse coverage.profraw -o coverage.profdata; \
        	$$LLVM_COV report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
-	fi
+        $$LLVM_COV show ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata -format=html -output-dir=coverage; \
+    fi
 
 # view last coverage report
 html-cov:

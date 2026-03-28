@@ -132,3 +132,25 @@ MunitResult test_delay_line_tap3(const MunitParameter params[], void* data) {
 
     return MUNIT_OK;
 }
+
+MunitResult test_z1_delay(const MunitParameter* params, void* data) {
+    (void) params;
+    (void) data;
+
+    z1_delay z1;
+    z1_delay_init(&z1);
+
+    float in[5] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f};
+    float out[5] = {0.0f};
+
+    z1_delay_tick_block(&z1, out, in, 0, 5);
+
+    float expected = 0.0f;
+    for (int i = 0; i < 5; i++) {
+        if (i >= 1)
+            expected = i;
+        munit_assert_double_equal(expected, out[i], 5);
+    }
+
+    return MUNIT_OK;
+}

@@ -20,6 +20,8 @@ MunitResult test_delay_line_tapi(const MunitParameter params[], void* data);
 
 MunitResult test_delay_line_tap3(const MunitParameter params[], void* data);
 
+MunitResult test_z1_delay(const MunitParameter params[], void* data);
+
 static MunitTest delay_test_module[] = {
     {"/delay_line_calculate_buf_sz", test_delay_line_calculate_buf_sz, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
@@ -33,6 +35,9 @@ static MunitTest delay_test_module[] = {
      NULL},
     {"/delay_line_tap3", test_delay_line_tap3, NULL, NULL, MUNIT_TEST_OPTION_NONE,
      NULL},
+
+    {"/z1_delay", test_z1_delay, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
 

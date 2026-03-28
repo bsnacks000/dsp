@@ -30,17 +30,17 @@ static inline float dfII_tick_(dfII* self, float xn) {
 
 void dfII_init(dfII* self, float sr) {
     // coeffs (a is the denominator)
-    self->a0 = 0.0;
-    self->a1 = 0.0;
-    self->a2 = 0.0;
-    self->b1 = 0.0;
-    self->b2 = 0.0;
-    self->c0 = 1.0;  // full wet -- reserved for use with shelving filters
-    self->d0 = 0.0;
+    self->a0 = 0.0f;
+    self->a1 = 0.0f;
+    self->a2 = 0.0f;
+    self->b1 = 0.0f;
+    self->b2 = 0.0f;
+    self->c0 = 1.0f;  // full wet -- reserved for use with shelving filters
+    self->d0 = 0.0f;
     // state registers
-    self->x_z1 = 0.0;
-    self->x_z2 = 0.0;
-    self->sr = fabs(sr);
+    self->x_z1 = 0.0f;
+    self->x_z2 = 0.0f;
+    self->sr = fabsf(sr);
 }
 
 float dfII_tick(dfII* self, float xn) {
@@ -57,26 +57,26 @@ static inline void first_order_lpf(dfII* self, float fc) {
     float theta_c = TWO_PI * fc / self->sr;
     float gamma = cosf(theta_c) / (1.0 + sinf(theta_c));
 
-    self->a0 = (1.0 - gamma) / 2.0;
+    self->a0 = (1.0f - gamma) / 2.0f;
     self->a1 = self->a0;
     self->b1 = -gamma;
 }
 
 static inline void first_order_hpf(dfII* self, float fc) {
     float theta_c = TWO_PI * fc / self->sr;
-    float gamma = cosf(theta_c) / (1.0 + sinf(theta_c));
+    float gamma = cosf(theta_c) / (1.0f + sinf(theta_c));
 
-    self->a0 = (1.0 + gamma) / 2.0;
+    self->a0 = (1.0f + gamma) / 2.0f;
     self->a1 = -self->a0;
     self->b1 = -gamma;
 }
 
 static inline void first_order_apf(dfII* self, float fc) {
     float a = tanf(DSP_PI * fc / self->sr);
-    float alpha = (a - 1.0) / (a + 1.0);
+    float alpha = (a - 1.0f) / (a + 1.0f);
 
     self->a0 = alpha;
-    self->a1 = 1.0;
+    self->a1 = 1.0f;
     self->b1 = alpha;
 }
 
@@ -86,13 +86,13 @@ static inline void first_order_apf(dfII* self, float fc) {
 
 static inline void butterworth_lp(dfII* self, float fc) {
     float theta_c = DSP_PI * fc / self->sr;
-    float c = 1.0 / tanf(theta_c);
+    float c = 1.0f / tanf(theta_c);
 
-    self->a0 = 1.0 / (1.0 + SQRT_TWO * c + c * c);
-    self->a1 = 2.0 * self->a0;
+    self->a0 = 1.0f / (1.0f + SQRT_TWO * c + c * c);
+    self->a1 = 2.0f * self->a0;
     self->a2 = self->a0;
-    self->b1 = 2.0 * self->a0 * (1.0 - c * c);
-    self->b2 = self->a0 * (1.0 - SQRT_TWO * c + c * c);
+    self->b1 = 2.0f * self->a0 * (1.0f - c * c);
+    self->b2 = self->a0 * (1.0f - SQRT_TWO * c + c * c);
 }
 
 static inline void linkwitz_riley_lp(dfII* self, float fc) {
@@ -100,12 +100,12 @@ static inline void linkwitz_riley_lp(dfII* self, float fc) {
     float theta_c = DSP_PI * fc / self->sr;
 
     float k = omega_c / tanf(theta_c);
-    float d = k * k + omega_c * omega_c + 2.0 * k * omega_c;
-    float b1_n = -2.0 * k * k + 2.0 * omega_c * omega_c;
-    float b2_n = -2.0 * k * omega_c + k * k + omega_c * omega_c;
+    float d = k * k + omega_c * omega_c + 2.0f * k * omega_c;
+    float b1_n = -2.0f * k * k + 2.0f * omega_c * omega_c;
+    float b2_n = -2.0f * k * omega_c + k * k + omega_c * omega_c;
 
     self->a0 = omega_c * omega_c / d;
-    self->a1 = 2.0 * omega_c * omega_c / d;
+    self->a1 = 2.0f * omega_c * omega_c / d;
     self->a2 = self->a0;
     self->b1 = b1_n / d;
     self->b2 = b2_n / d;
@@ -141,35 +141,35 @@ static inline dfII_non_resonant_design_equation dfII_get_first_order_design_equa
 
 static void resonant_lpf(dfII* self, float fc, float q) {
     float theta_c = TWO_PI * fc / self->sr;
-    float d = 1.0 / q;
+    float d = 1.0f / q;
 
-    float d2 = ((d / 2.0) * (sinf(theta_c)));
+    float d2 = ((d / 2.0f) * (sinf(theta_c)));
 
-    float beta = 0.5 * ((1.0 - d2) / (1.0 + d2));
-    float gamma = (0.5 + beta) * cosf(theta_c);
-    float alpha = (0.5 + beta - gamma) / 2.0;
+    float beta = 0.5f * ((1.0 - d2) / (1.0f + d2));
+    float gamma = (0.5f + beta) * cosf(theta_c);
+    float alpha = (0.5f + beta - gamma) / 2.0f;
 
     self->a0 = alpha;
-    self->a1 = 2.0 * alpha;
+    self->a1 = 2.0f * alpha;
     self->a2 = alpha;
-    self->b1 = -2.0 * gamma;
-    self->b2 = 2.0 * beta;
+    self->b1 = -2.0f * gamma;
+    self->b2 = 2.0f * beta;
 }
 
 static void resonant_hpf(dfII* self, float fc, float q) {
     float theta_c = TWO_PI * fc / self->sr;
-    float d = 1.0 / q;
-    float d2 = ((d / 2.0) * (sinf(theta_c)));
+    float d = 1.0f / q;
+    float d2 = ((d / 2.0f) * (sinf(theta_c)));
 
-    float beta = 0.5 * ((1.0 - d2) / (1.0 + d2));
-    float gamma = (0.5 + beta) * cosf(theta_c);
-    float alpha = (0.5 + beta + gamma) / 2.0;
+    float beta = 0.5f * ((1.0f - d2) / (1.0f + d2));
+    float gamma = (0.5f + beta) * cosf(theta_c);
+    float alpha = (0.5f + beta + gamma) / 2.0f;
 
     self->a0 = alpha;
-    self->a1 = -2.0 * alpha;
+    self->a1 = -2.0f * alpha;
     self->a2 = alpha;
-    self->b1 = -2.0 * gamma;
-    self->b2 = 2.0 * beta;
+    self->b1 = -2.0f * gamma;
+    self->b2 = 2.0f * beta;
 }
 
 static void resonant_bpf(dfII* self, float fc, float q) {
@@ -177,9 +177,9 @@ static void resonant_bpf(dfII* self, float fc, float q) {
     float delta = k * k * q + k + q;
 
     self->a0 = k / delta;
-    self->a1 = 0.0;
+    self->a1 = 0.0f;
     self->a2 = -k / delta;
-    self->b1 = 2.0 * q * (k * k - 1.0) / delta;
+    self->b1 = 2.0f * q * (k * k - 1.0f) / delta;
     self->b2 = (k * k * q - k + q) / delta;
 }
 
@@ -187,8 +187,8 @@ static void resonant_bsf(dfII* self, float fc, float q) {
     float k = tanf(DSP_PI * fc / self->sr);
     float delta = k * k * q + k + q;
 
-    self->a0 = q * (1.0 + k * k) / delta;
-    self->a1 = 2.0 * q * (k * k - 1.0) / delta;
+    self->a0 = q * (1.0f + k * k) / delta;
+    self->a1 = 2.0f * q * (k * k - 1.0f) / delta;
     self->a2 = self->a0;
     self->b1 = self->a1;
     self->b2 = (k * k * q - k + q) / delta;
@@ -199,11 +199,11 @@ static void resonant_reson(dfII* self, float fc, float q) {
     float bw = fc / q;
 
     float b2 = expf(-TWO_PI * (bw / self->sr));
-    float b1 = ((-4.0 * b2) / (1.0 + b2)) * cosf(theta_c);
-    float a0 = 1.0 - powf(b2, 0.5);
+    float b1 = ((-4.0f * b2) / (1.0f + b2)) * cosf(theta_c);
+    float a0 = 1.0f - powf(b2, 0.5f);
 
     self->a0 = a0;
-    self->a1 = 0.0;
+    self->a1 = 0.0f;
     self->a2 = -a0;
     self->b1 = b1;
     self->b2 = b2;
@@ -218,13 +218,13 @@ static void resonant_apf(dfII* self, float fc, float q) {
         x = TANGENT_THRESHOLD;
 
     float tan_x = tanf(x);
-    float alpha = (tan_x - 1.0) / (tan_x + 1.0);
+    float alpha = (tan_x - 1.0f) / (tan_x + 1.0f);
     float beta = -cosf(theta_c);
 
     self->a0 = -alpha;
-    self->a1 = beta * (1.0 - alpha);
-    self->a2 = 1.0;
-    self->b1 = beta * (1.0 - alpha);
+    self->a1 = beta * (1.0f - alpha);
+    self->a2 = 1.0f;
+    self->b1 = beta * (1.0f - alpha);
     self->b2 = -alpha;
 }
 
@@ -262,21 +262,21 @@ static dfII_resonant_design_equation dfII_get_resonant_design_equation(
  */
 
 static void lshlf(dfII* self, float fc, float q, float gain_db) {
-    float A = powf(10.0, gain_db / 40.0);
+    float A = powf(10.0f, gain_db / 40.0f);
     float omega0 = TWO_PI * fc / self->sr;
     float cos_omega0 = cosf(omega0);
     float sin_omega0 = sinf(omega0);
 
-    float alpha = sin_omega0 * sqrtf((A * A + 1.0) * (1.0 / q - 1.0) + 2.0 * A);
+    float alpha = sin_omega0 * sqrtf((A * A + 1.0f) * (1.0f / q - 1.0f) + 2.0f * A);
 
     float sqrt_A = sqrtf(A);
 
-    float b0 = A * ((A + 1.0) - (A - 1.0) * cos_omega0 + 2.0 * sqrt_A * alpha);
-    float b1 = 2.0 * A * ((A - 1.0) - (A + 1.0) * cos_omega0);
-    float b2 = A * ((A + 1.0) - (A - 1.0) * cos_omega0 - 2.0 * sqrt_A * alpha);
-    float a0 = (A + 1.0) + (A - 1.0) * cos_omega0 + 2.0 * sqrt_A * alpha;
-    float a1 = -2.0 * ((A - 1.0) + (A + 1.0) * cos_omega0);
-    float a2 = (A + 1.0) + (A - 1.0) * cos_omega0 - 2.0 * sqrt_A * alpha;
+    float b0 = A * ((A + 1.0f) - (A - 1.0f) * cos_omega0 + 2.0f * sqrt_A * alpha);
+    float b1 = 2.0f * A * ((A - 1.0f) - (A + 1.0f) * cos_omega0);
+    float b2 = A * ((A + 1.0f) - (A - 1.0f) * cos_omega0 - 2.0f * sqrt_A * alpha);
+    float a0 = (A + 1.0f) + (A - 1.0f) * cos_omega0 + 2.0f * sqrt_A * alpha;
+    float a1 = -2.0f * ((A - 1.0f) + (A + 1.0f) * cos_omega0);
+    float a2 = (A + 1.0f) + (A - 1.0f) * cos_omega0 - 2.0f * sqrt_A * alpha;
 
     self->a0 = a0 / b0;
     self->a1 = a1 / b0;
@@ -286,21 +286,21 @@ static void lshlf(dfII* self, float fc, float q, float gain_db) {
 }
 
 static void hshlf(dfII* self, float fc, float q, float gain_db) {
-    float A = powf(10.0, gain_db / 40.0);
+    float A = powf(10.0f, gain_db / 40.0f);
     float omega0 = TWO_PI * fc / self->sr;
     float cos_omega0 = cosf(omega0);
     float sin_omega0 = sinf(omega0);
 
-    float alpha = sin_omega0 * sqrtf((A * A + 1) * (1.0 / q - 1.0) + 2.0 * A);
+    float alpha = sin_omega0 * sqrtf((A * A + 1.0f) * (1.0f / q - 1.0f) + 2.0f * A);
 
     float sqrt_A = sqrtf(A);
 
-    float b0 = A * ((A + 1.0) + (A - 1.0) * cos_omega0 + 2.0 * sqrt_A * alpha);
-    float b1 = -2.0 * A * ((A - 1.0) + (A + 1.0) * cos_omega0);
-    float b2 = A * ((A + 1.0) + (A - 1.0) * cos_omega0 - 2.0 * sqrt_A * alpha);
-    float a0 = (A + 1.0) - (A - 1.0) * cos_omega0 + 2.0 * sqrt_A * alpha;
-    float a1 = 2.0 * ((A - 1.0) - (A + 1.0) * cos_omega0);
-    float a2 = (A + 1.0) - (A - 1.0) * cos_omega0 - 2.0 * sqrt_A * alpha;
+    float b0 = A * ((A + 1.0f) + (A - 1.0f) * cos_omega0 + 2.0f * sqrt_A * alpha);
+    float b1 = -2.0f * A * ((A - 1.0f) + (A + 1.0f) * cos_omega0);
+    float b2 = A * ((A + 1.0f) + (A - 1.0f) * cos_omega0 - 2.0f * sqrt_A * alpha);
+    float a0 = (A + 1.0f) - (A - 1.0f) * cos_omega0 + 2.0f * sqrt_A * alpha;
+    float a1 = 2.0f * ((A - 1.0f) - (A + 1.0f) * cos_omega0);
+    float a2 = (A + 1.0f) - (A - 1.0f) * cos_omega0 - 2.0f * sqrt_A * alpha;
 
     self->a0 = a0 / b0;
     self->a1 = a1 / b0;
@@ -310,17 +310,17 @@ static void hshlf(dfII* self, float fc, float q, float gain_db) {
 }
 
 static void peak(dfII* self, float fc, float q, float gain_db) {
-    float A = powf(10.0, gain_db / 40.0);
+    float A = powf(10.0f, gain_db / 40.0f);
     float omega0 = TWO_PI * fc / self->sr;
 
-    float alpha = sinf(omega0) / (2.0 * q);
+    float alpha = sinf(omega0) / (2.0f * q);
 
-    float a0 = 1.0 + (alpha * A);
-    float a1 = -2.0 * cosf(omega0);
-    float a2 = 1.0 - (alpha * A);
-    float b0 = 1.0 + (alpha / A);
-    float b1 = -2.0 * cosf(omega0);
-    float b2 = 1.0 - (alpha / A);
+    float a0 = 1.0f + (alpha * A);
+    float a1 = -2.0f * cosf(omega0);
+    float a2 = 1.0f - (alpha * A);
+    float b0 = 1.0f + (alpha / A);
+    float b1 = -2.0f * cosf(omega0);
+    float b2 = 1.0f - (alpha / A);
 
     self->a0 = a0 / b0;
     self->a1 = a1 / b0;

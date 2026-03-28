@@ -14,7 +14,7 @@ static inline float tick_(samph* self, float xn) {
 
 void samph_init(samph* self, float gate_thresh) {
     self->gate_thresh = gate_thresh;
-    self->curr_gate_ = self->prev_gate_ = self->curr_out_ = 0.0;
+    self->curr_gate_ = self->prev_gate_ = self->curr_out_ = 0.0f;
 }
 
 void samph_tick_block(samph* self,
