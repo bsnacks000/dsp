@@ -121,6 +121,9 @@ void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float 
     self->r = r;
     self->pos = pos;
 
+    self->l->wt = NULL;
+    self->r->wt = NULL;
+
     xtabread_update_(self);
 }
 
