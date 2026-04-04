@@ -1,8 +1,8 @@
 #include "test_tabread.h"
 
 #include <assert.h>
+#include <dsp/ftable.h>
 #include <dsp/tabread.h>
-#include "dsp/ftable/deck.h"
 #include "helpers.h"
 
 #define NSMPS 64

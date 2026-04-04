@@ -1,6 +1,5 @@
 #include "test_ft_chebpoly.h"
-#include <dsp/ftable/chebpoly.h>
-#include <dsp/ftable/ramp.h>
+#include <dsp/ftable.h>
 
 #define BUF_SZ 64
 
@@ -18,22 +17,15 @@ MunitResult test_chebpoly(const MunitParameter params[], void* data) {
     // build a ramp
     // TODO: split this into its own test
 
-    ft_ramp_args ramp_args = {
-        .start = -1.0,
-        .stop = 1.0,
-        .endpoint = true,
-    };
-
-    dsp_err err;
-    if ((err = ft_linspace(&wt, &ramp_args)) != DSP_OK) {
-        return MUNIT_ERROR;
-    }
+    for (int i = 0; i < BUF_SZ; i++)
+        buf[i] = 1.0;
 
     float h[4] = {0.0, 0.0, 0.0, 1.0};
 
     ft_chebpoly_args cheby_args;
     ft_chebpoly_args_init(&cheby_args, h, 4);
 
+    dsp_err err;
     if ((err = ft_chebpoly(&wt, &cheby_args)) != DSP_OK) {
         return MUNIT_ERROR;
     }
@@ -53,22 +45,8 @@ MunitResult test_chebpoly_deck_generate(const MunitParameter params[], void* dat
     ftable wt2;
     ftable_init(&wt2, buf2, BUF_SZ);
 
-    // build a ramp
-    // TODO: split this into its own test
-
-    ft_ramp_args ramp_args = {
-        .start = -1.0,
-        .stop = 1.0,
-        .endpoint = true,
-    };
-
-    dsp_err err;
-    if ((err = ft_linspace(&wt1, &ramp_args)) != DSP_OK) {
-        return MUNIT_ERROR;
-    }
-
-    if ((err = ft_linspace(&wt2, &ramp_args)) != DSP_OK) {
-        return MUNIT_ERROR;
+    for (int i = 0; i < BUF_SZ; i++) {
+        buf1[i] = buf2[i] = 1.0;
     }
 
     float h1[4] = {0.0, 0.0, 0.0, 1.0};
@@ -88,7 +66,11 @@ MunitResult test_chebpoly_deck_generate(const MunitParameter params[], void* dat
     args[0] = &cheby_args1;
     args[1] = &cheby_args2;
 
-    if ((err = chebpoly_deck_generate(tabs, args, 2)) != DSP_OK) {
+    ft_deck deck;
+    ft_deck_init(&deck, tabs, 2);
+
+    dsp_err err;
+    if ((err = ft_deck_chebpoly_generate(&deck, args, 2)) != DSP_OK) {
         return MUNIT_ERROR;
     }
 

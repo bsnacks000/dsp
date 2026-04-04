@@ -16,8 +16,7 @@
 extern "C" {
 #endif
 
-#include <dsp/ftable/deck.h>
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 
 /**
  * @brief tabread

@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <dsp/assert.h>
+#include <dsp/utils.h>
 #include <stdint.h>
 
 /**
@@ -49,6 +50,8 @@ static inline void chebyshev_fill(float* out,
     for (uint32_t i = 0; i < out_sz; i++) {
         out[i] = chebyshev_polynomial(out[i], h, h_sz);
     }
+
+    normalize(out, out_sz);
 }
 
 #ifdef __cplusplus

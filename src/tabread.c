@@ -1,5 +1,6 @@
 #include <dsp/interpolate.h>
 #include <dsp/tabread.h>
+#include <dsp/xfade.h>
 
 // TODO: implement multiple methods .. zero clip (zclip) and wrap (wrp)
 //      -- (zclip we have)

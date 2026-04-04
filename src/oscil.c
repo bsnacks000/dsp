@@ -1,10 +1,13 @@
 #include <math.h>
 #include <stdint.h>
 
-#include <dsp/ftable/deck.h>
+#include <dsp/ftable.h>
 #include <dsp/interpolate.h>
 #include <dsp/oscil.h>
 #include <dsp/utils.h>
+
+#include <dsp/rmap.h>
+#include <dsp/xfade.h>
 
 // NOTE: some extra guard like this would avoid potential drift for long running
 // (days/weeks) if (self->index_ >= self->wt->len || self->index_ < 0.0)
@@ -72,11 +75,11 @@ static inline float oscil3_tick_(oscil* self) {
  */
 static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
     if (freq < lo) {
-        return (xfade_pair) {.left = 1.0, .right = 0.0};
+        return (xfade_pair){.left = 1.0, .right = 0.0};
     }
 
     if (freq > hi) {
-        return (xfade_pair) {.left = 0.0, .right = 1.0};
+        return (xfade_pair){.left = 0.0, .right = 1.0};
     }
 
     // TODO: precompute mapping (avoid linlin)
@@ -98,7 +101,7 @@ static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
 
     // lower then first band
     if (freq < self->frames[0]->f0) {
-        return (ft_frame_pair) {
+        return (ft_frame_pair){
             .low = self->frames[0],
             .high = self->frames[1],
         };
@@ -106,7 +109,7 @@ static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
 
     // higher then last band
     if (freq > self->frames[self->frames_sz - 1]->f0) {
-        return (ft_frame_pair) {
+        return (ft_frame_pair){
             .low = self->frames[self->frames_sz - 2],
             .high = self->frames[self->frames_sz - 1],
         };
@@ -116,7 +119,7 @@ static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
     // its on caller to make sure the deck
     for (uint32_t i = 1; i < self->frames_sz; i++) {
         if (self->frames[i - 1]->f0 <= freq && freq < self->frames[i]->f0) {
-            return (ft_frame_pair) {
+            return (ft_frame_pair){
                 .low = self->frames[i - 1],
                 .high = self->frames[i],
             };
@@ -126,7 +129,7 @@ static inline ft_frame_pair ft_deck_freq_lookup(ft_deck* self, float freq) {
     // if we get here there are gaps in the freq bands so we just return
     // the first pair
     // TODO: warning (debug)
-    return (ft_frame_pair) {
+    return (ft_frame_pair){
         .low = self->frames[0],
         .high = self->frames[1],
     };

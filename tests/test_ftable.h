@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 #include "munit.h"
 
 MunitResult test_ftable_init(const MunitParameter params[], void* data);

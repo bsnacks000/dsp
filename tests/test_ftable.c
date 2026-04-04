@@ -1,4 +1,4 @@
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 #include <dsp/utils.h>
 
 #include "test_ftable.h"

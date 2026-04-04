@@ -9,9 +9,7 @@
 extern "C" {
 #endif
 
-#include <dsp/ftable/deck.h>
-#include <dsp/ftable/ftable.h>
-#include <dsp/ftable/sinesum.h>
+#include <dsp/ftable.h>
 #include <dsp/utils.h>
 
 #include <stdint.h>

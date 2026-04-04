@@ -1,8 +1,7 @@
 
 #include "test_deck.h"
 
-#include <dsp/ftable/deck.h>
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 #include <dsp/maths.h>
 
 // #include <stdio.h>

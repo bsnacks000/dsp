@@ -2,7 +2,7 @@
 
 #include "test_ft_sinesum.h"
 
-#include <dsp/ftable/sinesum.h>
+#include <dsp/ftable.h>
 
 #define AMPS_SZ 64
 #define BUF_SZ 130
@@ -109,8 +109,11 @@ MunitResult test_sinesum_deck_generate(const MunitParameter* params, void* data)
 
     float sr = 48000;
 
+    ft_deck deck;
+    ft_deck_init(&deck, wavtabs, 3);
+
     dsp_err err;
-    if ((err = sinesum_deck_generate(wavtabs, args, 3, sr)) != DSP_OK) {
+    if ((err = ft_deck_sinesum_generate(&deck, args, 3, sr)) != DSP_OK) {
         cleanup(wavtabs, args, 3);
         return MUNIT_ERROR;
     }
