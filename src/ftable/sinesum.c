@@ -6,6 +6,7 @@
 #include <dsp/maths.h>
 #include <dsp/utils.h>
 
+// TOO: sinesum.h
 /**
  * @brief The lanczos smoothing interpolation formula. Mainly used to round off
  * waveforms with high harmonics during waveform generation.
@@ -99,6 +100,7 @@ dsp_err ft_sinesum1(ftable* wt, void* args) {
     return DSP_OK;
 }
 
+// TOO -> deck API
 dsp_err sinesum_deck_generate(ftable** wt,
                               ft_sinesum_args** args,
                               uint32_t n_bands,
