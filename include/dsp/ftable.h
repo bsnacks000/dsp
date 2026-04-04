@@ -125,6 +125,45 @@ static inline dsp_err ftable_deep_copy(ftable* self, ftable* other) {
 // TODO: add ftable implementations
 
 /**
+ * @brief ramp args. If endpoint is true, stop is the last sample. Otherwise, it is not
+ * included.
+ */
+typedef struct {
+    float start, stop;
+    bool endpoint;
+} ft_ramp_args;
+
+/**
+ * @brief generates a list of evenly spaced numbers over a specified interval
+ *  - requires a pow2 ftable.
+ */
+static inline dsp_err ft_linspace(ftable* wt, void* args) {
+    ft_ramp_args* args_ = (ft_ramp_args*) args;
+
+    float start = args_->start;
+    float stop = args_->stop;
+    bool endpoint = args_->endpoint;
+    uint32_t num = wt->buf_sz;
+
+    if (num < 2) {
+        return DSP_ERR;
+    }
+
+    float step;
+    if (endpoint) {
+        step = (stop - start) / (float) (num - 1);
+    } else {
+        step = (stop - start) / (float) num;
+    }
+
+    for (uint32_t i = 0; i < num; i++) {
+        wt->buf[i] = start + i * step;
+    }
+
+    return DSP_OK;
+}
+
+/**
  * @brief args for ft_sinesum.
  */
 typedef struct {

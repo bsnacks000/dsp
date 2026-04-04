@@ -7,7 +7,7 @@ extern "C" {
 
 #include <csdl.h>
 
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 #include <dsp/phasor.h>
 #include <dsp/tabread.h>
 

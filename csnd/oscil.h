@@ -8,7 +8,7 @@ extern "C" {
 #include <csdl.h>
 
 #include <dsp/bq.h>
-#include <dsp/ftable/ftable.h>
+#include <dsp/ftable.h>
 #include <dsp/oscil.h>
 
 typedef struct {
