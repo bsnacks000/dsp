@@ -5,7 +5,6 @@
 #ifndef DSP_MATHS_H
 #define DSP_MATHS_H
 
-#include "dsp/utils.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,6 +13,7 @@ extern "C" {
 #include <stdlib.h>
 
 #include <dsp/constants.h>
+#include <dsp/utils.h>
 
 // TODO: add const correctness
 
@@ -350,76 +350,6 @@ static inline void ne_scalar_block(float* out,
         out[i] = (float) !check_float_equal(x[i], y);
     }
 }
-
-/**
- * @brief a 2d matrix. data should be accessed in column major order.
- */
-typedef struct {
-    float* data;
-    size_t n_rows, n_cols;
-} matrix;
-
-/**
- * @brief init a matrix
- */
-static inline void matrix_init(matrix* self,
-                               float* data,
-                               size_t n_rows,
-                               size_t n_cols) {
-    self->data = data;
-    self->n_rows = n_rows;
-    self->n_cols = n_cols;
-}
-
-/**
- * @brief col major order accessor.
- */
-static inline float matrix_at(matrix* self, size_t i, size_t j) {
-    return self->data[i * self->n_cols + j];
-}
-
-/**
- * @brief col major order setter
- */
-static inline void matrix_set(matrix* self, float val, size_t i, size_t j) {
-    self->data[i * self->n_cols + j] = val;
-}
-
-/**
- * @brief return a pointer to a matrix row
- */
-static inline float* matrix_get_row(matrix* self, size_t i) {
-    return self->data + (i * self->n_cols);
-}
-
-/**
- * @brief fill a row of the matrix from a src buffer
- */
-static inline void matrix_set_row(matrix* m,
-                                  size_t row,
-                                  const float* buf,
-                                  size_t buf_sz) {
-    for (size_t j = 0; j < buf_sz; j++) {
-        matrix_set(m, buf[j], row, j);
-    }
-}
-
-/**
- * @brief transpose a into b (a.T)
- *  conditions:
- *  - in->n_rows == out->n_cols
- *  - in->n_cols == out->n_rows;
- */
-static inline void matrix_transpose(matrix* b, matrix* a) {
-    for (size_t i = 0; i < a->n_rows; i++) {
-        for (size_t j = 0; j < a->n_cols; j++) {
-            float val = matrix_at(a, i, j);
-            matrix_set(b, val, j, i);
-        }
-    }
-}
-
-// TODO: more matrix ops as needed?
 
 #ifdef __cplusplus
 }

@@ -10,7 +10,10 @@ extern "C" {
 
 #include <dsp/constants.h>
 #include <dsp/fasttrig.h>
+#include <dsp/interpolate.h>
+#include <dsp/rmap.h>
 #include <dsp/shape.h>
+
 #include <stdint.h>
 
 /**
@@ -52,29 +55,47 @@ static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
 }
 
 /**
- * @brief xfade state.
+ * @brief query the l/r amplitudes for use with xfade given freq for bandlimited
+ * crossfades.
  */
-typedef struct {
-    float position;
-    // private
-    float l_coeff_, r_coeff_;
-} xfade;
+static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
+    if (freq < lo) {
+        return (xfade_pair) {.left = 1.0, .right = 0.0};
+    }
 
-/**
- * @brief init xfade state. Position (0-1)
- */
-void xfade_init(xfade* self, float position);
+    if (freq > hi) {
+        return (xfade_pair) {.left = 0.0, .right = 1.0};
+    }
 
-/**
- * @brief tick a block of xfade_sin. Position (0-1)
- */
-void xfade_tick_block(xfade* self,
-                      float* out,
-                      float* in_l,
-                      float* in_r,
-                      float* position,
-                      uint32_t start,
-                      uint32_t nsmps);
+    float fader = linlin(freq, lo, hi, 0.0, 1.0);
+    return xfade_sin(fader);
+}
+
+// NOT NEEDED FOR OSCIL
+// /**
+//  * @brief xfade state.
+//  */
+// typedef struct {
+//     float position;
+//     // private
+//     float l_coeff_, r_coeff_;
+// } xfade;
+
+// /**
+//  * @brief init xfade state. Position (0-1)
+//  */
+// void xfade_init(xfade* self, float position);
+
+// /**
+//  * @brief tick a block of xfade_sin. Position (0-1)
+//  */
+// void xfade_tick_block(xfade* self,
+//                       float* out,
+//                       float* in_l,
+//                       float* in_r,
+//                       float* position,
+//                       uint32_t start,
+//                       uint32_t nsmps);
 
 #ifdef __cplusplus
 }

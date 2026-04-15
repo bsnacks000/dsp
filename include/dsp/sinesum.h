@@ -3,8 +3,8 @@
  *
  * Functions for constructing wavetables based on a sum of sinusoids.
  *
- * The current implementation is based on GEN10 in Csound. There is currently no feature
- * to adjust phases per harmonic amplitude
+ * The current implementation is based on GEN10 in Csound. There is currently no
+ * feature to adjust phases per harmonic amplitude
  *
  */
 
@@ -128,73 +128,54 @@ static inline void tri_amps(float* amps, uint32_t amps_sz) {
 }
 
 /**
- * @brief even amplitude buffer. organ like tones.
- */
-static inline void even_amps(float* amps, uint32_t amps_sz) {
-    for (uint32_t i = 0; i < amps_sz; i++) {
-        uint32_t n = i + 1;
-        amps[i] = (n % 2 == 0) ? 1.0f / (float) n : 0.0f;
-    }
-}
-
-/**
- * @brief exp decay buffer (0.5 decay). bell like tones.
- */
-static inline void exp_decay_amps(float* amps, uint32_t amps_sz) {
-    float decay = 0.5f;  // NOTE: if making as parameter should clamp to 1e-10 < 1.0
-    for (uint32_t i = 0; i < amps_sz; i++) {
-        amps[i] = expf(-decay * (float) (i + 1));
-    }
-}
-
-/**
- * Below is functionality for generating decks with sinesum based on a fundamental
- * set of waveform amplitudes.
+ * Below is functionality for generating decks with sinesum based on a
+ * fundamental set of waveform amplitudes.
  *
  * This API can be used to create band limited ftable oscillators using
  * crossfading w/ blxoscil. In order to do this each ftable must set its max
  * fundamental frequency (f0) that should be used before aliasing.
  *
  * Usage to create a band limited deck:
- *  - calculate desired n_bands and build the appropriate number of ftables and args.
+ *  - calculate desired n_bands and build the appropriate number of ftables and
+ * args.
  *  - Share the desired *amps* amongst the args.
  *  - reduce the number of nharms across the arguments
  *      - Ex. nharms = 64, 32, 16, 8, 4, 2, 1
  *  - call sinesum_deck_generate(...)
  *  - wrap ftable** to a ft_deck and initialize with blxoscil.
  *
- * sinesum_deck_generate has the important side effect of setting f0 on the ftable
- * which will work with blxoscil's frequency lookup. The above reduction formula will
- * guarantee a deck with a continuous frequency range and gradual reduction of
- * harmonics up until nyquist.
+ * sinesum_deck_generate has the important side effect of setting f0 on the
+ * ftable which will work with blxoscil's frequency lookup. The above reduction
+ * formula will guarantee a deck with a continuous frequency range and gradual
+ * reduction of harmonics up until nyquist.
  *
- * If we vary the above logic (different args/harmonics) per frame we will produce
- * a set of ftables that may not be guaranteed to work with blxoscil.
+ * If we vary the above logic (different args/harmonics) per frame we will
+ * produce a set of ftables that may not be guaranteed to work with blxoscil.
  *
- * Instead at this step these tables can be extracted for use with xoscil which does
- * crossfade morphing. Since no anti-aliasing is in effect care should be taken to
- * avoid freqs that will alias or use oversampling etc.
+ * Instead at this step these tables can be extracted for use with xoscil which
+ * does crossfade morphing. Since no anti-aliasing is in effect care should be
+ * taken to avoid freqs that will alias or use oversampling etc.
  */
 
 /**
- * @brief Given the number of desired harmonics and sample rate return the maximum
- * fundmental before aliasing. Scale should be between 0-1.
+ * @brief Given the number of desired harmonics and sample rate return the
+ * maximum fundmental before aliasing. Scale should be between 0-1.
  */
 static inline float max_fundamental(uint32_t nharms, float sr, float scale) {
     return scale * sr / (2.0f * nharms);
 }
 
 /**
- * @brief Given the fundamental f0 and sr return the maximum harmonic before aliasing.
- * Inverse of max_fundamental.
+ * @brief Given the fundamental f0 and sr return the maximum harmonic before
+ * aliasing. Inverse of max_fundamental.
  */
 static inline uint32_t max_harmonic(float f0, float sr) {
     return (uint32_t) floorf((sr / 2.0f) / f0);
 }
 
 /**
- * @brief Given the desired numnber of harmonics return the number of bands. Helper
- * for constructing band limited decks.
+ * @brief Given the desired numnber of harmonics return the number of bands.
+ * Helper for constructing band limited decks.
  */
 static inline uint32_t calculate_n_bands(uint32_t nharms) {
     if (nharms <= 1)
