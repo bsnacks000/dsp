@@ -2,6 +2,7 @@
 
 #include <dsp/fasttrig.h>
 #include <dsp/maths.h>
+#include <dsp/matrix.h>
 #include <dsp/shape.h>
 
 MunitResult test_mult(const MunitParameter params[], void* data) {
