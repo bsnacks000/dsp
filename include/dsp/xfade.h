@@ -71,31 +71,30 @@ static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
     return xfade_sin(fader);
 }
 
-// NOT NEEDED FOR OSCIL
-// /**
-//  * @brief xfade state.
-//  */
-// typedef struct {
-//     float position;
-//     // private
-//     float l_coeff_, r_coeff_;
-// } xfade;
+/**
+ * @brief xfade state.
+ */
+typedef struct {
+    float position;
+    // private
+    float l_coeff_, r_coeff_;
+} xfade;
 
-// /**
-//  * @brief init xfade state. Position (0-1)
-//  */
-// void xfade_init(xfade* self, float position);
+/**
+ * @brief init xfade state. Position (0-1)
+ */
+void xfade_init(xfade* self, float position);
 
-// /**
-//  * @brief tick a block of xfade_sin. Position (0-1)
-//  */
-// void xfade_tick_block(xfade* self,
-//                       float* out,
-//                       float* in_l,
-//                       float* in_r,
-//                       float* position,
-//                       uint32_t start,
-//                       uint32_t nsmps);
+/**
+ * @brief tick a block of xfade_sin. Position (0-1)
+ */
+void xfade_tick_block(xfade* self,
+                      float* out,
+                      float* in_l,
+                      float* in_r,
+                      float* position,
+                      uint32_t start,
+                      uint32_t nsmps);
 
 #ifdef __cplusplus
 }
