@@ -6,14 +6,9 @@
 # w/ csound plugins: make build CSOUND=1
 BUILD_TYPE?=Release
 TESTS?=0
-CSOUND?=0
 COVERAGE?=0
 
 CMAKE_OPTS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
-
-ifeq ($(CSOUND), 1)
-	CMAKE_OPTS += -DDSP_BUILD_CSOUND=ON
-endif
 
 ifeq ($(TESTS), 1)
 	CMAKE_OPTS += -DDSP_BUILD_TESTS=ON
@@ -33,14 +28,6 @@ build: clean
 	&& cd build \
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
-
-# build the csound plugin
-csound: clean
-	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
-
-# rebuild lib for the csound plugin and run the regression tests
-regression: csound
-	uv run ./tests/regression/test.py
 
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean
