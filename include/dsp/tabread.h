@@ -7,6 +7,15 @@
  * can be used to implement waveshaper transfer functions, samplers and other synthesis
  * methods that rely on having fine grained read pointer control.
  *
+ * Note that unlike `oscil.h` we are not limited to pow2 sizes though
+ * for interpolation we DO expect a +2 guardpoint applied to the table. This means
+ * that for any buffer of size N tabread expects N[-2] and N[-1] to be the guardpoints.
+ *
+ *
+ * Based on numerous implementations:
+ *   * tabread/tabread4 (pd)
+ *   * table/tablei (csound)
+ *
  */
 
 #ifndef DSP_TABREAD_H
@@ -16,20 +25,22 @@
 extern "C" {
 #endif
 
-#include <dsp/ftable/deck.h>
-#include <dsp/ftable/ftable.h>
+#include <stdint.h>
+
+#include <dsp/matrix.h>
 
 /**
  * @brief tabread
  */
 typedef struct {
-    ftable* wt;
+    float* wt;
+    uint32_t wt_sz, wt_len_;
 } tabread;
 
 /**
  * @brief init tabread.
  */
-void tabread_init(tabread* self, ftable* wt);
+void tabread_init(tabread* self, float* wt, uint32_t wt_sz);
 
 /**
  * @brief truncating tabread.
@@ -62,7 +73,7 @@ void tabread3_tick_block(tabread* self,
  * @brief xfade tabreader.
  */
 typedef struct {
-    ft_deck* deck;
+    matrix* deck;
     tabread *l, *r;
     float pos, l_amp_, r_amp_;
 } xtabread;
@@ -70,7 +81,7 @@ typedef struct {
 /**
  * @brief init xtabread.
  */
-void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float pos);
+void xtabread_init(xtabread* self, matrix* deck, tabread* l, tabread* r, float pos);
 
 /**
  * @brief linear interpolating xtabread

@@ -4,14 +4,15 @@
 #ifndef DSP_SHAPE_H
 #define DSP_SHAPE_H
 
-#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <math.h>
+#include <stdint.h>
+
 #include <dsp/fasttrig.h>
 #include <dsp/maths.h>
-#include <math.h>
 
 /**
  * @brief clamp xn between min and max

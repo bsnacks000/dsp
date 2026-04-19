@@ -1,5 +1,6 @@
 #include <dsp/interpolate.h>
 #include <dsp/tabread.h>
+#include <dsp/xfade.h>
 
 // TODO: implement multiple methods .. zero clip (zclip) and wrap (wrp)
 //      -- (zclip we have)
@@ -8,8 +9,10 @@
 //       while (val < 0) val += buf_sz;
 //       while (val >= buf_sz) val -= buf_sz;
 
-void tabread_init(tabread* self, ftable* wt) {
+void tabread_init(tabread* self, float* wt, uint32_t wt_sz) {
     self->wt = wt;
+    self->wt_sz = wt_sz;
+    self->wt_len_ = wt_sz - 2;  // assumes guardpoint set for interpolation
 }
 
 void tabreadn_tick_block(tabread* self,
@@ -17,8 +20,8 @@ void tabreadn_tick_block(tabread* self,
                          float* idx,
                          uint32_t start,
                          uint32_t nsmps) {
-    float* buf = self->wt->buf;
-    uint32_t len = self->wt->len;
+    float* buf = self->wt;
+    uint32_t len = self->wt_len_;
 
     for (uint32_t i = start; i < nsmps; i++) {
         float val = idx[i];
@@ -33,8 +36,8 @@ void tabreadn_tick_block(tabread* self,
 
 static inline float tabreadi_tick_(tabread* self, float val) {
 
-    float* buf = self->wt->buf;
-    uint32_t len = self->wt->len;
+    float* buf = self->wt;
+    uint32_t len = self->wt_len_;
 
     if (val < 0.0 || val >= (float) len) {
         return 0.0f;
@@ -50,8 +53,8 @@ static inline float tabreadi_tick_(tabread* self, float val) {
 
 static inline float tabread3_tick_(tabread* self, float val) {
 
-    float* buf = self->wt->buf;
-    uint32_t len = self->wt->len;
+    float* buf = self->wt;
+    uint32_t len = self->wt_len_;
 
     if (val < 0.0 || val >= (float) len) {
         return 0.0f;
@@ -59,6 +62,7 @@ static inline float tabread3_tick_(tabread* self, float val) {
     uint32_t ipos = (uint32_t) val;
     float frac = val - ipos;
 
+    // NOTE: the select stmt is needed since we do not handle pow2 mask
     float a = ipos > 0 ? buf[ipos - 1] : buf[len - 1];
     float b = buf[ipos];
     float c = buf[ipos + 1];
@@ -93,10 +97,10 @@ void tabread3_tick_block(tabread* self,
 static inline void xtabread_update_(xtabread* self) {
 
     // draw the correct bandpair from the deck using pos..
-    ft_frame_pair bpair = ft_deck_pos_lookup(self->deck, self->pos);
+    frame_pair pair = matrix_row_pair_positional_lookup(self->deck, self->pos);
 
-    // use the freqs from the band pair to calculate the xfade value
-    xfade_pair amps = xfade_from_pos(self->pos, self->deck->frames_sz);
+    // set up crossfade
+    xfade_pair amps = xfade_from_pos(self->pos, self->deck->n_rows);
 
     // assign to state and normalize
     self->l_amp_ = amps.left;
@@ -106,21 +110,18 @@ static inline void xtabread_update_(xtabread* self) {
     self->l_amp_ *= norm;
     self->r_amp_ *= norm;
 
-    // set the bandpair table
-    if (self->l->wt != bpair.low) {
-        self->l->wt = bpair.low;
-    }
-    if (self->r->wt != bpair.high) {
-        self->r->wt = bpair.high;
-    }
+    // set band pair
+    self->l->wt = pair.low;
+    self->r->wt = pair.high;
 }
 
-void xtabread_init(xtabread* self, ft_deck* deck, tabread* l, tabread* r, float pos) {
+void xtabread_init(xtabread* self, matrix* deck, tabread* l, tabread* r, float pos) {
     self->deck = deck;
     self->l = l;
     self->r = r;
     self->pos = pos;
 
+    // set in update_
     self->l->wt = NULL;
     self->r->wt = NULL;
 

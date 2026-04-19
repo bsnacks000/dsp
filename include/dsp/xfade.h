@@ -10,7 +10,10 @@ extern "C" {
 
 #include <dsp/constants.h>
 #include <dsp/fasttrig.h>
+#include <dsp/interpolate.h>
+#include <dsp/rmap.h>
 #include <dsp/shape.h>
+
 #include <stdint.h>
 
 /**
@@ -48,6 +51,23 @@ static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
 
     float scaled = pos * (deck_sz - 1);
     float fader = scaled - floorf(scaled);
+    return xfade_sin(fader);
+}
+
+/**
+ * @brief query the l/r amplitudes for use with xfade given freq for bandlimited
+ * crossfades.
+ */
+static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
+    if (freq < lo) {
+        return (xfade_pair) {.left = 1.0, .right = 0.0};
+    }
+
+    if (freq > hi) {
+        return (xfade_pair) {.left = 0.0, .right = 1.0};
+    }
+
+    float fader = linlin(freq, lo, hi, 0.0, 1.0);
     return xfade_sin(fader);
 }
 

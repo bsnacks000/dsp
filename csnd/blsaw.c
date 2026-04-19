@@ -1,6 +1,5 @@
 #include <csound.h>
-#include <dsp/ftable/deck.h>
-#include <dsp/ftable/sinesum.h>
+#include <dsp/ftable.h>
 #include <dsp/utils.h>
 
 #include "csdl.h"
@@ -49,8 +48,7 @@ static dsp_err fill_sinesum_args(void) {
     for (size_t i = 0; i < N_FRAMES; i++) {
         ft_sinesum_args* a = (ft_sinesum_args*) malloc(sizeof(ft_sinesum_args));
         check_malloc(a, "fill_sinesum_args");
-        err =
-            ft_sinesum_args_init(a, (const float*) &amps, amps_sz, 0.0, true, bands[i]);
+        err = ft_sinesum_args_init(a, amps, amps_sz, 0.0, true, bands[i]);
 
         if (err != DSP_OK) {
             return err;
@@ -81,7 +79,7 @@ static void alloc_wavtabs(void) {
 static dsp_err generate_deck(float sr) {
 
     dsp_err err;
-    if ((err = sinesum_deck_generate(wavtabs, args, N_FRAMES, (float) sr)) != DSP_OK) {
+    if ((err = ft_deck_sinesum_generate(&deck, args, N_FRAMES, (float) sr)) != DSP_OK) {
         return err;
     }
     return err;

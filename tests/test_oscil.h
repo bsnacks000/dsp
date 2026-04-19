@@ -11,6 +11,7 @@ extern "C" {
 MunitResult test_osciln_tick_block(const MunitParameter params[], void* data);
 MunitResult test_oscili_tick_block(const MunitParameter params[], void* data);
 MunitResult test_oscil3_tick_block(const MunitParameter params[], void* data);
+MunitResult test_oscili_pm_tick_block(const MunitParameter params[], void* data);
 MunitResult test_oscil3_pm_tick_block(const MunitParameter params[], void* data);
 MunitResult test_blxoscili_tick_block(const MunitParameter params[], void* data);
 MunitResult test_blxoscil3_tick_block(const MunitParameter params[], void* data);
@@ -24,6 +25,8 @@ static MunitTest oscil_test_module[] = {
      NULL},
     {"/oscil3_tick_block", test_oscil3_tick_block, NULL, NULL, MUNIT_TEST_OPTION_NONE,
      NULL},
+    {"/oscili_pm_tick_block", test_oscili_pm_tick_block, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
     {"/oscil3_pm_tick_block", test_oscil3_pm_tick_block, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
     {"/blxoscili_tick_block", test_blxoscili_tick_block, NULL, NULL,

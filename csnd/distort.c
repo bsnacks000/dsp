@@ -1,8 +1,6 @@
 #include "distort.h"
 #include <dsp/maths.h>
 
-#include <dsp/ftable/chebpoly.h>
-#include <dsp/ftable/ramp.h>
 #include <dsp/tabread.h>
 #include <dsp/utils.h>
 #include <stdint.h>
