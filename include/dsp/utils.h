@@ -16,7 +16,6 @@
 extern "C" {
 #endif
 
-#include <float.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -127,14 +126,12 @@ static inline bool is_pow2(uint32_t n) {
 }
 
 /**
- * @brief Check these two floats are appx equal
+ * @brief Check these two floats are appx equal to a tol of 1e-5f.
+ *
  */
 static inline bool check_float_equal(float a, float b) {
-    if (fabs(a - b) < FLT_EPSILON) {
-        return true;
-    } else {
-        return false;
-    }
+    float x = a - b;
+    return (x <= 1e-5f) && (x >= -1e-5f);
 }
 
 /**

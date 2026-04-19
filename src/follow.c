@@ -87,7 +87,7 @@ void follow_rms_tick_block(follow* self,
         }
 
         if (!rel_ms_eq) {
-            self->rel_ms = atk_ms_;
+            self->rel_ms = rel_ms_;
             update_rel_time_(self);
         }
 
@@ -116,7 +116,7 @@ void follow_peak_tick_block(follow* self,
         }
 
         if (!rel_ms_eq) {
-            self->rel_ms = atk_ms_;
+            self->rel_ms = rel_ms_;
             update_rel_time_(self);
         }
 
