@@ -35,7 +35,7 @@ static inline void update_(curve* self) {
 
 static inline float curve_tick_(curve* self) {
     if (self->finished_)
-        return self->level_;
+        return (float) self->level_;
 
     // downcast here
     float out = (float) self->level_;
@@ -88,7 +88,7 @@ static inline float ar_tick_(curve_ar* self) {
                            self->atk_sec, self->atk_crv, self->sr);
                 return curve_tick_(&self->state_);
             }
-            return self->state_.level_;
+            return (float) self->state_.level_;
         }
         case AR_ATK: {
 
@@ -154,14 +154,14 @@ static inline float adsr_tick_(curve_adsr* self) {
                            self->atk_sec, self->atk_crv, self->sr);
                 return curve_tick_(&self->state_);
             }
-            return self->state_.level_;
+            return (float) self->state_.level_;
         }
         case ADSR_ATK: {
 
             // early release
             if (!curr_gate_above_thresh) {
                 self->stage_ = ADSR_REL;
-                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                curve_init(&self->state_, (float) self->state_.level_, self->rel_level,
                            self->rel_sec, self->rel_crv, self->sr);
                 return curve_tick_(&self->state_);
             }
@@ -180,7 +180,7 @@ static inline float adsr_tick_(curve_adsr* self) {
         case ADSR_DCY: {
             if (!curr_gate_above_thresh) {
                 self->stage_ = ADSR_REL;
-                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                curve_init(&self->state_, (float) self->state_.level_, self->rel_level,
                            self->rel_sec, self->rel_crv, self->sr);
                 return curve_tick_(&self->state_);
             }
@@ -195,12 +195,12 @@ static inline float adsr_tick_(curve_adsr* self) {
         case ADSR_SUS: {
             if (!curr_gate_above_thresh) {
                 self->stage_ = ADSR_REL;
-                curve_init(&self->state_, self->state_.level_, self->rel_level,
+                curve_init(&self->state_, (float) self->state_.level_, self->rel_level,
                            self->rel_sec, self->rel_crv, self->sr);
 
                 return curve_tick_(&self->state_);
             }
-            return self->state_.level_;
+            return (float) self->state_.level_;
         }
         case ADSR_REL: {
 
@@ -239,10 +239,10 @@ void curve_ar_init(curve_ar* self,
                    float sr) {
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = fabsf(atk_sec);
     self->atk_crv = zero_guard(atk_crv);
     self->atk_level = atk_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = fabsf(rel_sec);
     self->rel_crv = zero_guard(rel_crv);
     self->rel_level = rel_level;
     self->sr = sr;
@@ -301,13 +301,13 @@ void curve_adsr_init(curve_adsr* self,
                      float sr) {
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = fabsf(atk_sec);
     self->atk_crv = zero_guard(atk_crv);
     self->atk_level = atk_level;
-    self->dcy_sec = fabs(dcy_sec);
+    self->dcy_sec = fabsf(dcy_sec);
     self->dcy_crv = zero_guard(dcy_crv);
     self->sustain_level = sustain_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = fabsf(rel_sec);
     self->rel_crv = zero_guard(rel_crv);
     self->rel_level = rel_level;
     self->sr = sr;

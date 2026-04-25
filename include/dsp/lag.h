@@ -18,7 +18,7 @@ extern "C" {
 typedef struct {
     float t_sec, sr;
     // private
-    float alpha_, last_;
+    double alpha_, last_;
 } lag;
 
 /**

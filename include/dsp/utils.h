@@ -115,7 +115,7 @@ static inline float wrap_float_positive(float x, float n) {
  * @brief Given n return the uint32_t next highest power of 2
  */
 static inline float_t ceiling_pow2(float n) {
-    return pow(2.0f, ceil(log2(n)));
+    return powf(2.0f, ceilf(log2f(n)));
 }
 
 /**
@@ -170,12 +170,12 @@ static inline float semitone_ratio(float semitones) {
 static inline void normalize(float* buf, uint32_t buf_sz) {
     float max = 0.0;
     for (uint32_t i = 0; i < buf_sz; i++) {
-        float a = fabs(buf[i]);  // use absolute value (handle bipolar signals)
+        float a = fabsf(buf[i]);  // use absolute value (handle bipolar signals)
         if (a > max) {
             max = a;
         }
     }
-    if (DSP_LIKELY(max)) {
+    if ((int) max) {
         float s = 1.0f / max;
         for (uint32_t i = 0; i < buf_sz; i++) {
             buf[i] *= s;

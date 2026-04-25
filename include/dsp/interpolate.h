@@ -63,14 +63,14 @@ static inline void table_lerp(float* out,
                               size_t in_sz) {
     dsp_assert(in_sz <= out_sz, "in_sz must be <= out_sz");
 
-    float dx = 1.0f / (in_sz - 1);   // spacing between original points
-    float dt = 1.0f / (out_sz - 1);  // spacing in target space
+    float dx = 1.0f / (float) (in_sz - 1);   // spacing between original points
+    float dt = 1.0f / (float) (out_sz - 1);  // spacing in target space
 
     for (size_t i = 0; i < out_sz; i++) {
         if (i == out_sz - 1) {  // last
             out[i] = in[in_sz - 1];
         } else {
-            float t = i * dt;  // interpolation factor
+            float t = (float) i * dt;  // interpolation factor
 
             // Handle bounds
             if (t <= 0.0f) {
@@ -84,7 +84,7 @@ static inline void table_lerp(float* out,
 
             float pos = t / dx;
             size_t idx = (size_t) floorf(pos);
-            float frac = pos - idx;
+            float frac = pos - (float) idx;
 
             out[i] = interpolate_linear(
                 in[idx], in[idx + 1],

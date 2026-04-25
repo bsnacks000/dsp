@@ -28,7 +28,7 @@ static inline float line_tick_(line* self) {
 void line_init(line* self, float start, float stop, float dur_sec, float sr) {
     self->start = start;
     self->stop = stop;
-    self->dur_sec = fabs(dur_sec);
+    self->dur_sec = fabsf(dur_sec);
     self->sr = sr;
 
     line_update_(self);
@@ -125,9 +125,9 @@ void line_ar_init(line_ar* self,
 
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = fabsf(atk_sec);
     self->atk_level = atk_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = fabsf(rel_sec);
     self->rel_level = rel_level;
     self->sr = sr;
 
@@ -180,11 +180,11 @@ void line_adsr_init(line_adsr* self,
                     float sr) {
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = fabsf(atk_sec);
     self->atk_level = atk_level;
-    self->dcy_sec = fabs(dcy_sec);
+    self->dcy_sec = fabsf(dcy_sec);
     self->sustain_level = sustain_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = fabsf(rel_sec);
     self->rel_level = rel_level;
     self->sr = sr;
 

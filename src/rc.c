@@ -8,7 +8,7 @@
 //
 static inline void rc_one_pole_update_(rc_one_pole* self) {
 
-    double omega_c = TWO_PI * self->freq;
+    double omega_c = (double) TWO_PI * (double) self->freq;
     double omega_warped = self->two_over_t_ * tan(omega_c * self->t_over_2_);
     double g = omega_warped * self->t_over_2_ / 2.0;
 
@@ -35,7 +35,7 @@ void rc_one_pole_init(rc_one_pole* self, float freq, float sr) {
     self->freq = freq;
 
     // private
-    self->t_ = 1.0 / self->sr;
+    self->t_ = 1.0 / (double) self->sr;
     self->t_over_2_ = self->t_ / 2.0;
     self->two_over_t_ = 2.0 / self->t_;
 
@@ -66,7 +66,7 @@ void rc_one_pole_tick_block(rc_one_pole* self,
             rc_one_pole_update_(self);
         }
 
-        rc_one_pole_tick_(self, in[i]);
+        rc_one_pole_tick_(self, (double) in[i]);
 
         // write to valid vectors.
         if (lp_out)
@@ -83,10 +83,10 @@ static inline void rc_ladder_update_(rc_ladder* self) {
     float q = self->q;
 
     // scale Q -> k ... Q= 0.1->25.0, k = 0->4 ...  from pirkle/yi
-    self->k_ = 4.0 * (q - 0.1) / (25.0 - 0.1);
+    self->k_ = 4.0 * ((double) q - 0.1) / (25.0 - 0.1);
 
     // zavalashin's warping
-    double omega_c = TWO_PI * fc;
+    double omega_c = (double) TWO_PI * (double) fc;
     double omega_warped = self->two_over_t_ * tan(omega_c * self->t_over_2_);
     double g = omega_warped * self->t_over_2_;
 
@@ -120,10 +120,10 @@ static inline float rc_ladder_tick_(rc_ladder* self, float xn) {
     double s = self->g3_ * f1_z0 + self->g2_ * f2_z0 + self->g_ * f3_z0 + f4_z0;
 
     // solve for un
-    double un = (xn - self->k_ * s) / (1.0 + self->k_ * self->g4_);
+    double un = ((double) xn - self->k_ * s) / (1.0 + self->k_ * self->g4_);
 
     // zavalishins non-linear drive
-    un = fast_tanh(un);
+    un = fast_tanh_d(un);
 
     // tick the bank
     rc_one_pole_tick_(&self->bank_[0], un);
@@ -139,7 +139,7 @@ void rc_ladder_init(rc_ladder* self, float freq, float q, float sr) {
     self->sr = sr;
     self->q = q;
 
-    self->t_ = 1.0 / self->sr;
+    self->t_ = 1.0 / (double) self->sr;
     self->t_over_2_ = self->t_ / 2.0;
     self->two_over_t_ = 2.0 / self->t_;
 

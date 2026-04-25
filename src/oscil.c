@@ -8,7 +8,7 @@
 #include <dsp/xfade.h>
 
 static inline void oscil_update_(oscil* self) {
-    self->incr_ = self->freq * self->wt_len_ / self->sr;
+    self->incr_ = (double) self->freq * self->wt_len_ / (double) self->sr;
 }
 
 static inline float osciln_tick_(oscil* self) {
@@ -16,7 +16,7 @@ static inline float osciln_tick_(oscil* self) {
     double pos = self->index_;
     int32_t ipos = (int32_t) floor(pos);
 
-    float out = self->wt[ipos & mask];
+    float out = self->wt[(uint32_t) ipos & mask];
     self->index_ += self->incr_;
 
     // phase wrap
@@ -33,8 +33,10 @@ static inline float oscili_tick_(oscil* self) {
 
     float frac = (float) (pos - ipos);
 
-    float a = self->wt[ipos & mask];
-    float b = self->wt[(ipos + 1) & mask];
+    uint32_t idx = (uint32_t) ipos & mask;
+
+    float a = self->wt[idx];
+    float b = self->wt[(idx + 1) & mask];
 
     float out = interpolate_linear(a, b, frac);
     self->index_ += self->incr_;
@@ -45,13 +47,15 @@ static inline float oscili_tick_(oscil* self) {
 static inline float oscili_pm_tick_(oscil* self, float pmod) {
     uint32_t mask = self->mask_;
     // phs mod calc
-    double pos = self->index_ + (double) (pmod * self->wt_len_);
+    double pos = self->index_ + (double) (pmod * (float) self->wt_len_);
     int32_t ipos = (int32_t) floor(pos);
 
     float frac = (float) (pos - ipos);
 
-    float a = self->wt[ipos & mask];
-    float b = self->wt[(ipos + 1) & mask];
+    uint32_t idx = (uint32_t) ipos & mask;
+
+    float a = self->wt[idx];
+    float b = self->wt[(idx + 1) & mask];
 
     float out = interpolate_linear(a, b, frac);
     self->index_ += self->incr_;
@@ -66,10 +70,12 @@ static inline float oscil3_tick_(oscil* self) {
 
     float frac = (float) (pos - ipos);
 
-    float a = self->wt[(ipos - 1) & mask];
-    float b = self->wt[ipos & mask];
-    float c = self->wt[(ipos + 1) & mask];
-    float d = self->wt[(ipos + 2) & mask];
+    uint32_t idx = (uint32_t) ipos & mask;
+
+    float a = self->wt[(idx - 1) & mask];
+    float b = self->wt[idx];
+    float c = self->wt[(idx + 1) & mask];
+    float d = self->wt[(idx + 2) & mask];
 
     float out = interpolate_cubic(a, b, c, d, frac);
     self->index_ += self->incr_;
@@ -80,15 +86,17 @@ static inline float oscil3_tick_(oscil* self) {
 static inline float oscil3_pm_tick_(oscil* self, float pmod) {
 
     uint32_t mask = self->mask_;
-    double pos = self->index_ + (double) (pmod * self->wt_len_);
+    double pos = self->index_ + (double) (pmod * (float) self->wt_len_);
     int32_t ipos = (int32_t) floor(pos);
 
     float frac = (float) (pos - ipos);
 
-    float a = self->wt[(ipos - 1) & mask];
-    float b = self->wt[ipos & mask];
-    float c = self->wt[(ipos + 1) & mask];
-    float d = self->wt[(ipos + 2) & mask];
+    uint32_t idx = (uint32_t) ipos & mask;
+
+    float a = self->wt[(idx - 1) & mask];
+    float b = self->wt[idx];
+    float c = self->wt[(idx + 1) & mask];
+    float d = self->wt[(idx + 2) & mask];
 
     float out = interpolate_cubic(a, b, c, d, frac);
     self->index_ += self->incr_;
@@ -114,7 +122,7 @@ void oscil_init(oscil* self,
     self->mask_ = self->wt_len_ - 1;  // pow2 - 1
 
     self->incr_ = 0.0;
-    self->index_ = self->phase * self->wt_len_;
+    self->index_ = (double) self->phase * (double) self->wt_len_;
 
     oscil_update_(self);
 }
@@ -225,7 +233,7 @@ static inline void xoscil_update_(xoscil* self) {
 
     frame_pair bpair = matrix_row_pair_positional_lookup(self->deck, self->pos);
 
-    xfade_pair amps = xfade_from_pos(self->pos, self->deck->n_rows);
+    xfade_pair amps = xfade_from_pos(self->pos, (uint32_t) self->deck->n_rows);
 
     self->l_amp_ = amps.left;
     self->r_amp_ = amps.right;

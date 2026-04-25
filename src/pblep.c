@@ -11,7 +11,7 @@
 // potential problems in applications.
 
 static inline void update_blepsaw_(blepsaw* self) {
-    self->incr_ = self->freq / self->sr;
+    self->incr_ = (double) self->freq / (double) self->sr;
 }
 
 static inline float blepsaw_tick_(blepsaw* self) {
@@ -19,14 +19,14 @@ static inline float blepsaw_tick_(blepsaw* self) {
     if (self->phase_ >= 1.0)
         self->phase_ -= 1.0;
 
-    double out = unipolar_to_bipolar(self->phase_);  // 2.0 * self->phase_ - 1.0;
+    double out = unipolar_to_bipolar_d(self->phase_);  // 2.0 * self->phase_ - 1.0;
     out -= polyblep(self->phase_, self->incr_);
-    return out;  // (float) (1.0 - out);
+    return (float) out;  // (float) (1.0 - out);
 }
 
 static inline void update_blepsqr_(blepsqr* self) {
-    self->incr_ = self->freq / self->sr;
-    self->duty = clamp(self->duty, 0.0001, 0.9999);
+    self->incr_ = (double) self->freq / (double) self->sr;
+    self->duty = clamp(self->duty, 0.0001f, 0.9999f);
 }
 
 static inline float blepsqr_tick_(blepsqr* self) {

@@ -56,6 +56,7 @@ target_compile_options(dsp_objects
     PRIVATE
         -Wextra -Wall -Wpedantic -Werror
         -Wmissing-declarations -Wmissing-prototypes
+        -Wconversion -Wdouble-promotion -Wfloat-conversion
 )
 
 

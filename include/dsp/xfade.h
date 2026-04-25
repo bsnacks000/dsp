@@ -32,8 +32,8 @@ typedef struct {
 static inline xfade_pair xfade_sin(float position) {
 
     // NOTE: changed from original impl .. see py src
-    float t = clamp(position, 0.0, 1.0);
-    float a = t * DSP_PI * 0.5;
+    float t = clamp(position, 0.0f, 1.0f);
+    float a = t * (float) DSP_PI * 0.5f;
 
     float left = fast_qcosf(a);
     float right = fast_qsinf(a);
@@ -49,7 +49,7 @@ static inline xfade_pair xfade_sin(float position) {
 static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
     pos = clamp(pos, 0.0, 1.0);
 
-    float scaled = pos * (deck_sz - 1);
+    float scaled = pos * (float) (deck_sz - 1);
     float fader = scaled - floorf(scaled);
     return xfade_sin(fader);
 }

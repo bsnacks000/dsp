@@ -7,12 +7,12 @@
 static inline void update_(svf* self) {
 
     // warp freq
-    double omega_c = TWO_PI * self->freq;
+    double omega_c = (double) TWO_PI * (double) self->freq;
     double omega_warped = self->two_ovr_t_ * tan(omega_c * self->t_ovr_2_);
     double g = omega_warped * self->t_ovr_2_;
 
     // dampening
-    double r = 1.0 / (2.0 * self->q);
+    double r = 1.0 / (2.0 * (double) self->q);
     double two_r = 2.0 * r;
     double four_r = 4.0 * r;
     double two_r_plus_g = two_r + g;
@@ -26,12 +26,12 @@ static inline void update_(svf* self) {
 }
 
 static inline void tick_(svf* self, float xn) {
-    double hpf = self->g1_ * (xn - self->two_r_plus_g_ * self->z0_ - self->z1_);
+    double x = (double) xn;
+    double drive = (double) self->drive;
+    double hpf = self->g1_ * (x - self->two_r_plus_g_ * self->z0_ - self->z1_);
 
     double bpf = self->g_ * hpf + self->z0_;
-    // TODO: 0.2 made the filter registers doubles
-    // so we should really make a double version of fast_tanh_clip
-    bpf = self->drive ? fast_tanh_clip(bpf, self->drive) : bpf;
+    bpf = (int) drive ? fast_tanh_clip_d(bpf, drive) : bpf;
 
     double lpf = self->g_ * bpf + self->z1_;
     self->z0_ = self->g_ * hpf + bpf;
@@ -41,7 +41,7 @@ static inline void tick_(svf* self, float xn) {
     self->bp = bpf;
     self->lp = lpf;
     self->bs = hpf + lpf;
-    self->ap = xn - self->four_r_ * bpf;
+    self->ap = x - self->four_r_ * bpf;
 }
 
 void svf_init(svf* self, float freq, float q, float drive, float sr) {
@@ -51,7 +51,7 @@ void svf_init(svf* self, float freq, float q, float drive, float sr) {
     self->drive = drive;
 
     // init T w/ sr for freq warping.
-    self->t_ = 1.0 / sr;
+    self->t_ = 1.0 / (double) sr;
     self->t_ovr_2_ = self->t_ / 2.0;
     self->two_ovr_t_ = 2.0 / self->t_;
 
@@ -96,14 +96,14 @@ void svf_tick_block(svf* self,
         tick_(self, in[i]);
 
         if (out_lp)
-            out_lp[i] = self->lp;
+            out_lp[i] = (float) self->lp;
         if (out_hp)
-            out_hp[i] = self->hp;
+            out_hp[i] = (float) self->hp;
         if (out_bp)
-            out_bp[i] = self->bp;
+            out_bp[i] = (float) self->bp;
         if (out_bs)
-            out_bs[i] = self->bs;
+            out_bs[i] = (float) self->bs;
         if (out_ap)
-            out_ap[i] = self->ap;
+            out_ap[i] = (float) self->ap;
     }
 }

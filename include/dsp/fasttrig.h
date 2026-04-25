@@ -16,7 +16,7 @@ extern "C" {
  * @brief fast quarter sin
  */
 static inline float fast_qsinf(float x) {
-    float pi_m_x = DSP_PI - x;
+    float pi_m_x = (float) DSP_PI - x;
     return (16.0f * x * pi_m_x) / (5.0f * DSP_PI_SQUARED - 4.0f * x * pi_m_x);
 }
 
@@ -33,7 +33,7 @@ static inline float fast_qcosf(float x) {
 static inline float fast_hsinf(float x) {
     float theta = x * 2.0f;
     int q = (int) theta;
-    float qpos = theta - q;
+    float qpos = theta - (float) q;
 
     qpos = (q & 1) ? 1.0f - qpos : qpos;
     theta = qpos * HALF_PI;
@@ -54,7 +54,7 @@ static inline float fast_hcosf(float x) {
 static inline float fast_sinf(float x) {
     float theta = x * 4.0f;
     int q = (int) theta;
-    float qpos = theta - q;
+    float qpos = theta - (float) q;
 
     qpos = (q & 1) ? 1.0f - qpos : qpos;
     theta = qpos * HALF_PI;
@@ -81,11 +81,19 @@ static inline float fast_tanh(float x) {
 }
 
 /**
+ * @brief fast tanh using doubles.
+ */
+static inline double fast_tanh_d(double x) {
+    double xx = x * x;
+    return x * (27.0 + xx) / (27.0 + 9.0 * xx);
+}
+
+/**
  * @brief a softsign function.
  *  - x should be clamped [-1, 1]
  */
 static inline float softsign(float x) {
-    return x / (1.0f + fabs(x));
+    return x / (1.0f + fabsf(x));
 }
 
 /**

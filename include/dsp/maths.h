@@ -187,7 +187,7 @@ static inline void dc_block(float* out,
  */
 static inline void abs_block(float* out, float* x, uint32_t start, uint32_t nsmps) {
     for (uint32_t i = start; i < nsmps; i++) {
-        out[i] = fabs(x[i]);
+        out[i] = fabsf(x[i]);
     }
 }
 
