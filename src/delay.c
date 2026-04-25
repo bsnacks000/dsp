@@ -56,10 +56,12 @@ void delay_line_tapi(delay_line* self,
 
         float pos = initial_pos + (float) i;
         int ipos = (int) pos;
-        float frac = pos - ipos;
+        float frac = pos - (float) ipos;
 
-        float a = self->buf[ipos & mask];
-        float b = self->buf[(ipos + 1) & mask];
+        uint32_t idx = (uint32_t) ipos & mask;
+
+        float a = self->buf[idx];
+        float b = self->buf[(idx + 1) & mask];
 
         out[i] = interpolate_linear(a, b, frac);
     }
@@ -80,12 +82,13 @@ void delay_line_tap3(delay_line* self,
 
         float pos = initial_pos + (float) i;
         int ipos = (int) pos;
-        float frac = pos - ipos;
+        float frac = pos - (float) ipos;
+        uint32_t idx = (uint32_t) ipos & mask;
 
-        float a = self->buf[(ipos - 1) & mask];
-        float b = self->buf[ipos & mask];
-        float c = self->buf[(ipos + 1) & mask];
-        float d = self->buf[(ipos + 2) & mask];
+        float a = self->buf[(idx - 1) & mask];
+        float b = self->buf[idx];
+        float c = self->buf[(idx + 1) & mask];
+        float d = self->buf[(idx + 2) & mask];
 
         out[i] = interpolate_cubic(a, b, c, d, frac);
     }

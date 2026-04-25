@@ -30,7 +30,8 @@ extern "C" {
  * @brief dfII state
  */
 typedef struct {
-    float a0, a1, a2, b1, b2, c0, d0, x_z1, x_z2, sr;
+    float a0, a1, a2, b1, b2, c0, d0, sr;
+    double x_z1, x_z2;
 } dfII;
 
 /**

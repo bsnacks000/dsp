@@ -36,7 +36,7 @@ static inline float linexp(float x,
                            float dst_hi) {
     // TODO: assertions
     float norm = (x - src_lo) / (src_hi - src_lo);
-    return dst_lo * pow((dst_hi / dst_lo), norm);
+    return dst_lo * powf((dst_hi / dst_lo), norm);
 }
 
 /**
@@ -48,7 +48,7 @@ static inline float explin(float x,
                            float dst_lo,
                            float dst_hi) {
     // TODO: assertions
-    float norm = log(x / src_lo) / log(src_hi / src_lo);
+    float norm = logf(x / src_lo) / logf(src_hi / src_lo);
     return dst_lo + norm * (dst_hi - dst_lo);
 }
 
@@ -61,8 +61,8 @@ static inline float expexp(float x,
                            float dst_lo,
                            float dst_hi) {
     // TODO: assertions
-    float norm = log(x / src_lo) / log(src_hi / src_lo);
-    return dst_lo * pow((dst_hi / dst_lo), norm);
+    float norm = logf(x / src_lo) / logf(src_hi / src_lo);
+    return dst_lo * powf((dst_hi / dst_lo), norm);
 }
 
 #ifdef __cplusplus

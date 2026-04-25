@@ -87,9 +87,9 @@ static inline void matrix_print(matrix* self) {
         for (size_t col = 0; col < self->n_cols; col++) {
             float val = matrix_at(self, row, col);
             if (col < self->n_cols - 1) {
-                printf("%.10f, ", val);
+                printf("%.10f, ", (double) val);
             } else {
-                printf("%.10f\n", val);
+                printf("%.10f\n", (double) val);
             }
         }
     }
@@ -125,12 +125,12 @@ static inline frame_pair matrix_row_pair_positional_lookup(matrix* self, float p
     pos = clamp(pos, 0.0f, 1.0f);  // clamp [0-1]
     // pos = 0.5f - 0.5f * fast_hcosf(pos);  // smooth transition
 
-    float fidx = pos * (self->n_rows - 1);
-    uint32_t idx = (int) fidx;
+    float fidx = pos * (float) (self->n_rows - 1);
+    uint32_t idx = (uint32_t) fidx;
 
     // if we hit 1.0 set the last 2 band pair
     if (idx >= self->n_rows - 1)
-        idx = self->n_rows - 2;
+        idx = (uint32_t) self->n_rows - 2;
 
     // printf("idx: %d idx+1: %d\n", idx, idx + 1);
     return (frame_pair) {

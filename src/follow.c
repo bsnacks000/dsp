@@ -7,7 +7,7 @@
 static const float TLD_AUDIO_ENVELOPE_ANALOG_TC = -0.99967234081320612357829304641019f;
 
 static inline float calculate_time_(float t_ms, float sr) {
-    return exp(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001f));
+    return expf(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001f));
 }
 
 static inline void update_atk_time_(follow* self) {
@@ -21,7 +21,7 @@ static inline void update_rel_time_(follow* self) {
 static inline float peak_tick_(follow* self, float xn) {
     float current_envelope = 0.0f;
     float last_envelope = self->last_envelope_;
-    xn = fabs(xn);
+    xn = fabsf(xn);
 
     if (xn > last_envelope) {
         current_envelope = self->atk_time_ * (last_envelope - xn) + xn;
@@ -39,7 +39,7 @@ static inline float rms_tick_(follow* self, float xn) {
     float current_envelope = 0.0f;
     float last_envelope = self->last_envelope_;
 
-    xn = fabs(xn);
+    xn = fabsf(xn);
     xn *= xn;  // scale rms;
 
     if (xn > last_envelope) {

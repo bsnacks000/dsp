@@ -59,7 +59,7 @@ static inline void hard_clip_block(float* out,
  * @brief exp soft clip with pre-gain - from Pirkle via Reiss(2014)
  */
 static inline float exp_clip(float xn, float pregain) {
-    return sign_of(xn) * (1.0f - exp(-fabsf(pregain * xn)));
+    return sign_of(xn) * (1.0f - expf(-fabsf(pregain * xn)));
 }
 
 static inline void exp_clip_block(float* out,
@@ -112,6 +112,14 @@ static inline void fast_tanh_clip_block(float* out,
     for (uint32_t i = start; i < nsmps; i++) {
         out[i] = fast_tanh_clip(x[i], amt[i]);
     }
+}
+
+/**
+ * @brief fast tanh saturator using doubles
+ */
+static inline double fast_tanh_clip_d(double xn, double amt) {
+    amt += 1e-9;
+    return fast_tanh_d(amt * xn) / fast_tanh_d(amt);
 }
 
 /**

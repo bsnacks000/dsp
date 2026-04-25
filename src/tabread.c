@@ -25,7 +25,7 @@ void tabreadn_tick_block(tabread* self,
 
     for (uint32_t i = start; i < nsmps; i++) {
         float val = idx[i];
-        if (val < 0.0 || val >= (float) len) {
+        if (val < 0.0f || val >= (float) len) {
             out[i] = 0.0f;
             continue;
         }
@@ -39,11 +39,11 @@ static inline float tabreadi_tick_(tabread* self, float val) {
     float* buf = self->wt;
     uint32_t len = self->wt_len_;
 
-    if (val < 0.0 || val >= (float) len) {
+    if (val < 0.0f || val >= (float) len) {
         return 0.0f;
     }
     uint32_t ipos = (uint32_t) val;
-    float frac = val - ipos;
+    float frac = val - (float) ipos;
 
     float a = buf[ipos];
     float b = buf[ipos + 1];
@@ -56,11 +56,11 @@ static inline float tabread3_tick_(tabread* self, float val) {
     float* buf = self->wt;
     uint32_t len = self->wt_len_;
 
-    if (val < 0.0 || val >= (float) len) {
+    if (val < 0.0f || val >= (float) len) {
         return 0.0f;
     }
     uint32_t ipos = (uint32_t) val;
-    float frac = val - ipos;
+    float frac = val - (float) ipos;
 
     // NOTE: the select stmt is needed since we do not handle pow2 mask
     float a = ipos > 0 ? buf[ipos - 1] : buf[len - 1];
@@ -100,7 +100,7 @@ static inline void xtabread_update_(xtabread* self) {
     frame_pair pair = matrix_row_pair_positional_lookup(self->deck, self->pos);
 
     // set up crossfade
-    xfade_pair amps = xfade_from_pos(self->pos, self->deck->n_rows);
+    xfade_pair amps = xfade_from_pos(self->pos, (uint32_t) self->deck->n_rows);
 
     // assign to state and normalize
     self->l_amp_ = amps.left;
