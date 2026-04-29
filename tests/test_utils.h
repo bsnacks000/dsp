@@ -7,8 +7,6 @@ extern "C" {
 
 #include "munit.h"
 
-MunitResult test_float_underflow(const MunitParameter params[], void* data);
-
 MunitResult test_branchless_float_wrap_range(const MunitParameter params[], void* data);
 
 MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
@@ -32,8 +30,6 @@ MunitResult test_zero_buf(const MunitParameter params[], void* data);
 static MunitTest test_utils_module[] = {
     {"/branchless_float_wrap_range", test_branchless_float_wrap_range, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
-    {"/check_float_underflow", test_float_underflow, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
     {"/branchless_float_wrap_positive", test_branchless_float_wrap_positive, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
     {"/ceiling_pow2", test_ceiling_pow2, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},

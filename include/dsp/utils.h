@@ -24,15 +24,6 @@ extern "C" {
 #define dsp_min(x, y) ((x) < (y) ? (x) : (y))
 #define dsp_max(x, y) ((x) > (y) ? (x) : (y))
 
-// branch arm guidance .. use sparingly
-#if defined(__GNUC__) || defined(__clang__)
-#    define DSP_LIKELY(x) __builtin_expect(!!(x), 1)
-#    define DSP_UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#    define DSP_LIKELY(x) (x)
-#    define DSP_UNLIKELY(x) (x)
-#endif
-
 /**
  * @brief stages for an AR envelope.
  */
@@ -82,13 +73,6 @@ static inline void set_nsmps(float* out, float x, uint32_t nsmps) {
  */
 static inline void zero_buf(float* buf, uint32_t buf_sz) {
     memset(buf, 0, buf_sz * sizeof(float));
-}
-
-/**
- * @brief if a float underflows return zero else pass
- */
-static inline float check_float_underflow(float x) {
-    return DSP_UNLIKELY(fabsf(x) < 1.0e-20f) ? 0.0f : x;
 }
 
 /**

@@ -28,7 +28,6 @@ static inline float peak_tick_(follow* self, float xn) {
     } else {
         current_envelope = self->rel_time_ * (last_envelope - xn) + xn;
     }
-    current_envelope = check_float_underflow(current_envelope);
     current_envelope = dsp_max(current_envelope, 0.0f);
 
     self->last_envelope_ = current_envelope;
@@ -48,7 +47,6 @@ static inline float rms_tick_(follow* self, float xn) {
         current_envelope = self->rel_time_ * (last_envelope - xn) + xn;
     }
 
-    current_envelope = check_float_underflow(current_envelope);
     current_envelope = dsp_max(current_envelope, 0.0f);
 
     current_envelope = powf(current_envelope, 0.5f);  // sqrt for rms;

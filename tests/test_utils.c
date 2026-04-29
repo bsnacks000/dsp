@@ -1,18 +1,6 @@
 #include "test_utils.h"
 #include <dsp/utils.h>
 
-MunitResult test_float_underflow(const MunitParameter params[], void* data) {
-    (void) params;
-    (void) data;
-    float x = check_float_underflow(0.01);
-    munit_assert_float(x, ==, 0.01);
-
-    x = check_float_underflow(1e-21f);
-    munit_assert_float(x, ==, 0.0);
-
-    return MUNIT_OK;
-}
-
 MunitResult test_branchless_float_wrap_range(const MunitParameter params[],
                                              void* data) {
     (void) params;
