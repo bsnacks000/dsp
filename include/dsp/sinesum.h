@@ -11,6 +11,7 @@
 #ifndef DSP_SINESUM_H
 #define DSP_SINESUM_H
 
+#include "dsp/constants.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,7 +34,7 @@ extern "C" {
  */
 static inline float lanczos_smoothing(uint32_t i, uint32_t n) {
     dsp_assert(n > 0, "n must be greater then zero.");
-    float x = (float) (i + 1) * DSP_PI / (float) n;
+    float x = (float) (i + 1) * PI_F / (float) n;
     return sinf(x) / x;
 }
 
@@ -48,14 +49,14 @@ static inline void sinesum(float* buf,
     // NOTE: nharms is an alias used elsewhere pointing to amps_sz
     // https://github.com/bsnacks000/dsp/blob/f8e61a3afa8756d59f1d762474eb727baf423e03/utils/sinesum.c#L98
 
-    phase *= TWO_PI;
-    float sigma = 1.0;
+    phase *= TWO_PI_F;
+    float sigma = 1.0f;
     for (uint32_t i = 0; i < nharms; i++) {
         if (smooth) {
             sigma = lanczos_smoothing(i, nharms);
         }
         for (uint32_t j = 0; j < buf_sz; j++) {
-            float freq = (i + 1) * (j * TWO_PI / buf_sz);
+            float freq = ((float) i + 1.0f) * ((float) j * TWO_PI_F / (float) buf_sz);
             buf[j] += amps[i] * sinf(freq + phase) * sigma;
         }
     }
@@ -93,7 +94,7 @@ static inline void buzz_amps(float* amps, uint32_t amps_sz) {
  */
 static inline void saw_amps(float* amps, uint32_t amps_sz) {
     for (uint32_t i = 0; i < amps_sz; i++)
-        amps[i] = 1.0 / (float) (i + 1);
+        amps[i] = 1.0f / (float) (i + 1);
 }
 
 /**
@@ -102,7 +103,7 @@ static inline void saw_amps(float* amps, uint32_t amps_sz) {
 static inline void sqr_amps(float* amps, uint32_t amps_sz) {
     for (uint32_t i = 0; i < amps_sz; i++) {
         if (i % 2 == 0) {
-            amps[i] = 1.0 / (float) (i + 1);
+            amps[i] = 1.0f / (float) (i + 1);
         } else {
             amps[i] = 0.0;
         }
@@ -113,9 +114,9 @@ static inline void sqr_amps(float* amps, uint32_t amps_sz) {
  * @brief calculate a triangle buffer
  */
 static inline void tri_amps(float* amps, uint32_t amps_sz) {
-    float scale = 8.0 / (DSP_PI * DSP_PI);
+    float scale = 8.0f / TWO_PI_F;
     for (uint32_t i = 0; i < amps_sz; i++) {
-        int h = i + 1;
+        int h = (int) i + 1;
         if (h % 2 == 1) {  // loop odd harmonic
             int harm = (h - 1) / 2;
             float sign = (harm % 2 == 0) ? 1.0f : -1.0f;
@@ -162,7 +163,7 @@ static inline void tri_amps(float* amps, uint32_t amps_sz) {
  * maximum fundmental before aliasing. Scale should be between 0-1.
  */
 static inline float max_fundamental(uint32_t nharms, float sr, float scale) {
-    return scale * sr / (2.0f * nharms);
+    return scale * sr / (2.0f * (float) nharms);
 }
 
 /**

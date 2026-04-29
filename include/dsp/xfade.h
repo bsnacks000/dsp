@@ -33,7 +33,7 @@ static inline xfade_pair xfade_sin(float position) {
 
     // NOTE: changed from original impl .. see py src
     float t = clamp(position, 0.0f, 1.0f);
-    float a = t * (float) DSP_PI * 0.5f;
+    float a = t * PI_F * 0.5f;
 
     float left = fast_qcosf(a);
     float right = fast_qsinf(a);
