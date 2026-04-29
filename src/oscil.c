@@ -254,8 +254,12 @@ void xoscil_init(xoscil* self,
                  oscil* r,
                  float freq,
                  float pos,
-                 float phase) {
-    dsp_assert(l->sr == r->sr, "xoscil_init: l + r must have same sr.");
+                 float phase,
+                 float sr) {
+
+    dsp_assert(deck->n_cols >= 2, "xoscil_init: deck must have min 2 cols.");
+    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, phase, sr);
+    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, phase, sr);
 
     phase = clamp(phase, 0.0f, 1.0f);
     pos = clamp(pos, 0.0f, 1.0f);
@@ -264,9 +268,9 @@ void xoscil_init(xoscil* self,
     self->l = l;
     self->r = r;
     self->freq = freq;
-    self->phase =
-        phase;  // TODO can prob remove (should assert phase is the same on init)
+    self->phase = phase;
     self->pos = pos;
+    self->sr = sr;
 
     xoscil_update_(self);
 }
@@ -365,15 +369,18 @@ static inline void blxoscil_update_(blxoscil* self) {
     }
 }
 
-// TODO: maybe refactor so that blxoscil controls full initilization
 void blxoscil_init(blxoscil* self,
                    matrix* deck,
                    oscil* l,
                    oscil* r,
                    float* f0,
                    float freq,
-                   float phase) {
-    dsp_assert(l->sr == r->sr, "right and left oscil sr must be the same.");
+                   float phase,
+                   float sr) {
+
+    dsp_assert(deck->n_cols >= 2, "xoscil_init: deck must have min 2 cols.");
+    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, phase, sr);
+    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, phase, sr);
 
     self->f0 = f0;
 
@@ -386,6 +393,7 @@ void blxoscil_init(blxoscil* self,
     self->r = r;
     self->freq = freq;
     self->phase = phase;
+    self->sr = sr;
 
     blxoscil_update_(self);
 }

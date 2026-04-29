@@ -82,8 +82,6 @@ typedef struct {
 
 /**
  * @brief initialize a xoscil.
- *
- * ASSERT: l and r to be configured with the same sample rate.
  */
 void xoscil_init(xoscil* self,
                  matrix* deck,
@@ -91,7 +89,8 @@ void xoscil_init(xoscil* self,
                  oscil* r,
                  float freq,
                  float pos,
-                 float phase);
+                 float phase,
+                 float sr);
 
 void xoscili_tick_block(xoscil* self,
                         float* out,
@@ -129,7 +128,8 @@ void blxoscil_init(blxoscil* self,
                    oscil* r,
                    float* f0,
                    float freq,
-                   float phase);
+                   float phase,
+                   float sr);
 
 /**
  * @brief linear interpolating blxoscil.

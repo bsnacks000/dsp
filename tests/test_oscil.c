@@ -176,20 +176,13 @@ MunitResult test_blxoscili_tick_block(const MunitParameter params[], void* data)
 
     set_deck_fixture(&deck, buf1, buf2, BUF_SZ, fill_cos, fill_sin);
 
-    // TODO: this should really be refactored...
-    // 1. Either bl/xoscil should own their oscils or the references should be
-    // fully initialized by their updates .. this partial just feels like noise.
     oscil l;
-    oscil_init(&l, matrix_get_row(&deck, 0), BUF_SZ, 440.0, 0.0, sr);
-
     oscil r;
-    oscil_init(&r, matrix_get_row(&deck, 1), BUF_SZ, 440.0, 0.0, sr);
-
     blxoscil osc;
 
     float f0[2] = {20.0f, 1000.0f};
 
-    blxoscil_init(&osc, &deck, &l, &r, f0, 120.0, 0.0);
+    blxoscil_init(&osc, &deck, &l, &r, f0, 120.0, 0.0, sr);
 
     float out[NSMPS] = {0.0};
     float freq[NSMPS] = {0.0};
@@ -219,20 +212,13 @@ MunitResult test_blxoscil3_tick_block(const MunitParameter params[], void* data)
 
     set_deck_fixture(&deck, buf1, buf2, BUF_SZ, fill_cos, fill_sin);
 
-    // TODO: this should really be refactored...
-    // 1. Either bl/xoscil should own their oscils or the references should be
-    // fully initialized by their updates .. this partial just feels like noise.
     oscil l;
-    oscil_init(&l, matrix_get_row(&deck, 0), BUF_SZ, 440.0, 0.0, sr);
-
     oscil r;
-    oscil_init(&r, matrix_get_row(&deck, 1), BUF_SZ, 440.0, 0.0, sr);
-
     blxoscil osc;
 
     float f0[2] = {20.0f, 1000.0f};
 
-    blxoscil_init(&osc, &deck, &l, &r, f0, 120.0, 0.0);
+    blxoscil_init(&osc, &deck, &l, &r, f0, 120.0, 0.0, sr);
 
     float out[NSMPS] = {0.0};
     float freq[NSMPS] = {0.0};
@@ -263,17 +249,11 @@ MunitResult test_xoscili_tick_block(const MunitParameter params[], void* data) {
 
     set_deck_fixture(&deck, buf1, buf2, BUF_SZ, fill_cos, fill_sin);
 
-    // TODO: this should really be refactored...
-    // 1. Either bl/xoscil should own their oscils or the references should be
-    // fully initialized by their updates .. this partial just feels like noise.
     oscil l;
-    oscil_init(&l, matrix_get_row(&deck, 0), BUF_SZ, 440.0, 0.0, sr);
-
     oscil r;
-    oscil_init(&r, matrix_get_row(&deck, 1), BUF_SZ, 440.0, 0.0, sr);
-
     xoscil osc;
-    xoscil_init(&osc, &deck, &l, &r, 120.0, 0.0, 0.0);
+
+    xoscil_init(&osc, &deck, &l, &r, 120.0, 0.0, 0.0, sr);
 
     float out[NSMPS] = {0.0};
     float freq[NSMPS] = {0.0};
@@ -306,17 +286,11 @@ MunitResult test_xoscil3_tick_block(const MunitParameter params[], void* data) {
 
     set_deck_fixture(&deck, buf1, buf2, BUF_SZ, fill_cos, fill_sin);
 
-    // TODO: this should really be refactored...
-    // 1. Either bl/xoscil should own their oscils or the references should be
-    // fully initialized by their updates .. this partial just feels like noise.
     oscil l;
-    oscil_init(&l, matrix_get_row(&deck, 0), BUF_SZ, 440.0, 0.0, sr);
-
     oscil r;
-    oscil_init(&r, matrix_get_row(&deck, 1), BUF_SZ, 440.0, 0.0, sr);
-
     xoscil osc;
-    xoscil_init(&osc, &deck, &l, &r, 120.0, 0.0, 0.0);
+
+    xoscil_init(&osc, &deck, &l, &r, 120.0, 0.0, 0.0, sr);
 
     float out[NSMPS] = {0.0};
     float freq[NSMPS] = {0.0};

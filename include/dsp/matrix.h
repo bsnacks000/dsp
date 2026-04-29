@@ -16,7 +16,7 @@ extern "C" {
  */
 typedef struct {
     float* data;
-    size_t n_rows, n_cols;
+    uint32_t n_rows, n_cols;
 } matrix;
 
 /**
@@ -24,8 +24,8 @@ typedef struct {
  */
 static inline void matrix_init(matrix* self,
                                float* data,
-                               size_t n_rows,
-                               size_t n_cols) {
+                               uint32_t n_rows,
+                               uint32_t n_cols) {
     self->data = data;
     self->n_rows = n_rows;
     self->n_cols = n_cols;
@@ -34,21 +34,21 @@ static inline void matrix_init(matrix* self,
 /**
  * @brief col major order accessor.
  */
-static inline float matrix_at(matrix* self, size_t i, size_t j) {
+static inline float matrix_at(matrix* self, uint32_t i, uint32_t j) {
     return self->data[i * self->n_cols + j];
 }
 
 /**
  * @brief col major order setter
  */
-static inline void matrix_set(matrix* self, float val, size_t i, size_t j) {
+static inline void matrix_set(matrix* self, float val, uint32_t i, uint32_t j) {
     self->data[i * self->n_cols + j] = val;
 }
 
 /**
  * @brief return a pointer to a matrix row
  */
-static inline float* matrix_get_row(matrix* self, size_t i) {
+static inline float* matrix_get_row(matrix* self, uint32_t i) {
     return self->data + (i * self->n_cols);
 }
 
@@ -56,10 +56,10 @@ static inline float* matrix_get_row(matrix* self, size_t i) {
  * @brief fill a row of the matrix from a src buffer
  */
 static inline void matrix_set_row(matrix* m,
-                                  size_t row,
+                                  uint32_t row,
                                   const float* buf,
-                                  size_t buf_sz) {
-    for (size_t j = 0; j < buf_sz; j++) {
+                                  uint32_t buf_sz) {
+    for (uint32_t j = 0; j < buf_sz; j++) {
         matrix_set(m, buf[j], row, j);
     }
 }
@@ -71,8 +71,8 @@ static inline void matrix_set_row(matrix* m,
  *  - in->n_cols == out->n_rows;
  */
 static inline void matrix_transpose(matrix* b, matrix* a) {
-    for (size_t i = 0; i < a->n_rows; i++) {
-        for (size_t j = 0; j < a->n_cols; j++) {
+    for (uint32_t i = 0; i < a->n_rows; i++) {
+        for (uint32_t j = 0; j < a->n_cols; j++) {
             float val = matrix_at(a, i, j);
             matrix_set(b, val, j, i);
         }
@@ -83,8 +83,8 @@ static inline void matrix_transpose(matrix* b, matrix* a) {
  * @brief print matrix to stdout. Each row is printed on its own line in csv form.
  */
 static inline void matrix_print(matrix* self) {
-    for (size_t row = 0; row < self->n_rows; row++) {
-        for (size_t col = 0; col < self->n_cols; col++) {
+    for (uint32_t row = 0; row < self->n_rows; row++) {
+        for (uint32_t col = 0; col < self->n_cols; col++) {
             float val = matrix_at(self, row, col);
             if (col < self->n_cols - 1) {
                 printf("%.10f, ", (double) val);
