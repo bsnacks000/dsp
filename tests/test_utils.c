@@ -1,6 +1,18 @@
 #include "test_utils.h"
 #include <dsp/utils.h>
 
+MunitResult test_wavetable_cubic_guardpoint(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    float buf[6] = {1.0, 2.0, 3.0, 4.0, 0.0, 0.0};
+    wavetable_cubic_guardpoint(buf, 4);
+
+    float expected[6] = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0};
+    munit_assert_memory_equal(6, buf, expected);
+    return MUNIT_OK;
+}
+
 MunitResult test_branchless_float_wrap_range(const MunitParameter params[],
                                              void* data) {
     (void) params;

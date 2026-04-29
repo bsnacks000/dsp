@@ -167,6 +167,15 @@ static inline void normalize(float* buf, uint32_t buf_sz) {
     }
 }
 
+/**
+ * @brief add a guardpoint wraparound to a wavetable to handle cubic. wt_len is assumed
+ * to the wavetable buf_sz - 2.
+ */
+static inline void wavetable_cubic_guardpoint(float* wt, uint32_t wt_len) {
+    wt[wt_len] = wt[0];
+    wt[wt_len + 1] = wt[1];
+}
+
 #ifdef __cpluplus
 }
 #endif
