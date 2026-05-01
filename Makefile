@@ -29,6 +29,21 @@ build: clean
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
 
+test-release: clean
+	echo  "Building and running tests in RelWithDebInfo..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=RelWithDebInfo
+	./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures;
+
+test-debug: clean
+	echo "Building and running tests in Debug..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=Debug
+	./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures;
+
+memcheck: clean
+	echo "Running memcheck for RelWithDebugInfo..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=RelWithDebInfo
+	valgrind --leak-check=full --error-exitcode=1 -- ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures --no-fork
+
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1

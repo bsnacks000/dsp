@@ -89,6 +89,7 @@ void engine_destroy(engine* self) {
         free(self->ifft->ola);
         free(self->ifft);
     }
+    free(self);
 }
 
 engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
