@@ -38,13 +38,18 @@ file(GLOB_RECURSE SRC_FILES *.c)
 add_executable(${UNIT_TEST_NAME}
     ${SRC_FILES}
 )
-target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp)
 
-# target_compile_options(${UNIT_TEST_NAME} PRIVATE
-#     -Wextra -Wall -Wpedantic -Werror
-# )
+if (NOT MSVC)
+  target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp m)
+else()
+  target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp)
+endif()
 
-dsp_set_compile_options(${UNIT_TEST_NAME})
+if (NOT MSVC)
+  target_compile_options(${UNIT_TEST_NAME} PRIVATE
+      -Wextra -Wall -Wpedantic -Werror
+  )
+endif()
 
 # coverage options are compiler specific
 if(DSP_COVERAGE)
