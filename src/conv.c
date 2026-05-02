@@ -174,21 +174,17 @@ void zconv_init(zconv* self,
 // used in environments where the ksmps is guaranteed not to change ..
 //
 // it might be worth considering enforcing alignment on block boundaries (no start)
-void zconv_tick_block(zconv* self,
-                      float* out,
-                      float* in,
-                      uint32_t start,
-                      uint32_t nsmps) {
+void zconv_tick_block(zconv* self, float* out, float* in, uint32_t nsmps) {
 
     float* tmp_out = self->tmp_out_;
     memset(out, 0, sizeof(float) * self->tmp_sz_);
     memset(tmp_out, 0, sizeof(float) * self->tmp_sz_);
 
-    dconv_tick_block(self->head, out, in, start, nsmps);
+    dconv_tick_block(self->head, out, in, 0, nsmps);
 
-    mpconv_tick_block(self->mid, tmp_out, in, start, nsmps);
+    mpconv_tick_block(self->mid, tmp_out, in, 0, nsmps);
     mix_signal(out, tmp_out, nsmps);
 
-    mpconv_tick_block(self->tail, tmp_out, in, start, nsmps);
+    mpconv_tick_block(self->tail, tmp_out, in, 0, nsmps);
     mix_signal(out, tmp_out, nsmps);
 }

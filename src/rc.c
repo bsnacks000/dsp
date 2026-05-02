@@ -31,7 +31,7 @@ static void rc_one_pole_tick_(rc_one_pole* self, double xn) {
 
 void rc_one_pole_init(rc_one_pole* self, float freq, float sr) {
     // public
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->freq = freq;
 
     // private
@@ -136,7 +136,7 @@ static inline float rc_ladder_tick_(rc_ladder* self, float xn) {
 
 void rc_ladder_init(rc_ladder* self, float freq, float q, float sr) {
     self->freq = freq;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->q = q;
 
     self->t_ = 1.0 / (double) self->sr;

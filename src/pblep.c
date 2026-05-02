@@ -49,7 +49,7 @@ static inline float blepsqr_tick_(blepsqr* self) {
 
 void blepsaw_init(blepsaw* self, float freq, float iphs, float sr) {
     self->freq = freq;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->phase_ = (double) wrap_float_positive(iphs, 1.0);
     self->incr_ = 0.0;
 
@@ -75,7 +75,7 @@ void blepsaw_tick_block(blepsaw* self,
 
 void blepsqr_init(blepsqr* self, float freq, float duty, float iphs, float sr) {
     self->freq = freq;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->duty = duty;
     self->phase_ = (double) wrap_float_positive(iphs, 1.0);
 

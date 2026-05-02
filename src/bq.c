@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdbool.h>
 
+#include <dsp/assert.h>
 #include <dsp/bq.h>
 #include <dsp/constants.h>
 #include <dsp/utils.h>
@@ -23,6 +24,7 @@ static inline float dfII_tick_(dfII* self, float xn) {
 }
 
 void dfII_init(dfII* self, float sr) {
+
     // coeffs (a is the denominator)
     self->a0 = 0.0f;
     self->a1 = 0.0f;
@@ -34,7 +36,7 @@ void dfII_init(dfII* self, float sr) {
     // state registers
     self->x_z1 = 0.0;
     self->x_z2 = 0.0;
-    self->sr = fabsf(sr);
+    self->sr = assure_gt_zero(sr);
 }
 
 float dfII_tick(dfII* self, float xn) {
@@ -344,6 +346,7 @@ void bq_non_resonant_init(bq_non_resonant* self,
                           bq_non_resonant_type t,
                           float freq,
                           float sr) {
+
     self->freq = freq;
     self->t = t;
     self->sr = fabsf(sr);
@@ -384,6 +387,7 @@ void bq_resonant_init(bq_resonant* self,
                       float freq,
                       float q,
                       float sr) {
+
     self->sr = fabsf(sr);
     self->t = t;
     self->freq = freq;

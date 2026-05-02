@@ -151,6 +151,8 @@ void mpconv_tick_block(mpconv* self,
  * @brief zconv - zero latency fast convolution.
  *
  * Allows for non uniform multi partitioning with a direct convolution head.
+ * NOTE: that this is vectorized internally and must be run at a uniform
+ *      krate with tmp_out_ and tmp_sz_ == krate.
  */
 typedef struct {
     dconv* head;
@@ -168,10 +170,6 @@ void zconv_init(zconv* self,
                 float* tmp_out_,
                 uint32_t tmp_sz_);
 
-void zconv_tick_block(zconv* self,
-                      float* out,
-                      float* in,
-                      uint32_t start,
-                      uint32_t nsmps);
+void zconv_tick_block(zconv* self, float* out, float* in, uint32_t nsmps);
 
 #endif

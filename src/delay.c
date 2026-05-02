@@ -13,6 +13,8 @@ uint32_t delay_line_calculate_buf_sz(float sr, float ms) {
 }
 
 void delay_line_init(delay_line* self, float* buf, uint32_t buf_sz) {
+    dsp_assert(is_pow2(buf_sz - 2), "buf_sz must be pow2 + 2.");
+
     self->buf = buf;
     self->buf_sz = buf_sz;              // assume pow2 + 2 for now (ex. 1026)
     self->wrap_sz_ = self->buf_sz - 2;  // (1024)

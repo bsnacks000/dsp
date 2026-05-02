@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <dsp/assert.h>
 #include <dsp/lag.h>
 #include <dsp/utils.h>
 
@@ -17,8 +18,9 @@ static inline float tick_(lag* self, float xn) {
 }
 
 void lag_init(lag* self, float t_sec, float sr) {
-    self->sr = sr;
-    self->t_sec = t_sec;
+
+    self->sr = assure_gt_zero(sr);
+    self->t_sec = assure_gt_zero(t_sec);
     self->last_ = 0.0;
     self->alpha_ = 0.0;
     update_(self);
@@ -32,7 +34,7 @@ void lag_tick_block(lag* self,
                     uint32_t nsmps) {
 
     for (uint32_t i = start; i < nsmps; i++) {
-        float t_sec_ = t_sec[i];
+        float t_sec_ = assure_gt_zero(t_sec[i]);
         bool t_sec_eq = check_float_equal(self->t_sec, t_sec_);
 
         if (!t_sec_eq) {

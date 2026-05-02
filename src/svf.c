@@ -45,7 +45,7 @@ static inline void tick_(svf* self, float xn) {
 }
 
 void svf_init(svf* self, float freq, float q, float drive, float sr) {
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->freq = freq;
     self->q = q;
     self->drive = drive;

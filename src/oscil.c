@@ -115,7 +115,7 @@ void oscil_init(oscil* self,
     self->wt = wt;
     self->freq = freq;
     self->phase = clamp(phase, 0.0, 1.0);
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     self->wt_sz = wt_sz;              // pow2 + 2 (guardpoint)
     self->wt_len_ = wt_sz - 2;        // pow2
@@ -270,7 +270,7 @@ void xoscil_init(xoscil* self,
     self->freq = freq;
     self->phase = phase;
     self->pos = pos;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     xoscil_update_(self);
 }
@@ -393,7 +393,7 @@ void blxoscil_init(blxoscil* self,
     self->r = r;
     self->freq = freq;
     self->phase = phase;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     blxoscil_update_(self);
 }

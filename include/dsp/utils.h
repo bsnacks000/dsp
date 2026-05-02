@@ -45,11 +45,6 @@ typedef enum {
 } adsr_stage;
 
 /**
- * @brief library error codes.
- */
-typedef enum { DSP_OK = 0, DSP_ERR = 1 } dsp_err;
-
-/**
  * @brief copy nsmps of in to out (memcpy)
  */
 static inline void copy_nsmps(float* out,
@@ -139,6 +134,13 @@ static inline float nsmps_dur(float sr, float dur_sec) {
  */
 static inline float zero_guard(float xn) {
     return xn + 1e-9f;
+}
+
+/**
+ * @brief assure an incoming float that is <= 0.0 returns just above zero
+ */
+static inline float assure_gt_zero(float xn) {
+    return xn > 0.0f ? xn : 1e-9f;
 }
 
 /**

@@ -2,6 +2,7 @@
 #include <dsp/constants.h>
 #include <dsp/shape.h>
 #include <math.h>
+#include "dsp/utils.h"
 
 // NOTE: we are hardcoding 10.0 as the frequency for this module.
 inline static void update_(balance* self) {
@@ -27,11 +28,11 @@ inline static void tick_(balance* self, float out, float cmp) {
 }
 
 void balance_init(balance* self, float sr) {
-    self->sr = fabsf(sr);
-    self->coef_ = 0.0;
-    self->d0_ = 0.0;
-    self->d1_ = 0.0;
-    self->scale_ = 0.0;
+    self->sr = assure_gt_zero(sr);
+    self->coef_ = 0.0f;
+    self->d0_ = 0.0f;
+    self->d1_ = 0.0f;
+    self->scale_ = 0.0f;
 
     update_(self);
 }

@@ -55,9 +55,10 @@ static inline float rms_tick_(follow* self, float xn) {
 }
 
 void follow_init(follow* self, float atk_ms, float rel_ms, float sr) {
-    self->atk_ms = atk_ms;
-    self->rel_ms = rel_ms;
-    self->sr = sr;
+
+    self->atk_ms = assure_gt_zero(atk_ms);
+    self->rel_ms = assure_gt_zero(rel_ms);
+    self->sr = assure_gt_zero(sr);
     self->last_envelope_ = 1e-9f;
 
     update_atk_time_(self);
@@ -73,8 +74,8 @@ void follow_rms_tick_block(follow* self,
                            uint32_t nsmps) {
 
     for (uint32_t i = start; i < nsmps; i++) {
-        float atk_ms_ = atk_ms[i];
-        float rel_ms_ = rel_ms[i];
+        float atk_ms_ = assure_gt_zero(atk_ms[i]);
+        float rel_ms_ = assure_gt_zero(rel_ms[i]);
 
         bool atk_ms_eq = check_float_equal(atk_ms_, self->atk_ms);
         bool rel_ms_eq = check_float_equal(rel_ms_, self->rel_ms);
@@ -102,8 +103,8 @@ void follow_peak_tick_block(follow* self,
                             uint32_t nsmps) {
 
     for (uint32_t i = start; i < nsmps; i++) {
-        float atk_ms_ = atk_ms[i];
-        float rel_ms_ = rel_ms[i];
+        float atk_ms_ = assure_gt_zero(atk_ms[i]);
+        float rel_ms_ = assure_gt_zero(rel_ms[i]);
 
         bool atk_ms_eq = check_float_equal(atk_ms_, self->atk_ms);
         bool rel_ms_eq = check_float_equal(rel_ms_, self->rel_ms);

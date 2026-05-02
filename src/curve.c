@@ -1,3 +1,4 @@
+#include <dsp/assert.h>
 #include <dsp/curve.h>
 #include <dsp/utils.h>
 #include <math.h>
@@ -59,9 +60,9 @@ void curve_init(curve* self,
 
     self->start = start;
     self->stop = stop;
-    self->dur_sec = dur_sec;
+    self->dur_sec = assure_gt_zero(dur_sec);
     self->factor = zero_guard(factor);
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     update_(self);
 }
@@ -237,12 +238,13 @@ void curve_ar_init(curve_ar* self,
                    float rel_crv,
                    float rel_level,
                    float sr) {
+
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabsf(atk_sec);
+    self->atk_sec = assure_gt_zero(atk_sec);
     self->atk_crv = zero_guard(atk_crv);
     self->atk_level = atk_level;
-    self->rel_sec = fabsf(rel_sec);
+    self->rel_sec = assure_gt_zero(rel_sec);
     self->rel_crv = zero_guard(rel_crv);
     self->rel_level = rel_level;
     self->sr = sr;
@@ -275,10 +277,10 @@ void curve_ar_tick_block(curve_ar* self,
         self->curr_gate_ = gate[i];
         self->gate_thresh = gate_thresh[i];
         self->start_level = start_level[i];
-        self->atk_sec = atk_sec[i];
+        self->atk_sec = assure_gt_zero(atk_sec[i]);
         self->atk_crv = zero_guard(atk_crv[i]);
         self->atk_level = atk_level[i];
-        self->rel_sec = rel_sec[i];
+        self->rel_sec = assure_gt_zero(rel_sec[i]);
         self->rel_crv = zero_guard(rel_crv[i]);
         self->rel_level = rel_level[i];
 
@@ -299,15 +301,16 @@ void curve_adsr_init(curve_adsr* self,
                      float rel_crv,
                      float rel_level,
                      float sr) {
+
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabsf(atk_sec);
+    self->atk_sec = assure_gt_zero(atk_sec);
     self->atk_crv = zero_guard(atk_crv);
     self->atk_level = atk_level;
-    self->dcy_sec = fabsf(dcy_sec);
+    self->dcy_sec = assure_gt_zero(dcy_sec);
     self->dcy_crv = zero_guard(dcy_crv);
     self->sustain_level = sustain_level;
-    self->rel_sec = fabsf(rel_sec);
+    self->rel_sec = assure_gt_zero(rel_sec);
     self->rel_crv = zero_guard(rel_crv);
     self->rel_level = rel_level;
     self->sr = sr;
@@ -343,13 +346,13 @@ void curve_adsr_tick_block(curve_adsr* self,
         self->curr_gate_ = gate[i];
         self->gate_thresh = gate_thresh[i];
         self->start_level = start_level[i];
-        self->atk_sec = atk_sec[i];
+        self->atk_sec = assure_gt_zero(atk_sec[i]);
         self->atk_level = atk_level[i];
         self->atk_crv = zero_guard(atk_crv[i]);
-        self->dcy_sec = dcy_sec[i];
+        self->dcy_sec = assure_gt_zero(dcy_sec[i]);
         self->dcy_crv = zero_guard(dcy_crv[i]);
         self->sustain_level = sustain_level[i];
-        self->rel_sec = rel_sec[i];
+        self->rel_sec = assure_gt_zero(rel_sec[i]);
         self->rel_crv = zero_guard(rel_crv[i]);
         self->rel_level = rel_level[i];
 

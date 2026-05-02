@@ -321,7 +321,7 @@ MunitResult test_zconv(const MunitParameter params[], void* data) {
     float out[16] = {0.0f};
     float in[16] = {0.0f};
 
-    zconv_tick_block(engine, out, in, 0, 16);
+    zconv_tick_block(engine, out, in, 16);
 
     zconv_destroy(engine);
 
