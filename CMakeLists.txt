@@ -34,6 +34,35 @@ if (APPLE)
   add_compile_definitions(-DMACOS=1)
 endif()
 
+if (MSVC)
+  message("Building on Windows: MSVC")
+  add_compile_definitions(-DMSVC=1)
+endif()
+
+
+function(dsp_set_compile_options target_name)
+  if(MSVC)
+    target_compile_options(${target_name}
+            PRIVATE
+                /W4
+                /WX
+        )
+  else()
+    target_compile_options(${target_name} PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+                -Werror
+                -Wmissing-declarations
+                -Wmissing-prototypes
+                -Wconversion
+                -Wdouble-promotion
+                -Wfloat-conversion
+    )
+  endif()
+endfunction()
+
+
 # objects lib
 # use as dsp::objects
 file(GLOB_RECURSE SRC_FILES
@@ -52,12 +81,15 @@ target_include_directories(dsp_objects
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 
-target_compile_options(dsp_objects
-    PRIVATE
-        -Wextra -Wall -Wpedantic -Werror
-        -Wmissing-declarations -Wmissing-prototypes
-        -Wconversion -Wdouble-promotion -Wfloat-conversion
-)
+# target_compile_options(dsp_objects
+#     PRIVATE
+#         -Wextra -Wall -Wpedantic -Werror
+#         -Wmissing-declarations -Wmissing-prototypes
+#         -Wconversion -Wdouble-promotion -Wfloat-conversion
+# )
+
+dsp_set_compile_options(dsp_objects)
+
 
 
 # build the tests
