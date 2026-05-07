@@ -31,6 +31,7 @@ typedef struct {
     rdft_execute forward;  // forward dft function ptr
     float* buf;            // fft_sz * n internal buffer
     float* win;            // fft_sz window for overlap add
+    float* tmp_buf_;       // fft_sz ... used internally
     uint32_t fft_sz;       // pow2 fft frame size
     uint32_t hop_sz;       // must be >= 1 .. usually some factor of fft_sz. See notes.
     uint32_t buf_sz;       // internal circle buf -- fft_sz * n where n is >= fft_sz
@@ -48,6 +49,7 @@ void stft_init(stft* self,
                rdft_execute forward,
                float* win,
                float* buf,
+               float* tmp_buf,
                uint32_t fft_sz,
                uint32_t hop_sz,
                uint32_t buf_sz);
@@ -59,6 +61,9 @@ void stft_init(stft* self,
  */
 bool stft_tick(stft* self, dft_complex* frame_out, float* real_in);
 
+/*
+ * @brief istft state
+ */
 typedef struct {
 
     irdft* idft;            // idft wrapper
@@ -66,9 +71,10 @@ typedef struct {
     float* ola;             // overlap add buffer (fft_sz * n)
     float* win;             // resynthesis window (optional)
     float* ola_norm;        // ola normalization buffer (optional) same as ola_sz
-    uint32_t fft_sz;        // pow2 fft siz
-    uint32_t hop_sz;        // >= 1 ; usually some factor of fft_sz.
-    uint32_t ola_sz;        // size of ola and ola norm circular buffers(fft_sz * n)
+    float* tmp_buf_;
+    uint32_t fft_sz;  // pow2 fft siz
+    uint32_t hop_sz;  // >= 1 ; usually some factor of fft_sz.
+    uint32_t ola_sz;  // size of ola and ola norm circular buffers(fft_sz * n)
 
     uint32_t ola_mask_;   // bit mask for circ buf
     uint32_t read_ptr_;   // the current ola read pointer location
@@ -84,6 +90,7 @@ void istft_init(istft* self,
                 float* ola,
                 float* win,
                 float* ola_norm,
+                float* tmp_buf_,
                 uint32_t fft_sz,
                 uint32_t hop_sz,
                 uint32_t ola_sz);

@@ -98,6 +98,10 @@ engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
     float* win = (float*) malloc(sizeof(float) * fft_sz);
     hanning(win, fft_sz);
 
+    // temp bufs for v0.3
+    float* stft_tmp_buf_ = (float*) malloc(sizeof(float) * fft_sz);
+    float* istft_tmp_buf_ = (float*) malloc(sizeof(float) * fft_sz);
+
     // set up these mocks ..
     rdft* dft = (rdft*) malloc(sizeof(rdft));
     dft->n = fft_sz;
@@ -118,15 +122,16 @@ engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
     float* buf = (float*) malloc(sizeof(float) * buf_sz);
     float* ola = (float*) malloc(sizeof(float) * buf_sz);
 
-    stft_init(forward, dft, mock_rdft_execute, win, buf, fft_sz, hop_sz, buf_sz);
+    stft_init(forward, dft, mock_rdft_execute, win, buf, stft_tmp_buf_, fft_sz, hop_sz,
+              buf_sz);
 
     istft* backward = (istft*) malloc(sizeof(istft));
     if (!backward) {
         return NULL;
     }
 
-    istft_init(backward, idft, mock_irdft_execute, ola, NULL, NULL, fft_sz, hop_sz,
-               buf_sz);
+    istft_init(backward, idft, mock_irdft_execute, ola, NULL, NULL, istft_tmp_buf_,
+               fft_sz, hop_sz, buf_sz);
 
     float* in_q = (float*) malloc(sizeof(float) * hop_sz);
     if (!in_q) {

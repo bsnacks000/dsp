@@ -36,7 +36,7 @@ endif()
 
 if (MSVC)
   message("Building on Windows: MSVC")
-  add_compile_definitions(-DMSVC=1)
+  add_compile_definitions(MSVC=1)
 endif()
 
 
@@ -44,8 +44,7 @@ function(dsp_set_compile_options target_name)
   if(MSVC)
     target_compile_options(${target_name}
             PRIVATE
-                /W4
-                /WX
+                /W3
         )
   else()
     target_compile_options(${target_name} PRIVATE
