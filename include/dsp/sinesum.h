@@ -34,7 +34,7 @@ extern "C" {
  */
 static inline float lanczos_smoothing(uint32_t i, uint32_t n) {
     dsp_assert(n > 0, "n must be greater then zero.");
-    float x = (float) (i + 1) * PI_F / (float) n;
+    float x = (float) (i + 1) * DSP_PI_F / (float) n;
     return sinf(x) / x;
 }
 
@@ -49,14 +49,15 @@ static inline void sinesum(float* buf,
     // NOTE: nharms is an alias used elsewhere pointing to amps_sz
     // https://github.com/bsnacks000/dsp/blob/f8e61a3afa8756d59f1d762474eb727baf423e03/utils/sinesum.c#L98
 
-    phase *= TWO_PI_F;
+    phase *= DSP_TWO_PI_F;
     float sigma = 1.0f;
     for (uint32_t i = 0; i < nharms; i++) {
         if (smooth) {
             sigma = lanczos_smoothing(i, nharms);
         }
         for (uint32_t j = 0; j < buf_sz; j++) {
-            float freq = ((float) i + 1.0f) * ((float) j * TWO_PI_F / (float) buf_sz);
+            float freq =
+                ((float) i + 1.0f) * ((float) j * DSP_TWO_PI_F / (float) buf_sz);
             buf[j] += amps[i] * sinf(freq + phase) * sigma;
         }
     }
@@ -114,7 +115,7 @@ static inline void sqr_amps(float* amps, uint32_t amps_sz) {
  * @brief calculate a triangle buffer
  */
 static inline void tri_amps(float* amps, uint32_t amps_sz) {
-    float scale = 8.0f / TWO_PI_F;
+    float scale = 8.0f / DSP_TWO_PI_F;
     for (uint32_t i = 0; i < amps_sz; i++) {
         int h = (int) i + 1;
         if (h % 2 == 1) {  // loop odd harmonic

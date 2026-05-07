@@ -7,7 +7,7 @@
 static inline void update_(svf* self) {
 
     // warp freq
-    double omega_c = TWO_PI * (double) self->freq;
+    double omega_c = DSP_TWO_PI * (double) self->freq;
     double omega_warped = self->two_ovr_t_ * tan(omega_c * self->t_ovr_2_);
     double g = omega_warped * self->t_ovr_2_;
 

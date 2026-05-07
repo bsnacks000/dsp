@@ -11,20 +11,21 @@ extern "C" {
 #endif
 
 #include <dsp/constants.h>
+#include <math.h>
 
 /**
  * @brief fast quarter sin
  */
 static inline float fast_qsinf(float x) {
-    float pi_m_x = PI_F - x;
-    return (16.0f * x * pi_m_x) / (5.0f * PI_SQUARED_F - 4.0f * x * pi_m_x);
+    float pi_m_x = DSP_PI_F - x;
+    return (16.0f * x * pi_m_x) / (5.0f * DSP_PI_SQUARED_F - 4.0f * x * pi_m_x);
 }
 
 /**
  * @brief fast quarter cos
  */
 static inline float fast_qcosf(float x) {
-    return fast_qsinf(HALF_PI_F - x);
+    return fast_qsinf(DSP_HALF_PI_F - x);
 }
 
 /**
@@ -36,7 +37,7 @@ static inline float fast_hsinf(float x) {
     float qpos = theta - (float) q;
 
     qpos = (q & 1) ? 1.0f - qpos : qpos;
-    theta = qpos * HALF_PI_F;
+    theta = qpos * DSP_HALF_PI_F;
 
     return fast_qsinf(theta);
 }
@@ -57,7 +58,7 @@ static inline float fast_sinf(float x) {
     float qpos = theta - (float) q;
 
     qpos = (q & 1) ? 1.0f - qpos : qpos;
-    theta = qpos * HALF_PI_F;
+    theta = qpos * DSP_HALF_PI_F;
 
     float sign = (q & 2) ? -1.0f : 1.0f;
     return sign * fast_qsinf(theta);
@@ -102,7 +103,7 @@ static inline float softsign(float x) {
  *  - Builder's method
  */
 static inline float fast_atan(float x) {
-    return QRTR_PI_F * softsign(x);
+    return DSP_QTR_PI_F * softsign(x);
 }
 
 #ifdef __cplusplus

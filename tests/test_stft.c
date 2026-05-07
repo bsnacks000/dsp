@@ -54,9 +54,7 @@ void mock_irdft_execute(irdft* self, float* r_out, dft_complex* c_in) {
     (void) c_in;
     float tmp[self->n];
     hanning(tmp, self->n);
-    // for (uint32_t i = 0; i < self->n; i++) {
-    //     printf("\t%.7f\n", tmp[i]);
-    // }
+
     for (uint32_t i = 0; i < self->n; i++) {
         r_out[i] = tmp[i];
     }
@@ -83,11 +81,13 @@ void engine_destroy(engine* self) {
         free(self->fft->buf);
         free(self->fft->win);
         free(self->fft);
+        free(self->fft->tmp_buf_);
     }
     if (self->ifft) {
         free(self->ifft->idft);
         free(self->ifft->ola);
         free(self->ifft);
+        free(self->ifft->tmp_buf_);
     }
     free(self);
 }

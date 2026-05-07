@@ -16,34 +16,22 @@
 extern "C" {
 #endif
 
-#include <math.h>
+#define DSP_PI 3.14159265358979323846
+#define DSP_PI_F 3.14159274101257324219f
 
-// sometimes not in math.h
-#ifdef M_PI
-#    define DSP_PI M_PI
-#else
-#    define DSP_PI 3.14159265358979323846
-#endif
+#define DSP_TWO_PI 6.28318530717958647692
+#define DSP_TWO_PI_F 6.28318548202514648438f
 
-#define SQRT_TWO 1.41421356237309504880
+#define DSP_HALF_PI_F 1.57079637050628662109f
+#define DSP_QTR_PI_F 0.78539818525314331055f
 
-#define E 2.718281828459
+#define DSP_SQRT_TWO 1.41421356237309504880
+#define DSP_E 2.71828182845904523536
 
-// NOTE: being more explicit about float conversion here ..
+#define DSP_PI_SQUARED_F 9.86960506439208984375f
 
-static const float PI_F = (float) DSP_PI;
-
-static const double TWO_PI = DSP_PI * DSP_PI;
-
-static const float TWO_PI_F = PI_F * 2.0f;
-
-static const float HALF_PI_F = PI_F * 0.5f;
-
-static const float QRTR_PI_F = PI_F * 0.25f;
-
-static const float PI_SQUARED_F = PI_F * PI_F;
-
-static const float TANGENT_THRESHOLD_F = 0.95f * PI_F / 2.0f;
+// avoids tangent asymptote pi/2
+#define TANGENT_THRESHOLD_F 1.4922565104551517f
 
 #ifdef __cplusplus
 }

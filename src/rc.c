@@ -8,7 +8,7 @@
 //
 static inline void rc_one_pole_update_(rc_one_pole* self) {
 
-    double omega_c = (double) TWO_PI * (double) self->freq;
+    double omega_c = (double) DSP_TWO_PI * (double) self->freq;
     double omega_warped = self->two_over_t_ * tan(omega_c * self->t_over_2_);
     double g = omega_warped * self->t_over_2_ / 2.0;
 
@@ -86,7 +86,7 @@ static inline void rc_ladder_update_(rc_ladder* self) {
     self->k_ = 4.0 * ((double) q - 0.1) / (25.0 - 0.1);
 
     // zavalashin's warping
-    double omega_c = (double) TWO_PI * (double) fc;
+    double omega_c = (double) DSP_TWO_PI * (double) fc;
     double omega_warped = self->two_over_t_ * tan(omega_c * self->t_over_2_);
     double g = omega_warped * self->t_over_2_;
 
