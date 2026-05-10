@@ -60,7 +60,8 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
     
-    # NOTE: Only build on windows ... msvc does not like munit at all
+    # NOTE: Only compile objects on windows ... msvc does not like munit at all
+    # so we cannot run the test suite via msvc
     steps:
       - uses: actions/checkout@v6
         with:
@@ -80,22 +81,25 @@ jobs:
         run: choco install make
 
       - name: >
-          Build |
+          Build only Windows -- |
           ${{ matrix.os }} |
           ${{ matrix.c_compiler }} |
           ${{ matrix.build_type }}
+        if: runner.os == 'Windows'
         run: |
-          make build TESTS=1 BUILD_TYPE=${{ matrix.build_type }}
+          make build BUILD_TYPE=${{ matrix.build_type }}
+      
       - name: > 
-          Test |
+          Build and test -- Linux/MacOS |
           ${{ matrix.os }} |
           ${{ matrix.c_compiler }} |
           ${{ matrix.build_type }}
         if: runner.os != 'Windows'
         run: | 
+          make build TESTS=1 BUILD_TYPE=${{ matrix.build_type }}
           make run-test 
 
-
+  # NOTE: lcov build on ubuntu gcc only 
   coverage:
     runs-on: ubuntu-latest
     env:
@@ -120,6 +124,7 @@ jobs:
           name: coverage-html
           path: coverage
 
+  # NOTE: valgrind on ubuntu gcc only 
   memcheck:
     runs-on: ubuntu-latest
     env:

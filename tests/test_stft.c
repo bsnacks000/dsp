@@ -80,14 +80,14 @@ void engine_destroy(engine* self) {
         free(self->fft->dft);
         free(self->fft->buf);
         free(self->fft->win);
-        free(self->fft);
         free(self->fft->tmp_buf_);
+        free(self->fft);
     }
     if (self->ifft) {
         free(self->ifft->idft);
         free(self->ifft->ola);
-        free(self->ifft);
         free(self->ifft->tmp_buf_);
+        free(self->ifft);
     }
     free(self);
 }
