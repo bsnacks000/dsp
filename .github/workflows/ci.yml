@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ["dev"]
+    branches: ["dev", "*-dev"]
   pull_request:
-    branches: ["dev"]
+    branches: ["dev", "*-dev"]
   workflow_dispatch:
     inputs:
       ref:
@@ -59,7 +59,8 @@ jobs:
             build_type: RelDebInfo
             c_compiler: cl
             cpp_compiler: cl
-
+    
+    # NOTE: Only build on windows ... msvc does not like munit at all
     steps:
       - uses: actions/checkout@v6
         with:
@@ -79,12 +80,21 @@ jobs:
         run: choco install make
 
       - name: >
+          Build |
           ${{ matrix.os }} |
           ${{ matrix.c_compiler }} |
           ${{ matrix.build_type }}
         run: |
           make build TESTS=1 BUILD_TYPE=${{ matrix.build_type }}
-          make run-test
+      - name: > 
+          Test |
+          ${{ matrix.os }} |
+          ${{ matrix.c_compiler }} |
+          ${{ matrix.build_type }}
+        if: runner.os != 'Windows'
+        run: | 
+          make run-test 
+
 
   coverage:
     runs-on: ubuntu-latest

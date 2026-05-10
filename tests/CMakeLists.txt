@@ -1,5 +1,12 @@
 set(UNIT_TEST_NAME dsp_tests)
 
+# NOTE: while the build is clean for msvc on CI 
+# due to some issues in munit we can't compile
+if (MSVC)
+    message(FATAL_ERROR "Building tests on MSVC currently not supported.")
+endif()
+
+
 # static lib
 message(STATUS "dsp: building static lib for tests.")
 add_library(dsp STATIC)
@@ -39,17 +46,11 @@ add_executable(${UNIT_TEST_NAME}
     ${SRC_FILES}
 )
 
-if (NOT MSVC)
-  target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp m)
-else()
-  target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp)
-endif()
+target_link_libraries(${UNIT_TEST_NAME} PRIVATE dsp m)
 
-if (NOT MSVC)
-  target_compile_options(${UNIT_TEST_NAME} PRIVATE
-      -Wextra -Wall -Wpedantic -Werror
-  )
-endif()
+target_compile_options(${UNIT_TEST_NAME} PRIVATE
+    -Wextra -Wall -Wpedantic -Werror
+)
 
 # coverage options are compiler specific
 if(DSP_COVERAGE)

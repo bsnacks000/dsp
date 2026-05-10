@@ -80,15 +80,7 @@ target_include_directories(dsp_objects
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 
-# target_compile_options(dsp_objects
-#     PRIVATE
-#         -Wextra -Wall -Wpedantic -Werror
-#         -Wmissing-declarations -Wmissing-prototypes
-#         -Wconversion -Wdouble-promotion -Wfloat-conversion
-# )
-
 dsp_set_compile_options(dsp_objects)
-
 
 
 # build the tests
