@@ -1,3 +1,10 @@
+/**
+ * @brief chebpoly - Fill a table with chebyshev polynomials of the Nth degree.
+ *  - primarily for waveshaping synthesis purposes.
+ *  - Based on various sources - csound / sc3 / Dodge + Jerse
+ *
+ */
+
 #ifndef DSP_CHEBPOLY_H
 #define DSP_CHEBPOLY_H
 
@@ -36,22 +43,21 @@ static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz)
     return s;
 }
 
-// XXX: refactor so with better semantics ... should take an in_sig instead of
-//  writing out in place...
-
 /**
- * @brief fill an out buf of arbitrary size with a chebyshev polynomial calculation
+ * @brief fill an out buf of arbitrary size with a chebyshev polynomial calculation.
+ *  - h provides coefficients of degree N.
  */
 static inline void chebyshev_fill(float* out,
-                                  uint32_t out_sz,
+                                  float* in,
+                                  uint32_t buf_sz,
                                   float* h,
                                   uint32_t h_sz) {
 
-    for (uint32_t i = 0; i < out_sz; i++) {
-        out[i] = chebyshev_polynomial(out[i], h, h_sz);
+    for (uint32_t i = 0; i < buf_sz; i++) {
+        out[i] = chebyshev_polynomial(in[i], h, h_sz);
     }
 
-    normalize(out, out_sz);
+    normalize(out, buf_sz);
 }
 
 #ifdef __cplusplus

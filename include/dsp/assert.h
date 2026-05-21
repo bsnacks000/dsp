@@ -1,7 +1,7 @@
 /***
  * @file assert.h
  * @brief A nicer assert macro
- *
+ *   - From Butenhof - Posix Threads I think ...
  *
  */
 #ifndef DSP_ASSERT_H

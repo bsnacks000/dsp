@@ -11,7 +11,6 @@
 #ifndef DSP_SINESUM_H
 #define DSP_SINESUM_H
 
-#include "dsp/constants.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,5 +1,5 @@
-#include <dsp/constants.h>
-#include <dsp/fasttrig.h>
+
+#include <dsp/maths.h>
 #include <dsp/rc.h>
 #include <dsp/shape.h>
 #include <dsp/utils.h>

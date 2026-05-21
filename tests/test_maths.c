@@ -1,6 +1,5 @@
 #include "test_maths.h"
 
-#include <dsp/fasttrig.h>
 #include <dsp/maths.h>
 #include <dsp/matrix.h>
 #include <dsp/shape.h>

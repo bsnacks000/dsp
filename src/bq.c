@@ -4,12 +4,11 @@
  * Parameters are updated at krate using the first sample index of the vector.
  */
 
-#include <math.h>
 #include <stdbool.h>
 
 #include <dsp/assert.h>
 #include <dsp/bq.h>
-#include <dsp/constants.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 
 // 0.3 - change to double precision

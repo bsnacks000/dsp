@@ -8,9 +8,8 @@
 extern "C" {
 #endif
 
-#include <dsp/constants.h>
-#include <dsp/fasttrig.h>
 #include <dsp/interpolate.h>
+#include <dsp/maths.h>
 #include <dsp/rmap.h>
 #include <dsp/shape.h>
 

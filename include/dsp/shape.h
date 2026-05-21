@@ -1,5 +1,6 @@
 /**
  * @brief nonlinear waveshaping functions
+ *  - various clippers clampers and saturators.
  */
 #ifndef DSP_SHAPE_H
 #define DSP_SHAPE_H
@@ -11,7 +12,6 @@ extern "C" {
 #include <math.h>
 #include <stdint.h>
 
-#include <dsp/fasttrig.h>
 #include <dsp/maths.h>
 
 /**

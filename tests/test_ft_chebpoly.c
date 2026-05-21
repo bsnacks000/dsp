@@ -17,7 +17,7 @@ MunitResult test_chebpoly(const MunitParameter params[], void* data) {
 
     float h[4] = {0.0, 0.0, 0.0, 1.0};
 
-    chebyshev_fill(buf, BUF_SZ, h, 4);
+    chebyshev_fill(buf, buf, BUF_SZ, h, 4);
 
     return MUNIT_OK;
 }
