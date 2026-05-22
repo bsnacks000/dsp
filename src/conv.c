@@ -1,8 +1,7 @@
-
 #include <string.h>
 
 #include <dsp/conv.h>
-#include "dsp/dft.h"
+#include <dsp/dft.h>
 
 static inline float tick_one_(dconv* self, float xn) {
     float out = 0.0f;
@@ -150,12 +149,14 @@ void mpconv_tick_block(mpconv* self,
     }
 }
 
+// TODO: move to maths ?
 static inline void mix_signal(float* out, float* in, uint32_t nsmps) {
     for (uint32_t i = 0; i < nsmps; i++) {
         out[i] += in[i];
     }
 }
 
+// FIXME: tmp_out should move to the tick block
 void zconv_init(zconv* self,
                 dconv* head,
                 mpconv* mid,
@@ -169,11 +170,9 @@ void zconv_init(zconv* self,
     self->tmp_sz_ = tmp_sz_;
 }
 
-// NOTE: out MUST be the same size as tmp_sz which should be set and enforced
-// in the caller during the programs lifetime. Essentially this algorithm is best
-// used in environments where the ksmps is guaranteed not to change ..
-//
-// it might be worth considering enforcing alignment on block boundaries (no start)
+// FIXME: tmp_out should be passed here since its aligned to the ksmps and
+// this has the possibility of changing during runtime based on
+// the application. This should allow start/nsmps
 void zconv_tick_block(zconv* self, float* out, float* in, uint32_t nsmps) {
 
     float* tmp_out = self->tmp_out_;
