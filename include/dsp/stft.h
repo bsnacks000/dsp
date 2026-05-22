@@ -1,6 +1,10 @@
 /**
  * @brief stft - short time fourier transform primitives
  *
+ * It should be noted that these are not in and of themselves an engine, but can be used
+ * to make engines for spectral analysis, pvoc or other applications. See the tests for
+ * an example engine setup.
+ *
  * NOTES on invariants:
  *  - fft_sz must be power of 2
  *  - complex fft_frame_sz is calculated as fft_sz // 2 + 1
@@ -15,6 +19,10 @@
  * [1.0] * fft_sz will compute a rectangular window.
  *  - some applications may require ola normalization during resynthesis. This should be
  * computed in advance as a function of fft_sz, hop_sz
+ *
+ * implmentation based mainly on:
+ *  - Lazzarini - Audio Programming in C (2006) and Spectral Music Design (2023)
+ *
  */
 #ifndef DSP_STFT_H
 #define DSP_STFT_H
@@ -34,7 +42,7 @@ typedef struct {
     float* tmp_buf_;       // fft_sz ... used internally
     uint32_t fft_sz;       // pow2 fft frame size
     uint32_t hop_sz;       // must be >= 1 .. usually some factor of fft_sz. See notes.
-    uint32_t buf_sz;       // internal circle buf -- fft_sz * n where n is >= fft_sz
+    uint32_t buf_sz;       // internal circle buf -- fft_sz * n where n is > 1
 
     uint32_t buf_mask_;       // calc'd as buf_sz - 1 for circular masking
     uint32_t write_ptr_;      // the current buffer write pointer location
