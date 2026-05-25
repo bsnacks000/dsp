@@ -242,10 +242,8 @@ static inline void xoscil_update_(xoscil* self) {
     self->l_amp_ *= norm;
     self->r_amp_ *= norm;
 
-    if (self->l->wt != bpair.low)  // XXX: prob can remove the branches
-        self->l->wt = bpair.low;
-    if (self->r->wt != bpair.high)
-        self->r->wt = bpair.high;
+    self->l->wt = bpair.low;
+    self->r->wt = bpair.high;
 }
 
 void xoscil_init(xoscil* self,
@@ -361,12 +359,8 @@ static inline void blxoscil_update_(blxoscil* self) {
     // fprintf(stdout, "%.3f\n", self->l_amp_);
     // fprintf(stderr, "%.3f\n", self->r_amp_);
 
-    if (self->l->wt != bpair.low) {
-        self->l->wt = bpair.low;
-    }
-    if (self->r->wt != bpair.high) {
-        self->r->wt = bpair.high;
-    }
+    self->l->wt = bpair.low;
+    self->r->wt = bpair.high;
 }
 
 void blxoscil_init(blxoscil* self,

@@ -66,7 +66,7 @@ coverage: clean
 
 # view last coverage report
 html-cov:
-	open ./coverage/index.html
+	firefox ./coverage/index.html
 
 run-test:
 	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;

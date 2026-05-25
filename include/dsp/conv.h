@@ -150,26 +150,30 @@ void mpconv_tick_block(mpconv* self,
 /**
  * @brief zconv - zero latency fast convolution.
  *
- * Allows for non uniform multi partitioning with a direct convolution head.
- * NOTE: that this is vectorized internally and must be run at a uniform
- *      krate with tmp_out_ and tmp_sz_ == krate.
+ *  Allows for non uniform multi partitioning with a direct convolution head.
+ *
  */
 typedef struct {
     dconv* head;
     mpconv* mid;
     mpconv* tail;
-    // private scratch buf
-    float* tmp_out_;
-    uint32_t tmp_sz_;
 } zconv;
 
-void zconv_init(zconv* self,
-                dconv* head,
-                mpconv* mid,
-                mpconv* tail,
-                float* tmp_out_,
-                uint32_t tmp_sz_);
+/**
+ * @brief zconv_init - initialize zconv
+ */
+void zconv_init(zconv* self, dconv* head, mpconv* mid, mpconv* tail);
 
-void zconv_tick_block(zconv* self, float* out, float* in, uint32_t nsmps);
+/**
+ * @brief zconv_tick_block - tick one block of zconv. A tmp buffer is provided
+ * to allow the 3 convolved signals to be mixed correctly.
+ *
+ */
+void zconv_tick_block(zconv* self,
+                      float* out,
+                      float* in,
+                      float* tmp,
+                      uint32_t start,
+                      uint32_t nsmps);
 
 #endif
