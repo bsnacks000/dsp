@@ -1,7 +1,6 @@
 #ifndef DSP_MATRIX_H
 #define DSP_MATRIX_H
 
-#include <wchar.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -200,7 +199,7 @@ static inline band_pair matrix_row_pair_freq_lookup(matrix* self,
     // we *should* always fall within some frequency region..
     // its on caller to make sure the deck
     for (uint32_t i = 1; i < self->n_rows; i++) {
-        if (bands[i - 1] <= freq && freq < bands[i]) {
+        if ((bands[i - 1] <= freq) && (freq < bands[i])) {
             return (band_pair) {
                 .low = matrix_get_row(self, i - 1),
                 .high = matrix_get_row(self, i),
@@ -210,9 +209,11 @@ static inline band_pair matrix_row_pair_freq_lookup(matrix* self,
         }
     }
 
-    // if we get here there are gaps in the freq bands so we just return
-    // the first pair
-    // TODO: warning (debug)
+    // NOTE: this is really to satisfy compiler.
+    // It should be unreachable since band pair lookup should be
+    // monotonically increasing, flat or decreasing.
+    dsp_assert(1, "matrix_row_pair_freq_lookup: Unreachable!");
+
     return (band_pair) {
         .low = matrix_get_row(self, 0),
         .high = matrix_get_row(self, 1),
