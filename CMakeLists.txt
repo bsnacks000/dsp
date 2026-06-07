@@ -4,7 +4,7 @@ set(PROJECT_NAME dsp)
 project(dsp LANGUAGES C VERSION 0.3.0)
 
 # extend semver prerelease tag .. Ex. -alpha.0, -rc.1
-set(DSP_VERSION "${PROJECT_VERSION}-alpha.2")
+set(DSP_VERSION "${PROJECT_VERSION}-alpha.3")
 
 # generate and add to build tree
 configure_file(
