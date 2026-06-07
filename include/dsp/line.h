@@ -1,5 +1,9 @@
 /**
- * @brief line - generate one segment of a line for dur seconds.
+ * @brief line - generate one segment of a line for dur seconds. This can create
+ * a basic line similar to pure data/csound/sc3 and other dsp platforms.
+ *
+ * The sampi object is based on csound and Dodge/Jerse and can be used to create
+ * a RANDI when set up appropriately.
  *
  */
 
@@ -34,7 +38,8 @@ void line_init(line* self, float start, float stop, float dur_sec, float sr);
 void line_tick_block(line* self, float* out, uint32_t start, uint32_t nsmps);
 
 /**
- * @brief sample and linearly interpolate.
+ * @brief sample and linearly interpolate. Influenced by csound's randi and based
+ * on Dodge and Jerse RANDI.
  */
 typedef struct {
     float start, stop, dur_sec, gate_thresh, sr;
@@ -42,8 +47,22 @@ typedef struct {
     line state_;
 } sampi;
 
+/**
+ * @brief sampi_init - initial line trajectory. Internally this uses a line to
+ * object to interpolate.
+ */
 void sampi_init(sampi* self, float start, float stop, float dur_sec, float sr);
 
+/*
+ * @brief tick one block of sampi. Instanteous values of `in` and `dur_sec` are
+ * captured using a gate. The gate threshold may also be modulated.
+ *
+ * If using random signals the effects would create the Dodge/Jerse
+ *
+ * Note that sampi does not clamp, normalize or "finish" the line segments, instead
+ * creating a rolling trajectory similar to a csound line opcode. Do the results may go
+ * out of a desired range depending on the speed of the gate and moving in/dur signals.
+ */
 void sampi_tick_block(sampi* self,
                       float* out,
                       float* in,

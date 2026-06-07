@@ -106,7 +106,7 @@ static inline float ar_tick_(line_ar* self) {
         }
 
         default:
-            // TODO dsp_assert
+            dsp_assert(1, "line_ar_tick_: Unreachable!");
             return 0.0;  // should never reach
     }
 }
@@ -287,6 +287,7 @@ static inline float adsr_tick_(line_adsr* self) {
             return out;
         }
         default:
+            dsp_assert(1, "line_adsr_tick_: Unreachable!");
             return 0.0;
     }
 }
