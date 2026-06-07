@@ -330,6 +330,9 @@ void sampi_init(sampi* self, float start, float stop, float dur_sec, float sr) {
     self->sr = sr;
     self->curr_out_ = start;
 
+    self->prev_gate_ = self->curr_gate_ = 0.0f;
+    self->gate_thresh = 0.5f;
+
     line_init(&self->state_, start, stop, dur_sec, sr);
 }
 
