@@ -46,6 +46,9 @@ static inline float chebyshev_polynomial(float x, const float* h, uint32_t h_sz)
 /**
  * @brief fill an out buf of arbitrary size with a chebyshev polynomial calculation.
  *  - h provides coefficients of degree N.
+ *  - in can be any waveform but is typically a straight line.
+ *
+ *  NOTE: that out is overwritten and is therefore not cleared before a write.
  */
 static inline void chebyshev_fill(float* out,
                                   float* in,

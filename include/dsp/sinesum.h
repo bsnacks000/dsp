@@ -37,12 +37,21 @@ static inline float lanczos_smoothing(uint32_t i, uint32_t n) {
     return sinf(x) / x;
 }
 
+/**
+ * @brief - sinesum. Fills a buf with a fourier series.
+ *
+ *  - NOTE: Since the algorithm accumulates values in buf we clear using memset.
+ */
 static inline void sinesum(float* buf,
                            uint32_t buf_sz,
                            float* amps,
                            uint32_t amps_sz,
                            float phase,
                            bool smooth) {
+
+    // NOTE: added here to assure that at least buf_sz is clear...
+    // however if caller is expecting guard points then we
+    memset(buf, 0, sizeof(float) * buf_sz);
 
     uint32_t nharms = amps_sz;
     // NOTE: nharms is an alias used elsewhere pointing to amps_sz
