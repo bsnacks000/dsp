@@ -468,6 +468,211 @@ static inline float fast_atan(float x) {
     return DSP_QTR_PI_F * softsign(x);
 }
 
+// Non-linear waveshaping functions
+// - clippers, clampers and saturators
+
+/**
+ * @brief clamp xn between min and max
+ */
+static inline float clamp(float xn, float min, float max) {
+    if (xn > max)
+        return max;
+    else if (xn < min)
+        return min;
+    return xn;
+}
+
+static inline void clamp_block(float* out,
+                               float* x,
+                               float min,
+                               float max,
+                               uint32_t start,
+                               uint32_t nsmps) {
+
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = clamp(x[i], min, max);
+    }
+}
+
+/**
+ * @brief hard clip w/ drive amt.
+ */
+static inline float hard_clip(float xn, float amt) {
+    amt += 1e-9f;
+    return clamp(amt * xn, -1.0f, 1.0f) / clamp(amt, -1.0f, 1.0f);
+}
+
+static inline void hard_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = hard_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief exp soft clip with pre-gain - from Pirkle via Reiss(2014)
+ */
+static inline float exp_clip(float xn, float pregain) {
+    return sign_of(xn) * (1.0f - expf(-fabsf(pregain * xn)));
+}
+
+static inline void exp_clip_block(float* out,
+                                  float* x,
+                                  float* pregain,
+                                  uint32_t start,
+                                  uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = exp_clip(x[i], pregain[i]);
+    }
+}
+
+/*
+ * Zavalishin monotonic saturators - amt related to drive in the circuit.
+ * - expensive bois but sound nice.
+ * - amt controls the drive of the circuit
+ */
+
+/**
+ * @brief hypertangent monotonic saturator
+ */
+static inline float tanh_clip(float xn, float amt) {
+    amt += 1e-9f;
+    return tanhf(amt * xn) / tanhf(amt);
+}
+
+static inline void tanh_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = tanh_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief fast tanh saturator.
+ */
+static inline float fast_tanh_clip(float xn, float amt) {
+    amt += 1e-9f;
+    return fast_tanh(amt * xn) / fast_tanh(amt);
+}
+
+static inline void fast_tanh_clip_block(float* out,
+                                        float* x,
+                                        float* amt,
+                                        uint32_t start,
+                                        uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = fast_tanh_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief fast tanh saturator using doubles
+ */
+static inline double fast_tanh_clip_d(double xn, double amt) {
+    amt += 1e-9;
+    return fast_tanh_d(amt * xn) / fast_tanh_d(amt);
+}
+
+/**
+ * @brief arctangent monotonic saturator
+ */
+static inline float atan_clip(float xn, float amt) {
+    amt += 1e-9f;
+    return atanf(xn * amt) / atanf(amt);
+}
+
+static inline void atan_clip_block(float* out,
+                                   float* x,
+                                   float* amt,
+                                   uint32_t start,
+                                   uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = atan_clip(x[i], amt[i]);
+    }
+}
+
+/**
+ * @brief arctangent monotonic saturator
+ */
+static inline float fast_atan_clip(float xn, float amt) {
+    amt += 1e-9f;
+    return fast_atan(xn * amt) / fast_atan(amt);
+}
+
+static inline void fast_atan_clip_block(float* out,
+                                        float* x,
+                                        float* amt,
+                                        uint32_t start,
+                                        uint32_t nsmps) {
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] = fast_atan_clip(x[i], amt[i]);
+    }
+}
+
+/// Various range mapping functions
+///  - based on sc3 mappers.
+
+/**
+ * @brief map a value x from a linear range to a linear range.
+ */
+static inline float linlin(float x,
+                           float src_lo,
+                           float src_hi,
+                           float dst_lo,
+                           float dst_hi) {
+    float denom = ((src_hi - src_lo) * (dst_hi - dst_lo)) + 1e-9f;
+    return dst_lo + (x - src_lo) / denom;
+}
+
+/**
+ * @brief map a value x from a linear range to an exponential range.
+ */
+static inline float linexp(float x,
+                           float src_lo,
+                           float src_hi,
+                           float dst_lo,
+                           float dst_hi) {
+
+    dst_lo += 1e-9f;
+    float denom = src_hi - src_lo + 1e-9f;
+    float norm = (x - src_lo) / denom;
+
+    return dst_lo * powf((dst_hi / dst_lo), norm);
+}
+
+/**
+ * @brief map a value x from an exponential range to a linear range.
+ */
+static inline float explin(float x,
+                           float src_lo,
+                           float src_hi,
+                           float dst_lo,
+                           float dst_hi) {
+
+    src_lo += 1e-9f;
+    float norm = logf(x / src_lo) / logf(src_hi / src_lo);
+    return dst_lo + norm * (dst_hi - dst_lo);
+}
+
+/**
+ * @brief map a value x from an exponential range to an exponential range.
+ */
+static inline float expexp(float x,
+                           float src_lo,
+                           float src_hi,
+                           float dst_lo,
+                           float dst_hi) {
+    src_lo += 1e-9f;
+    float norm = logf(x / src_lo) / logf(src_hi / src_lo);
+    return dst_lo * powf((dst_hi / dst_lo), norm);
+}
+
 #ifdef __cplusplus
 }
 #endif

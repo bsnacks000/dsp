@@ -15,8 +15,6 @@ extern "C" {
 #include <math.h>
 #include <stdint.h>
 
-#include <dsp/rmap.h>
-
 /**
  * @brief Calculate the number of samples per millisecond given samplerate sr in samples
  *  per second.

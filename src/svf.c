@@ -1,6 +1,5 @@
 
 #include <dsp/maths.h>
-#include <dsp/shape.h>
 #include <dsp/svf.h>
 #include <dsp/utils.h>
 

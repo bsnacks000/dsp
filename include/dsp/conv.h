@@ -6,6 +6,10 @@
 #ifndef DSP_CONV_H
 #define DSP_CONV_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <dsp/dft.h>
 #include <dsp/fifo.h>
 
@@ -175,5 +179,9 @@ void zconv_tick_block(zconv* self,
                       float* tmp,
                       uint32_t start,
                       uint32_t nsmps);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

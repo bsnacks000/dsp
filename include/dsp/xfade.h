@@ -10,8 +10,6 @@ extern "C" {
 
 #include <dsp/interpolate.h>
 #include <dsp/maths.h>
-#include <dsp/rmap.h>
-#include <dsp/shape.h>
 
 #include <stdint.h>
 

@@ -5,10 +5,10 @@
 extern "C" {
 #endif
 
-#include <dsp/assert.h>
-#include <dsp/shape.h>
+#include <dsp/maths.h>
+#include <stdint.h>
 
-#include <stdio.h>
+#include <dsp/assert.h>
 
 /**
  * @brief a 2d matrix. data should be accessed in column major order.

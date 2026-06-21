@@ -2,8 +2,8 @@
 
 #include <dsp/assert.h>
 #include <dsp/interpolate.h>
+#include <dsp/maths.h>
 #include <dsp/matrix.h>
-#include <dsp/shape.h>
 #include <dsp/utils.h>
 #include <dsp/xfade.h>
 

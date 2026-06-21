@@ -1,7 +1,6 @@
 
 #include <dsp/maths.h>
 #include <dsp/rc.h>
-#include <dsp/shape.h>
 #include <dsp/utils.h>
 
 // private

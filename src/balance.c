@@ -1,7 +1,6 @@
 #include <dsp/balance.h>
 #include <dsp/maths.h>
-#include <dsp/shape.h>
-#include "dsp/utils.h"
+#include <dsp/utils.h>
 
 // NOTE: we are hardcoding 10.0 as the frequency for this module.
 inline static void update_(balance* self) {

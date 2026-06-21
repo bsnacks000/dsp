@@ -1,9 +1,8 @@
 
 #include <dsp/pblep.h>
-#include <math.h>
 
 #include <dsp/conversions.h>
-#include <dsp/shape.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 
 // NOTE: a bit of duplication from phasor but we are going to prefer this over
