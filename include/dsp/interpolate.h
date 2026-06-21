@@ -35,7 +35,7 @@ extern "C" {
  * @return float
  */
 static inline float interpolate_linear(float a, float b, float frac) {
-    return frac * a + (1.0 - frac) * b;
+    return (1.0f - frac) * a + frac * b;
 }
 
 /**
@@ -43,27 +43,34 @@ static inline float interpolate_linear(float a, float b, float frac) {
  *
  */
 static inline float interpolate_cubic(float a, float b, float c, float d, float frac) {
-    float tmp = d + 3.0 * b;
+    float tmp = d + 3.0f * b;
     float fracsq = frac * frac;
     float fracb = frac * fracsq;
 
     // # ax^3 + bx^2 + cx + d
-    return (fracb * (-a - 3.0 * c + tmp) / 6.0 + fracsq * ((a + c) / 2.0 - b) +
-            frac * (c + (-2.0 * a - tmp) / 6.0) + b);
+    return (fracb * (-a - 3.0f * c + tmp) / 6.0f + fracsq * ((a + c) / 2.0f - b) +
+            frac * (c + (-2.0f * a - tmp) / 6.0f) + b);
 }
 
 /**
- * @brief linear interpolation based on numpy.interp.
+ * @brief linear interpolation based on loosely based on numpy.interp. Does not
+ * require monotonic increasing input. Instead fills by doing linear interpolation
+ * between adjacent samples.
  */
-static inline void npinterp(float* out, size_t out_sz, const float* in, size_t in_sz) {
-    float dx = 1.0f / (in_sz - 1);   // spacing between original points
-    float dt = 1.0f / (out_sz - 1);  // spacing in target space
+static inline void table_lerp(float* out,
+                              size_t out_sz,
+                              const float* in,
+                              size_t in_sz) {
+    dsp_assert(in_sz <= out_sz, "in_sz must be <= out_sz");
+
+    float dx = 1.0f / (float) (in_sz - 1);   // spacing between original points
+    float dt = 1.0f / (float) (out_sz - 1);  // spacing in target space
 
     for (size_t i = 0; i < out_sz; i++) {
-        if (i == out_sz - 1) {
+        if (i == out_sz - 1) {  // last
             out[i] = in[in_sz - 1];
         } else {
-            float t = i * dt;  // interpolation factor
+            float t = (float) i * dt;  // interpolation factor
 
             // Handle bounds
             if (t <= 0.0f) {
@@ -77,9 +84,11 @@ static inline void npinterp(float* out, size_t out_sz, const float* in, size_t i
 
             float pos = t / dx;
             size_t idx = (size_t) floorf(pos);
-            float frac = pos - idx;
+            float frac = pos - (float) idx;
 
-            out[i] = (1.0f - frac) * in[idx] + frac * in[idx + 1];
+            out[i] = interpolate_linear(
+                in[idx], in[idx + 1],
+                frac);  //(1.0f - frac) * in[idx] + frac * in[idx + 1];
         }
     }
 }

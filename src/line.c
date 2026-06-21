@@ -1,4 +1,4 @@
-
+#include <dsp/assert.h>
 #include <dsp/line.h>
 #include <dsp/utils.h>
 
@@ -28,8 +28,8 @@ static inline float line_tick_(line* self) {
 void line_init(line* self, float start, float stop, float dur_sec, float sr) {
     self->start = start;
     self->stop = stop;
-    self->dur_sec = fabs(dur_sec);
-    self->sr = sr;
+    self->dur_sec = assure_gt_zero(dur_sec);
+    self->sr = assure_gt_zero(sr);
 
     line_update_(self);
 }
@@ -106,7 +106,7 @@ static inline float ar_tick_(line_ar* self) {
         }
 
         default:
-            // TODO dsp_assert
+            dsp_assert(1, "line_ar_tick_: Unreachable!");
             return 0.0;  // should never reach
     }
 }
@@ -125,11 +125,11 @@ void line_ar_init(line_ar* self,
 
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = assure_gt_zero(atk_sec);
     self->atk_level = atk_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = assure_gt_zero(rel_sec);
     self->rel_level = rel_level;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     self->stage_ = AR_IDLE;
     self->curr_gate_ = 0.0;
@@ -159,9 +159,9 @@ void line_ar_tick_block(line_ar* self,
         self->curr_gate_ = gate[i];
         self->gate_thresh = gate_thresh[i];
         self->start_level = start_level[i];
-        self->atk_sec = atk_sec[i];
+        self->atk_sec = assure_gt_zero(atk_sec[i]);
         self->atk_level = atk_level[i];
-        self->rel_sec = rel_sec[i];
+        self->rel_sec = assure_gt_zero(rel_sec[i]);
         self->rel_level = rel_level[i];
 
         out[i] = ar_tick_(self);
@@ -178,15 +178,16 @@ void line_adsr_init(line_adsr* self,
                     float rel_sec,
                     float rel_level,
                     float sr) {
+
     self->gate_thresh = gate_thresh;
     self->start_level = start_level;
-    self->atk_sec = fabs(atk_sec);
+    self->atk_sec = assure_gt_zero(atk_sec);
     self->atk_level = atk_level;
-    self->dcy_sec = fabs(dcy_sec);
+    self->dcy_sec = assure_gt_zero(dcy_sec);
     self->sustain_level = sustain_level;
-    self->rel_sec = fabs(rel_sec);
+    self->rel_sec = assure_gt_zero(rel_sec);
     self->rel_level = rel_level;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
 
     self->stage_ = ADSR_IDLE;
     self->curr_gate_ = 0.0;
@@ -286,6 +287,7 @@ static inline float adsr_tick_(line_adsr* self) {
             return out;
         }
         default:
+            dsp_assert(1, "line_adsr_tick_: Unreachable!");
             return 0.0;
     }
 }
@@ -327,6 +329,9 @@ void sampi_init(sampi* self, float start, float stop, float dur_sec, float sr) {
     self->dur_sec = dur_sec;
     self->sr = sr;
     self->curr_out_ = start;
+
+    self->prev_gate_ = self->curr_gate_ = 0.0f;
+    self->gate_thresh = 0.5f;
 
     line_init(&self->state_, start, stop, dur_sec, sr);
 }

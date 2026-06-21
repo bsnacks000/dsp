@@ -16,7 +16,6 @@
 extern "C" {
 #endif
 
-#include <float.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -24,15 +23,6 @@ extern "C" {
 
 #define dsp_min(x, y) ((x) < (y) ? (x) : (y))
 #define dsp_max(x, y) ((x) > (y) ? (x) : (y))
-
-// branch arm guidance .. use sparingly
-#if defined(__GNUC__) || defined(__clang__)
-#    define DSP_LIKELY(x) __builtin_expect(!!(x), 1)
-#    define DSP_UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#    define DSP_LIKELY(x) (x)
-#    define DSP_UNLIKELY(x) (x)
-#endif
 
 /**
  * @brief stages for an AR envelope.
@@ -53,11 +43,6 @@ typedef enum {
     ADSR_SUS,
     ADSR_REL,
 } adsr_stage;
-
-/**
- * @brief library error codes.
- */
-typedef enum { DSP_OK = 0, DSP_ERR = 1 } dsp_err;
 
 /**
  * @brief copy nsmps of in to out (memcpy)
@@ -86,13 +71,6 @@ static inline void zero_buf(float* buf, uint32_t buf_sz) {
 }
 
 /**
- * @brief if a float underflows return zero else pass
- */
-static inline float check_float_underflow(float x) {
-    return DSP_UNLIKELY(fabsf(x) < 1.0e-20f) ? 0.0f : x;
-}
-
-/**
  * @brief branchless wrap float over range.
  */
 static inline float wrap_float_range(float x, float min, float max) {
@@ -116,7 +94,7 @@ static inline float wrap_float_positive(float x, float n) {
  * @brief Given n return the uint32_t next highest power of 2
  */
 static inline float_t ceiling_pow2(float n) {
-    return pow(2.0f, ceil(log2(n)));
+    return powf(2.0f, ceilf(log2f(n)));
 }
 
 /**
@@ -127,14 +105,12 @@ static inline bool is_pow2(uint32_t n) {
 }
 
 /**
- * @brief Check these two floats are appx equal
+ * @brief Check these two floats are appx equal to a tol of 1e-5f.
+ *
  */
 static inline bool check_float_equal(float a, float b) {
-    if (fabs(a - b) < FLT_EPSILON) {
-        return true;
-    } else {
-        return false;
-    }
+    float x = a - b;
+    return (x <= 1e-5f) && (x >= -1e-5f);
 }
 
 /**
@@ -161,6 +137,13 @@ static inline float zero_guard(float xn) {
 }
 
 /**
+ * @brief assure an incoming float that is <= 0.0 returns just above zero
+ */
+static inline float assure_gt_zero(float xn) {
+    return xn > 0.0f ? xn : 1e-9f;
+}
+
+/**
  * @brief calculate a semitone ratio
  */
 static inline float semitone_ratio(float semitones) {
@@ -173,17 +156,26 @@ static inline float semitone_ratio(float semitones) {
 static inline void normalize(float* buf, uint32_t buf_sz) {
     float max = 0.0;
     for (uint32_t i = 0; i < buf_sz; i++) {
-        float a = fabs(buf[i]);  // use absolute value (handle bipolar signals)
+        float a = fabsf(buf[i]);  // use absolute value (handle bipolar signals)
         if (a > max) {
             max = a;
         }
     }
-    if (DSP_LIKELY(max)) {
+    if ((int) max) {
         float s = 1.0f / max;
         for (uint32_t i = 0; i < buf_sz; i++) {
             buf[i] *= s;
         }
     }
+}
+
+/**
+ * @brief add a guardpoint wraparound to a wavetable to handle cubic. wt_len is assumed
+ * to the wavetable buf_sz - 2.
+ */
+static inline void wavetable_cubic_guardpoint(float* wt, uint32_t wt_len) {
+    wt[wt_len] = wt[0];
+    wt[wt_len + 1] = wt[1];
 }
 
 #ifdef __cpluplus

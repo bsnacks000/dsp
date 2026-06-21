@@ -153,9 +153,13 @@ MunitResult test_adsr_tick_block(const MunitParameter params[], void* data) {
     curve_adsr env;
     curve_adsr_init(&env, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, sr);
 
-    curve_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_crv,
-                          atk_level, dcy_sec, dcy_crv, sustain_level, rel_sec, rel_crv,
-                          rel_level, 0, NSMPS);
-
+    for (int i = 0; i < 100; i++) {
+        if (i >= 50) {
+            fill_dc(gate, 0.0, NSMPS);
+        }
+        curve_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec,
+                              atk_crv, atk_level, dcy_sec, dcy_crv, sustain_level,
+                              rel_sec, rel_crv, rel_level, 0, NSMPS);
+    }
     return MUNIT_OK;
 }

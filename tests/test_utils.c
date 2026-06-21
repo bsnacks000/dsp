@@ -1,15 +1,15 @@
 #include "test_utils.h"
 #include <dsp/utils.h>
 
-MunitResult test_float_underflow(const MunitParameter params[], void* data) {
+MunitResult test_wavetable_cubic_guardpoint(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
-    float x = check_float_underflow(0.01);
-    munit_assert_float(x, ==, 0.01);
 
-    x = check_float_underflow(1e-21f);
-    munit_assert_float(x, ==, 0.0);
+    float buf[6] = {1.0, 2.0, 3.0, 4.0, 0.0, 0.0};
+    wavetable_cubic_guardpoint(buf, 4);
 
+    float expected[6] = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0};
+    munit_assert_memory_equal(6, buf, expected);
     return MUNIT_OK;
 }
 

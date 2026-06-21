@@ -34,6 +34,26 @@ MunitResult test_xfade_from_pos(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
+MunitResult test_xfade_from_freq(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    xfade_pair x = xfade_from_freq(0.5, 0.0, 1.0);
+    munit_assert_double_equal(x.left, 0.7, 1);
+    munit_assert_double_equal(x.right, 0.7, 1);
+
+    // tests for low and high clamps
+    x = xfade_from_freq(-1.0, 0.0, 1.0);
+    munit_assert_double_equal(x.left, 1.0, 1);
+    munit_assert_double_equal(x.right, 0.0, 1);
+
+    x = xfade_from_freq(2.0, 0.0, 1.0);
+    munit_assert_double_equal(x.left, 0.0, 1);
+    munit_assert_double_equal(x.right, 1.0, 1);
+
+    return MUNIT_OK;
+}
+
 MunitResult test_xfade_init(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;

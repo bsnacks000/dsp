@@ -7,7 +7,7 @@
 static const float TLD_AUDIO_ENVELOPE_ANALOG_TC = -0.99967234081320612357829304641019f;
 
 static inline float calculate_time_(float t_ms, float sr) {
-    return exp(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001f));
+    return expf(TLD_AUDIO_ENVELOPE_ANALOG_TC / (t_ms * sr * 0.000001f));
 }
 
 static inline void update_atk_time_(follow* self) {
@@ -21,14 +21,13 @@ static inline void update_rel_time_(follow* self) {
 static inline float peak_tick_(follow* self, float xn) {
     float current_envelope = 0.0f;
     float last_envelope = self->last_envelope_;
-    xn = fabs(xn);
+    xn = fabsf(xn);
 
     if (xn > last_envelope) {
         current_envelope = self->atk_time_ * (last_envelope - xn) + xn;
     } else {
         current_envelope = self->rel_time_ * (last_envelope - xn) + xn;
     }
-    current_envelope = check_float_underflow(current_envelope);
     current_envelope = dsp_max(current_envelope, 0.0f);
 
     self->last_envelope_ = current_envelope;
@@ -39,7 +38,7 @@ static inline float rms_tick_(follow* self, float xn) {
     float current_envelope = 0.0f;
     float last_envelope = self->last_envelope_;
 
-    xn = fabs(xn);
+    xn = fabsf(xn);
     xn *= xn;  // scale rms;
 
     if (xn > last_envelope) {
@@ -48,7 +47,6 @@ static inline float rms_tick_(follow* self, float xn) {
         current_envelope = self->rel_time_ * (last_envelope - xn) + xn;
     }
 
-    current_envelope = check_float_underflow(current_envelope);
     current_envelope = dsp_max(current_envelope, 0.0f);
 
     current_envelope = powf(current_envelope, 0.5f);  // sqrt for rms;
@@ -57,9 +55,10 @@ static inline float rms_tick_(follow* self, float xn) {
 }
 
 void follow_init(follow* self, float atk_ms, float rel_ms, float sr) {
-    self->atk_ms = atk_ms;
-    self->rel_ms = rel_ms;
-    self->sr = sr;
+
+    self->atk_ms = assure_gt_zero(atk_ms);
+    self->rel_ms = assure_gt_zero(rel_ms);
+    self->sr = assure_gt_zero(sr);
     self->last_envelope_ = 1e-9f;
 
     update_atk_time_(self);
@@ -75,8 +74,8 @@ void follow_rms_tick_block(follow* self,
                            uint32_t nsmps) {
 
     for (uint32_t i = start; i < nsmps; i++) {
-        float atk_ms_ = atk_ms[i];
-        float rel_ms_ = rel_ms[i];
+        float atk_ms_ = assure_gt_zero(atk_ms[i]);
+        float rel_ms_ = assure_gt_zero(rel_ms[i]);
 
         bool atk_ms_eq = check_float_equal(atk_ms_, self->atk_ms);
         bool rel_ms_eq = check_float_equal(rel_ms_, self->rel_ms);
@@ -87,7 +86,7 @@ void follow_rms_tick_block(follow* self,
         }
 
         if (!rel_ms_eq) {
-            self->rel_ms = atk_ms_;
+            self->rel_ms = rel_ms_;
             update_rel_time_(self);
         }
 
@@ -104,8 +103,8 @@ void follow_peak_tick_block(follow* self,
                             uint32_t nsmps) {
 
     for (uint32_t i = start; i < nsmps; i++) {
-        float atk_ms_ = atk_ms[i];
-        float rel_ms_ = rel_ms[i];
+        float atk_ms_ = assure_gt_zero(atk_ms[i]);
+        float rel_ms_ = assure_gt_zero(rel_ms[i]);
 
         bool atk_ms_eq = check_float_equal(atk_ms_, self->atk_ms);
         bool rel_ms_eq = check_float_equal(rel_ms_, self->rel_ms);
@@ -116,7 +115,7 @@ void follow_peak_tick_block(follow* self,
         }
 
         if (!rel_ms_eq) {
-            self->rel_ms = atk_ms_;
+            self->rel_ms = rel_ms_;
             update_rel_time_(self);
         }
 

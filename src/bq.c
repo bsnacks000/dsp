@@ -4,31 +4,26 @@
  * Parameters are updated at krate using the first sample index of the vector.
  */
 
-#include <math.h>
 #include <stdbool.h>
 
+#include <dsp/assert.h>
 #include <dsp/bq.h>
-#include <dsp/constants.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 
-/**
- * dII impl
- */
-
-// private
+// 0.3 - change to double precision
 static inline float dfII_tick_(dfII* self, float xn) {
-    float yn = (self->a0 * xn) + self->x_z1;
-    yn = check_float_underflow(yn);
 
-    self->x_z1 = (self->a1 * xn) - (self->b1 * yn) + self->x_z2;
-    self->x_z2 = (self->a2 * xn) - (self->b2 * yn);
+    double yn = (double) self->a0 * (double) xn + self->x_z1;
 
-    return self->d0 * xn + self->c0 * yn;
+    self->x_z1 = (double) self->a1 * (double) xn - (double) self->b1 * yn + self->x_z2;
+    self->x_z2 = (double) self->a2 * (double) xn - (double) self->b2 * yn;
+
+    return self->d0 * xn + self->c0 * (float) yn;
 }
 
-// public
-
 void dfII_init(dfII* self, float sr) {
+
     // coeffs (a is the denominator)
     self->a0 = 0.0f;
     self->a1 = 0.0f;
@@ -38,9 +33,9 @@ void dfII_init(dfII* self, float sr) {
     self->c0 = 1.0f;  // full wet -- reserved for use with shelving filters
     self->d0 = 0.0f;
     // state registers
-    self->x_z1 = 0.0f;
-    self->x_z2 = 0.0f;
-    self->sr = fabsf(sr);
+    self->x_z1 = 0.0;
+    self->x_z2 = 0.0;
+    self->sr = assure_gt_zero(sr);
 }
 
 float dfII_tick(dfII* self, float xn) {
@@ -54,8 +49,8 @@ float dfII_tick(dfII* self, float xn) {
  */
 
 static inline void first_order_lpf(dfII* self, float fc) {
-    float theta_c = TWO_PI * fc / self->sr;
-    float gamma = cosf(theta_c) / (1.0 + sinf(theta_c));
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
+    float gamma = cosf(theta_c) / (1.0f + sinf(theta_c));
 
     self->a0 = (1.0f - gamma) / 2.0f;
     self->a1 = self->a0;
@@ -63,7 +58,7 @@ static inline void first_order_lpf(dfII* self, float fc) {
 }
 
 static inline void first_order_hpf(dfII* self, float fc) {
-    float theta_c = TWO_PI * fc / self->sr;
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
     float gamma = cosf(theta_c) / (1.0f + sinf(theta_c));
 
     self->a0 = (1.0f + gamma) / 2.0f;
@@ -72,7 +67,7 @@ static inline void first_order_hpf(dfII* self, float fc) {
 }
 
 static inline void first_order_apf(dfII* self, float fc) {
-    float a = tanf(DSP_PI * fc / self->sr);
+    float a = tanf((float) DSP_PI_F * fc / self->sr);
     float alpha = (a - 1.0f) / (a + 1.0f);
 
     self->a0 = alpha;
@@ -85,19 +80,19 @@ static inline void first_order_apf(dfII* self, float fc) {
  */
 
 static inline void butterworth_lp(dfII* self, float fc) {
-    float theta_c = DSP_PI * fc / self->sr;
+    float theta_c = DSP_PI_F * fc / self->sr;
     float c = 1.0f / tanf(theta_c);
 
-    self->a0 = 1.0f / (1.0f + SQRT_TWO * c + c * c);
+    self->a0 = 1.0f / (1.0f + (float) DSP_SQRT_TWO * c + c * c);
     self->a1 = 2.0f * self->a0;
     self->a2 = self->a0;
     self->b1 = 2.0f * self->a0 * (1.0f - c * c);
-    self->b2 = self->a0 * (1.0f - SQRT_TWO * c + c * c);
+    self->b2 = self->a0 * (1.0f - (float) DSP_SQRT_TWO * c + c * c);
 }
 
 static inline void linkwitz_riley_lp(dfII* self, float fc) {
-    float omega_c = DSP_PI * fc;
-    float theta_c = DSP_PI * fc / self->sr;
+    float omega_c = DSP_PI_F * fc;
+    float theta_c = DSP_PI_F * fc / self->sr;
 
     float k = omega_c / tanf(theta_c);
     float d = k * k + omega_c * omega_c + 2.0f * k * omega_c;
@@ -140,12 +135,12 @@ static inline dfII_non_resonant_design_equation dfII_get_first_order_design_equa
  */
 
 static void resonant_lpf(dfII* self, float fc, float q) {
-    float theta_c = TWO_PI * fc / self->sr;
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
     float d = 1.0f / q;
 
     float d2 = ((d / 2.0f) * (sinf(theta_c)));
 
-    float beta = 0.5f * ((1.0 - d2) / (1.0f + d2));
+    float beta = 0.5f * ((1.0f - d2) / (1.0f + d2));
     float gamma = (0.5f + beta) * cosf(theta_c);
     float alpha = (0.5f + beta - gamma) / 2.0f;
 
@@ -157,7 +152,7 @@ static void resonant_lpf(dfII* self, float fc, float q) {
 }
 
 static void resonant_hpf(dfII* self, float fc, float q) {
-    float theta_c = TWO_PI * fc / self->sr;
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
     float d = 1.0f / q;
     float d2 = ((d / 2.0f) * (sinf(theta_c)));
 
@@ -173,7 +168,7 @@ static void resonant_hpf(dfII* self, float fc, float q) {
 }
 
 static void resonant_bpf(dfII* self, float fc, float q) {
-    float k = tanf(DSP_PI * fc / self->sr);
+    float k = tanf(DSP_PI_F * fc / self->sr);
     float delta = k * k * q + k + q;
 
     self->a0 = k / delta;
@@ -184,7 +179,7 @@ static void resonant_bpf(dfII* self, float fc, float q) {
 }
 
 static void resonant_bsf(dfII* self, float fc, float q) {
-    float k = tanf(DSP_PI * fc / self->sr);
+    float k = tanf(DSP_PI_F * fc / self->sr);
     float delta = k * k * q + k + q;
 
     self->a0 = q * (1.0f + k * k) / delta;
@@ -195,10 +190,10 @@ static void resonant_bsf(dfII* self, float fc, float q) {
 }
 
 static void resonant_reson(dfII* self, float fc, float q) {
-    float theta_c = TWO_PI * fc / self->sr;
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
     float bw = fc / q;
 
-    float b2 = expf(-TWO_PI * (bw / self->sr));
+    float b2 = expf(-DSP_TWO_PI_F * (bw / self->sr));
     float b1 = ((-4.0f * b2) / (1.0f + b2)) * cosf(theta_c);
     float a0 = 1.0f - powf(b2, 0.5f);
 
@@ -210,12 +205,12 @@ static void resonant_reson(dfII* self, float fc, float q) {
 }
 
 static void resonant_apf(dfII* self, float fc, float q) {
-    float theta_c = TWO_PI * fc / self->sr;
+    float theta_c = DSP_TWO_PI_F * fc / self->sr;
     float bw = fc / q;
 
-    float x = DSP_PI * bw / self->sr;
-    if (x >= TANGENT_THRESHOLD)
-        x = TANGENT_THRESHOLD;
+    float x = DSP_PI_F * bw / self->sr;
+    if (x >= TANGENT_THRESHOLD_F)
+        x = TANGENT_THRESHOLD_F;
 
     float tan_x = tanf(x);
     float alpha = (tan_x - 1.0f) / (tan_x + 1.0f);
@@ -263,7 +258,7 @@ static dfII_resonant_design_equation dfII_get_resonant_design_equation(
 
 static void lshlf(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0f, gain_db / 40.0f);
-    float omega0 = TWO_PI * fc / self->sr;
+    float omega0 = DSP_TWO_PI_F * fc / self->sr;
     float cos_omega0 = cosf(omega0);
     float sin_omega0 = sinf(omega0);
 
@@ -287,7 +282,7 @@ static void lshlf(dfII* self, float fc, float q, float gain_db) {
 
 static void hshlf(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0f, gain_db / 40.0f);
-    float omega0 = TWO_PI * fc / self->sr;
+    float omega0 = DSP_TWO_PI_F * fc / self->sr;
     float cos_omega0 = cosf(omega0);
     float sin_omega0 = sinf(omega0);
 
@@ -311,7 +306,7 @@ static void hshlf(dfII* self, float fc, float q, float gain_db) {
 
 static void peak(dfII* self, float fc, float q, float gain_db) {
     float A = powf(10.0f, gain_db / 40.0f);
-    float omega0 = TWO_PI * fc / self->sr;
+    float omega0 = DSP_TWO_PI_F * fc / self->sr;
 
     float alpha = sinf(omega0) / (2.0f * q);
 
@@ -350,9 +345,10 @@ void bq_non_resonant_init(bq_non_resonant* self,
                           bq_non_resonant_type t,
                           float freq,
                           float sr) {
+
     self->freq = freq;
     self->t = t;
-    self->sr = fabs(sr);
+    self->sr = fabsf(sr);
 
     // set state
     dfII state;
@@ -390,7 +386,8 @@ void bq_resonant_init(bq_resonant* self,
                       float freq,
                       float q,
                       float sr) {
-    self->sr = fabs(sr);
+
+    self->sr = fabsf(sr);
     self->t = t;
     self->freq = freq;
     self->q = q;
@@ -440,7 +437,7 @@ void bq_para_eq_init(bq_para_eq* self,
     self->freq = freq;
     self->q = q;
     self->gain = gain;
-    self->sr = fabs(sr);
+    self->sr = fabsf(sr);
 
     dfII state;
     dfII_init(&state, self->sr);

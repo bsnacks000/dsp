@@ -55,6 +55,11 @@ MunitResult test_matrix_set_row(const MunitParameter params[], void* data);
 
 MunitResult test_matrix_transpose(const MunitParameter params[], void* data);
 
+MunitResult test_matrix_row_pair_positional_lookup(const MunitParameter params[],
+                                                   void* data);
+
+MunitResult test_matrix_row_pair_freq_lookup(const MunitParameter params[], void* data);
+
 // register tests
 static MunitTest test_maths_module[] = {
     {"/mult", test_mult, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
@@ -78,11 +83,16 @@ static MunitTest test_maths_module[] = {
     {"/scale", test_scale, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/dc_offset", test_dc_offset, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/matrix_init", test_matrix_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/dc_offset", test_matrix_get_row, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/dc_offset", test_matrix_set_and_at, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/dc_offset", test_matrix_set_row, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {"/dc_offset", test_matrix_transpose, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-
+    {"/matrix_get_row", test_matrix_get_row, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/matrix_set_at", test_matrix_set_and_at, NULL, NULL, MUNIT_TEST_OPTION_NONE,
+     NULL},
+    {"/matrix_set_row", test_matrix_set_row, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/matrix_transpose", test_matrix_transpose, NULL, NULL, MUNIT_TEST_OPTION_NONE,
+     NULL},
+    {"/matrix_row_pos_pair", test_matrix_row_pair_positional_lookup, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
+    {"/matrix_row_freq", test_matrix_row_pair_freq_lookup, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
     // need this NULL stub or we segfault
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };

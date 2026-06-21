@@ -54,9 +54,7 @@ void mock_irdft_execute(irdft* self, float* r_out, dft_complex* c_in) {
     (void) c_in;
     float tmp[self->n];
     hanning(tmp, self->n);
-    // for (uint32_t i = 0; i < self->n; i++) {
-    //     printf("\t%.7f\n", tmp[i]);
-    // }
+
     for (uint32_t i = 0; i < self->n; i++) {
         r_out[i] = tmp[i];
     }
@@ -82,13 +80,16 @@ void engine_destroy(engine* self) {
         free(self->fft->dft);
         free(self->fft->buf);
         free(self->fft->win);
+        free(self->fft->tmp_buf_);
         free(self->fft);
     }
     if (self->ifft) {
         free(self->ifft->idft);
         free(self->ifft->ola);
+        free(self->ifft->tmp_buf_);
         free(self->ifft);
     }
+    free(self);
 }
 
 engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
@@ -96,6 +97,10 @@ engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
     // NOTE: this engine will take ownership of the win float* buf
     float* win = (float*) malloc(sizeof(float) * fft_sz);
     hanning(win, fft_sz);
+
+    // temp bufs for v0.3
+    float* stft_tmp_buf_ = (float*) malloc(sizeof(float) * fft_sz);
+    float* istft_tmp_buf_ = (float*) malloc(sizeof(float) * fft_sz);
 
     // set up these mocks ..
     rdft* dft = (rdft*) malloc(sizeof(rdft));
@@ -117,15 +122,16 @@ engine* engine_create(uint32_t fft_sz, uint32_t hop_sz) {
     float* buf = (float*) malloc(sizeof(float) * buf_sz);
     float* ola = (float*) malloc(sizeof(float) * buf_sz);
 
-    stft_init(forward, dft, mock_rdft_execute, win, buf, fft_sz, hop_sz, buf_sz);
+    stft_init(forward, dft, mock_rdft_execute, win, buf, stft_tmp_buf_, fft_sz, hop_sz,
+              buf_sz);
 
     istft* backward = (istft*) malloc(sizeof(istft));
     if (!backward) {
         return NULL;
     }
 
-    istft_init(backward, idft, mock_irdft_execute, ola, NULL, NULL, fft_sz, hop_sz,
-               buf_sz);
+    istft_init(backward, idft, mock_irdft_execute, ola, NULL, NULL, istft_tmp_buf_,
+               fft_sz, hop_sz, buf_sz);
 
     float* in_q = (float*) malloc(sizeof(float) * hop_sz);
     if (!in_q) {

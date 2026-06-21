@@ -26,7 +26,7 @@ MunitResult test_balance_init(const MunitParameter params[], void* data) {
 
     // assert negative sr is handled on init
     balance_init(&b, -48000.0f);
-    munit_assert_float(b.sr, ==, 48000.0f);
+    munit_assert_float(b.sr, >, 0.0);
 
     // test reinit
     b.d0_ = 42.0;

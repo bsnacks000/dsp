@@ -6,14 +6,9 @@
 # w/ csound plugins: make build CSOUND=1
 BUILD_TYPE?=Release
 TESTS?=0
-CSOUND?=0
 COVERAGE?=0
 
 CMAKE_OPTS = -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
-
-ifeq ($(CSOUND), 1)
-	CMAKE_OPTS += -DDSP_BUILD_CSOUND=ON
-endif
 
 ifeq ($(TESTS), 1)
 	CMAKE_OPTS += -DDSP_BUILD_TESTS=ON
@@ -34,20 +29,27 @@ build: clean
 	&& cmake .. $(CMAKE_OPTS) \
 	&& cmake --build .
 
-# build the csound plugin
-csound: clean
-	$(MAKE) build CSOUND=1 BUILD_TYPE=Release
+test-release: clean
+	echo  "Building and running tests in RelWithDebInfo..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=RelWithDebInfo
+	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;
 
-# rebuild lib for the csound plugin and run the regression tests
-regression: csound
-	uv run ./tests/regression/test.py
+test-debug: clean
+	echo "Building and running tests in Debug..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=Debug
+	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;
+
+memcheck: clean
+	echo "Running memcheck for RelWithDebugInfo..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=RelWithDebInfo
+	valgrind --leak-check=full --error-exitcode=1 -- ./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures --no-fork
 
 # rebuild the lib in debug and coverage on and run coverage (lcov usually)
 coverage: clean
 	$(MAKE) build TESTS=1 BUILD_TYPE=Debug COVERAGE=1
 	@if [ "$(shell $(CC) -v 2>&1 | grep -c "gcc")" -gt 0 ]; then \
         echo "Collecting coverage with lcov..."; \
-	    ./build/tests/dsp_unit_tests --seed 0x526af79e --no-fork --fatal-failures; \
+	    ./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures; \
         lcov --capture --directory build --output-file coverage.info; \
        	lcov --remove coverage.info '/tests/*' --output-file coverage.info; \
        	genhtml coverage.info --output-directory coverage; \
@@ -56,12 +58,15 @@ coverage: clean
 		echo "Collecting coverage with llvm-cov..."; \
         LLVM_COV='/opt/homebrew/opt/llvm/bin/llvm-cov'; \
         LLVM_PROFDATA='/opt/homebrew/opt/llvm/bin/llvm-profdata';\
-       	LLVM_PROFILE_FILE="coverage.profraw" ./build/tests/dsp_unit_tests; --seed 0x526af79e --no-fork; \
+       	LLVM_PROFILE_FILE="coverage.profraw" ./build/tests/dsp_tests; --seed 0x526af79e --no-fork; \
         $$LLVM_PROFDATA merge -sparse coverage.profraw -o coverage.profdata; \
-       	$$LLVM_COV report ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata; \
-        $$LLVM_COV show ./build/tests/dsp_unit_tests -instr-profile=coverage.profdata -format=html -output-dir=coverage; \
+       	$$LLVM_COV report ./build/tests/dsp_tests -instr-profile=coverage.profdata; \
+        $$LLVM_COV show ./build/tests/dsp_tests -instr-profile=coverage.profdata -format=html -output-dir=coverage; \
     fi
 
 # view last coverage report
 html-cov:
-	open ./coverage/index.html
+	firefox ./coverage/index.html
+
+run-test:
+	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;

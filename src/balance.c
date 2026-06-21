@@ -1,7 +1,6 @@
 #include <dsp/balance.h>
-#include <dsp/constants.h>
-#include <dsp/shape.h>
-#include <math.h>
+#include <dsp/maths.h>
+#include <dsp/utils.h>
 
 // NOTE: we are hardcoding 10.0 as the frequency for this module.
 inline static void update_(balance* self) {
@@ -18,20 +17,20 @@ inline static void update_(balance* self) {
 //   - take sqrt of d0 and d1 before zero div check and clamp
 inline static void tick_(balance* self, float out, float cmp) {
     float coef = self->coef_;
-    self->d0_ = (float) (fabs(out) * (1.0 + coef)) - self->d0_ * coef;
-    self->d1_ = (float) (fabs(cmp) * (1.0 + coef)) - self->d1_ * coef;
+    self->d0_ = (float) (fabsf(out) * (1.0f + coef)) - self->d0_ * coef;
+    self->d1_ = (float) (fabsf(cmp) * (1.0f + coef)) - self->d1_ * coef;
     // guard div0
     float s = self->d0_ != 0.0f ? self->d1_ / self->d0_ : self->d1_;
     // clamp to avoid extremes
-    self->scale_ = clamp(s, 0.1, 10.0);
+    self->scale_ = clamp(s, 0.1f, 10.0f);
 }
 
 void balance_init(balance* self, float sr) {
-    self->sr = fabs(sr);
-    self->coef_ = 0.0;
-    self->d0_ = 0.0;
-    self->d1_ = 0.0;
-    self->scale_ = 0.0;
+    self->sr = assure_gt_zero(sr);
+    self->coef_ = 0.0f;
+    self->d0_ = 0.0f;
+    self->d1_ = 0.0f;
+    self->scale_ = 0.0f;
 
     update_(self);
 }
