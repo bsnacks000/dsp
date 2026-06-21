@@ -7,6 +7,7 @@ extern "C" {
 
 #include <dsp/maths.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include <dsp/assert.h>
 
