@@ -559,7 +559,7 @@ MunitResult test_explin(const MunitParameter params[], void* data) {
 
     // inverse geometric mean
     float y = explin(10.0, 1.0, 100.0, 0.0, 1.0);
-    munit_assert_double_equal(y, 10.0, 5);
+    munit_assert_double_equal(y, 0.5, 5);
 
     return MUNIT_OK;
 }
