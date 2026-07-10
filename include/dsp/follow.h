@@ -1,7 +1,12 @@
 /**
- * @brief full wave rectified (+/-) peak/rms envelope follower from Pirkle
- * (AudioDetector) which is based on Reiss (2011)
+ * @file follow.h
+ *
+ * @brief full wave rectified (+/-) peak/rms envelope follower
+ * - This is based on Pirkle's AudioDetector which in turn is based on Reiss (2011)
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_FOLLOW_H
 #define DSP_FOLLOW_H
 

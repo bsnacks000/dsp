@@ -1,5 +1,7 @@
 /**
- * @brief fifo_f - a float fifo using a ring buffer.
+ * @file fifo_f.h
+ *
+ * @brief a simple float fifo using a ring buffer.
  *
  */
 

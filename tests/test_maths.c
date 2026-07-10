@@ -1,8 +1,42 @@
 #include "test_maths.h"
 
-#include <dsp/fasttrig.h>
 #include <dsp/maths.h>
-#include <dsp/shape.h>
+#include <dsp/matrix.h>
+
+MunitResult test_branchless_float_wrap_range(const MunitParameter params[],
+                                             void* data) {
+    (void) params;
+    (void) data;
+
+    float x = wrap_float_range(-42.12345, -1.0, 1.0);
+    munit_assert_float(x, <=, 1.0);
+    munit_assert_float(x, >=, -1.0);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
+                                                void* data) {
+    (void) params;
+    (void) data;
+    float x = wrap_float_positive(-42.12345, 1.0);
+    munit_assert_float(x, <=, 1.0);
+    munit_assert_float(x, >=, 0.0);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_ceiling_pow2(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+    float x = ceiling_pow2(7.0);
+    munit_assert_float(x, ==, 8.0);
+
+    x = ceiling_pow2(513.0);
+    munit_assert_float(x, ==, 1024);
+
+    return MUNIT_OK;
+}
 
 MunitResult test_mult(const MunitParameter params[], void* data) {
     (void) params;
@@ -210,6 +244,11 @@ MunitResult test_tanh_clip(const MunitParameter params[], void* data) {
     float a = tanh_clip(0.5, 0.5);  // 0.5299937267423438
     munit_assert_double_equal(a, 0.5299937267423438, 4);
 
+    // TODO: should cover all fast shapes
+    // putting this here for now to help coverage in 0.3
+    a = fast_tanh_clip_d(0.5, 0.5);
+    munit_assert_double_equal(a, 0.527, 3);  // -- less accurate
+
     return MUNIT_OK;
 }
 
@@ -380,6 +419,158 @@ MunitResult test_matrix_transpose(const MunitParameter params[], void* data) {
             munit_assert_float(v_b, ==, v_a);
         }
     }
+
+    return MUNIT_OK;
+}
+
+MunitResult test_matrix_row_pair_positional_lookup(const MunitParameter params[],
+                                                   void* data) {
+    (void) params;
+    (void) data;
+
+    float buf[12] = {0};
+
+    for (int i = 0; i < 12; i++)
+        buf[i] = (float) i;
+
+    frame_pair p;
+    matrix m;
+
+    // test 1 row returns itself
+    matrix_init(&m, buf, 1, 12);
+    p = matrix_row_pair_positional_lookup(&m, 0.5);
+
+    munit_assert_double_equal(p.low[0], 0.0, 5);
+    munit_assert_double_equal(p.high[0], 0.0, 5);
+
+    matrix_init(&m, buf, 4, 3);
+    p = matrix_row_pair_positional_lookup(&m, 0.5);
+
+    munit_assert_double_equal(p.low[0], 3.0, 5);
+    munit_assert_double_equal(p.high[0], 6.0, 5);
+
+    p = matrix_row_pair_positional_lookup(&m, 1.0);
+
+    munit_assert_double_equal(p.low[0], 6.0, 5);
+    munit_assert_double_equal(p.high[0], 9.0, 5);
+
+    return MUNIT_OK;
+}
+
+#include <stdio.h>
+
+// void print_band_pair(band_pair b) {
+//     printf("low: %.2f high: %.2f f0_l: %.2f f0_h: %.2f\n", b.low[0], b.high[0],
+//            b.f0_low, b.f0_high);
+// }
+//
+MunitResult test_matrix_row_pair_freq_lookup(const MunitParameter params[],
+                                             void* data) {
+    (void) params;
+    (void) data;
+
+    float buf[12] = {0};
+    float bands[4] = {0};
+
+    for (int i = 0; i < 12; i++) {
+        buf[i] = (float) i;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        bands[i] = (float) i + 1;
+    }
+
+    // n_bands == n_rows
+    // band vals = [1,2,3,4]
+    // row[0] val = [0,3,6,9]
+
+    band_pair b;
+    matrix m;
+
+    // test one .. creates something that will work across
+    // whole freq range (1 - 15000) .. regardless of freq
+    matrix_init(&m, buf, 1, 12);
+    b = matrix_row_pair_freq_lookup(&m, 42.0, bands);
+    //   print_band_pair(b);
+
+    munit_assert_double_equal(b.low[0], 0.0, 5);
+    munit_assert_double_equal(b.high[0], 0.0, 5);
+    munit_assert_double_equal(b.f0_low, 1.0, 5);
+    munit_assert_double_equal(b.f0_high, 15000.0, 5);
+
+    // lower then first band -- returns first two
+    matrix_init(&m, buf, 4, 3);
+
+    b = matrix_row_pair_freq_lookup(&m, 0.0, bands);
+    // print_band_pair(b);
+
+    munit_assert_double_equal(b.low[0], 0.0, 5);
+    munit_assert_double_equal(b.high[0], 3.0, 5);
+    munit_assert_double_equal(b.f0_low, 1.0, 5);
+    munit_assert_double_equal(b.f0_high, 2.0, 5);
+
+    // higher then last band -- returns last two
+
+    b = matrix_row_pair_freq_lookup(&m, 42.0, bands);
+    // print_band_pair(b);
+
+    munit_assert_double_equal(b.low[0], 6.0, 5);
+    munit_assert_double_equal(b.high[0], 9.0, 5);
+    munit_assert_double_equal(b.f0_low, 3.0, 5);
+    munit_assert_double_equal(b.f0_high, 4.0, 5);
+
+    // in the middle
+
+    b = matrix_row_pair_freq_lookup(&m, 2.5, bands);
+    // print_band_pair(b);
+
+    munit_assert_double_equal(b.low[0], 3.0, 5);
+    munit_assert_double_equal(b.high[0], 6.0, 5);
+    munit_assert_double_equal(b.f0_low, 2.0, 5);
+    munit_assert_double_equal(b.f0_high, 3.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_linlin(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+    float y = linlin(0.5, 0.0, 1.0, 0.0, 100.0);
+    munit_assert_double_equal(y, 50.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_linexp(const MunitParameter params[], void* data) {
+
+    (void) params;
+    (void) data;
+
+    // geometric mean
+    float y = linexp(0.5, 0.0, 1.0, 1.0, 100.0);
+    munit_assert_double_equal(y, 10.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_explin(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    // inverse geometric mean
+    float y = explin(10.0, 1.0, 100.0, 0.0, 1.0);
+    munit_assert_double_equal(y, 0.5, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_expexp(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    // log scale
+    float y = expexp(10.0, 1.0, 100.0, 100.0, 10000.0);
+    munit_assert_double_equal(y, 1000.0, 5);
 
     return MUNIT_OK;
 }

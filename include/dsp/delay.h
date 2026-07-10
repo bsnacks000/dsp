@@ -1,8 +1,14 @@
 /**
+ * @file delay.h
+ *
  * @brief a block based delay line API. This is the traditional low level delay line
  * implementation found in most music-N languages. Taps should be located in between
+ * line_write and line_advance
  *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_DELAY_H
 #define DSP_DELAY_H
 

@@ -4,7 +4,7 @@ on:
   push:
     branches: ["dev"]
   pull_request:
-    branches: ["dev"]
+    branches: ["dev", "*-dev"]
   workflow_dispatch:
     inputs:
       ref:
@@ -19,19 +19,49 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        build_type: [Release, Debug]
-        c_compiler: [gcc, clang]
         include:
           - os: ubuntu-latest
+            build_type: Debug
             c_compiler: gcc
             cpp_compiler: g++
+
           - os: ubuntu-latest
+            build_type: RelDebInfo
+            c_compiler: gcc
+            cpp_compiler: g++
+
+          - os: ubuntu-latest
+            build_type: Debug
             c_compiler: clang
             cpp_compiler: clang++
+
+          - os: ubuntu-latest
+            build_type: RelDebInfo
+            c_compiler: clang
+            cpp_compiler: clang++
+
           - os: macos-latest
+            build_type: Debug
             c_compiler: clang
             cpp_compiler: clang++
+
+          - os: macos-latest
+            build_type: RelDebInfo
+            c_compiler: clang
+            cpp_compiler: clang++
+
+          - os: windows-latest
+            build_type: Debug
+            c_compiler: cl
+            cpp_compiler: cl
+
+          - os: windows-latest
+            build_type: RelDebInfo
+            c_compiler: cl
+            cpp_compiler: cl
+    
+    # NOTE: Only compile objects on windows ... msvc does not like munit at all
+    # so we cannot run the test suite via msvc
     steps:
       - uses: actions/checkout@v6
         with:
@@ -42,39 +72,49 @@ jobs:
           echo "CC=${{ matrix.c_compiler }}" >> $GITHUB_ENV
           echo "CXX=${{ matrix.cpp_compiler }}" >> $GITHUB_ENV
 
-      - name: Build and Run Tests.
+      - name: Maybe setup MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Maybe install make
+        if: runner.os == 'Windows'
+        run: choco install make
+
+      - name: >
+          Build only Windows -- |
+          ${{ matrix.os }} |
+          ${{ matrix.c_compiler }} |
+          ${{ matrix.build_type }}
+        if: runner.os == 'Windows'
         run: |
+          make build BUILD_TYPE=${{ matrix.build_type }}
+      
+      - name: > 
+          Build and test -- Linux/MacOS |
+          ${{ matrix.os }} |
+          ${{ matrix.c_compiler }} |
+          ${{ matrix.build_type }}
+        if: runner.os != 'Windows'
+        run: | 
           make build TESTS=1 BUILD_TYPE=${{ matrix.build_type }}
-          make test
+          make run-test 
 
+  # NOTE: lcov build on ubuntu gcc only 
   coverage:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        build_type: [Debug]
-        c_compiler: [gcc]
-        include:
-          - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc
+      CXX: g++
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Install deps
         run: sudo apt install -y lcov
 
-      - name: Set compilers
-        run: |
-          echo "CC=${{ matrix.c_compiler }}" >> $GITHUB_ENV
-          echo "CXX=${{ matrix.cpp_compiler }}" >> $GITHUB_ENV
-
-      - name: Build and Run coverage
+      - name: Build and run coverage
         run: |
           make coverage
           ./check_coverage.sh
@@ -83,3 +123,21 @@ jobs:
         with:
           name: coverage-html
           path: coverage
+
+  # NOTE: valgrind on ubuntu gcc only 
+  memcheck:
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc
+      CXX: g++
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Install deps
+        run: sudo apt install -y valgrind
+
+      - name: Build tests and run with valgrind
+        run: make memcheck

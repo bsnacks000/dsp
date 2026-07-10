@@ -14,6 +14,7 @@ MunitResult test_line_ar_init(const MunitParameter params[], void* data);
 MunitResult test_line_ar_tick_block(const MunitParameter params[], void* data);
 MunitResult test_line_adsr_init(const MunitParameter params[], void* data);
 MunitResult test_line_adsr_tick_block(const MunitParameter params[], void* data);
+MunitResult test_sampi(const MunitParameter params[], void* data);
 
 static MunitTest line_test_module[] = {
     {"/line_init", test_line_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
@@ -26,6 +27,7 @@ static MunitTest line_test_module[] = {
     {"/adsr_init", test_line_adsr_init, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/adsr_tick_block", test_line_adsr_tick_block, NULL, NULL, MUNIT_TEST_OPTION_NONE,
      NULL},
+    {"/sampi", test_sampi, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };

@@ -1,8 +1,7 @@
-
 #include <string.h>
 
 #include <dsp/conv.h>
-#include "dsp/dft.h"
+#include <dsp/dft.h>
 
 static inline float tick_one_(dconv* self, float xn) {
     float out = 0.0f;
@@ -150,45 +149,41 @@ void mpconv_tick_block(mpconv* self,
     }
 }
 
-static inline void mix_signal(float* out, float* in, uint32_t nsmps) {
-    for (uint32_t i = 0; i < nsmps; i++) {
-        out[i] += in[i];
-    }
-}
-
-void zconv_init(zconv* self,
-                dconv* head,
-                mpconv* mid,
-                mpconv* tail,
-                float* tmp_out_,
-                uint32_t tmp_sz_) {
+void zconv_init(zconv* self, dconv* head, mpconv* mid, mpconv* tail) {
     self->head = head;
     self->mid = mid;
     self->tail = tail;
-    self->tmp_out_ = tmp_out_;
-    self->tmp_sz_ = tmp_sz_;
 }
 
-// NOTE: out MUST be the same size as tmp_sz which should be set and enforced
-// in the caller during the programs lifetime. Essentially this algorithm is best
-// used in environments where the ksmps is guaranteed not to change ..
-//
-// it might be worth considering enforcing alignment on block boundaries (no start)
 void zconv_tick_block(zconv* self,
                       float* out,
                       float* in,
+                      float* tmp,
                       uint32_t start,
                       uint32_t nsmps) {
 
-    float* tmp_out = self->tmp_out_;
-    memset(out, 0, sizeof(float) * self->tmp_sz_);
-    memset(tmp_out, 0, sizeof(float) * self->tmp_sz_);
+    // NOTE: the full width of these buffers
+    // should be zeroed in the caller, but we clear the region we are
+    // operating on to be safe.
+    for (uint32_t i = start; i < nsmps; i++) {
+        tmp[i] = 0.0f;
+        out[i] = 0.0f;
+    }
+
+    // This is the approach described by Lazzarini. The head mid and tail
+    // are all ticked and accumulated. dconv will always write to out assuring
+    // we always have samples available. As mid and tail catch up
+    // they will mix their output buffers in as well.
 
     dconv_tick_block(self->head, out, in, start, nsmps);
 
-    mpconv_tick_block(self->mid, tmp_out, in, start, nsmps);
-    mix_signal(out, tmp_out, nsmps);
+    mpconv_tick_block(self->mid, tmp, in, start, nsmps);
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] += tmp[i];
+    }
 
-    mpconv_tick_block(self->tail, tmp_out, in, start, nsmps);
-    mix_signal(out, tmp_out, nsmps);
+    mpconv_tick_block(self->tail, tmp, in, start, nsmps);
+    for (uint32_t i = start; i < nsmps; i++) {
+        out[i] += tmp[i];
+    }
 }

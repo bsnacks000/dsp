@@ -1,9 +1,12 @@
 /***
  * @file assert.h
  * @brief A nicer assert macro
- *
+ *   - From Butenhof - Posix Threads I think ...
  *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_ASSERT_H
 #define DSP_ASSERT_H
 

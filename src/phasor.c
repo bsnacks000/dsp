@@ -4,7 +4,7 @@
 #include <dsp/utils.h>
 
 static inline void update_(phasor* self) {
-    self->incr_ = self->freq / self->sr;
+    self->incr_ = (double) self->freq / (double) self->sr;
 }
 
 static inline float tick_(phasor* self) {
@@ -17,7 +17,7 @@ static inline float tick_(phasor* self) {
 
 void phasor_init(phasor* self, float freq, float iphs, float sr) {
     self->freq = freq;
-    self->sr = sr;
+    self->sr = assure_gt_zero(sr);
     self->phase_ = (double) wrap_float_positive(iphs, 1.0);
     self->incr_ = 0.0;
 
@@ -55,7 +55,7 @@ void impulse_tick_block(phasor* self,
         // invert phasor ramp to start impulse on 1st sample
         float x = invert_unipolar(tick_(self));
         // printf("%.3f\n", x);
-        out[i] = (x >= 1.0) ? 1.0 : 0.0;
+        out[i] = (x >= 1.0f) ? 1.0f : 0.0f;
     }
 }
 
@@ -76,7 +76,8 @@ void rand_impulse_tick_block(phasor* self,
 
         if (self->phase_ >= 1.0) {
             // draw a new phase based on a quasi exponential dist.
-            double wait = -log(rand_unipolar()) * (self->sr / self->freq);
+            double wait = -log((double) rand_unipolar()) *
+                          ((double) self->sr / (double) self->freq);
             double next = 1.0 - (wait * self->incr_);
             self->phase_ = (next < 0.0) ? 0.0 : next;
             out[i] = 1.0;

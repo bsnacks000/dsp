@@ -1,13 +1,13 @@
 /**
- * @file ceiling_pow2.h
- * @author bsnacks000
- * @brief helper functions
- * @version 0.1
- * @date 2025-02-16
+ * @file utils.h
+ * @brief general purpose helper functions.
  *
- * @copyright Copyright (c) 2025
- *
+ * - buffer copying / slicing / normalization
+ * - checks
+ * - zero guards
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_UTILS_H
 #define DSP_UTILS_H
@@ -16,51 +16,14 @@
 extern "C" {
 #endif
 
-#include <float.h>
+#include <dsp/assert.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
-#define dsp_min(x, y) ((x) < (y) ? (x) : (y))
-#define dsp_max(x, y) ((x) > (y) ? (x) : (y))
-
-// branch arm guidance .. use sparingly
-#if defined(__GNUC__) || defined(__clang__)
-#    define DSP_LIKELY(x) __builtin_expect(!!(x), 1)
-#    define DSP_UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#    define DSP_LIKELY(x) (x)
-#    define DSP_UNLIKELY(x) (x)
-#endif
-
 /**
- * @brief stages for an AR envelope.
- */
-typedef enum {
-    AR_IDLE = 0,
-    AR_ATK,
-    AR_REL,
-} ar_stage;
-
-/**
- * @brief stages for an ADSR envelope.
- */
-typedef enum {
-    ADSR_IDLE = 0,
-    ADSR_ATK,
-    ADSR_DCY,
-    ADSR_SUS,
-    ADSR_REL,
-} adsr_stage;
-
-/**
- * @brief library error codes.
- */
-typedef enum { DSP_OK = 0, DSP_ERR = 1 } dsp_err;
-
-/**
- * @brief copy nsmps of in to out (memcpy)
+ * @brief copy nsmps of in to out starting at start.
  */
 static inline void copy_nsmps(float* out,
                               const float* in,
@@ -73,7 +36,7 @@ static inline void copy_nsmps(float* out,
 /**
  * @brief sets nsmps of x into the buffer.
  */
-static inline void set_nsmps(float* out, float x, uint32_t nsmps) {
+static inline void set_nsmps(float* out, const float x, uint32_t nsmps) {
     for (uint32_t i = 0; i < nsmps; i++)
         out[i] = x;
 }
@@ -86,40 +49,6 @@ static inline void zero_buf(float* buf, uint32_t buf_sz) {
 }
 
 /**
- * @brief if a float underflows return zero else pass
- */
-static inline float check_float_underflow(float x) {
-    return DSP_UNLIKELY(fabsf(x) < 1.0e-20f) ? 0.0f : x;
-}
-
-/**
- * @brief branchless wrap float over range.
- */
-static inline float wrap_float_range(float x, float min, float max) {
-    float range = max - min;
-    float wrapped = fmodf(x - min, range);
-    return wrapped + range * (wrapped < 0.0f) + min;
-}
-
-/**
- * @ brief branchless wrap float over 0 <= x < n
- */
-static inline float wrap_float_positive(float x, float n) {
-    // TODO: assert 0 <= x < n
-    return fmodf(fmodf(x, n) + n, n);
-}
-
-// TODO implement branched wrap using likely/unlikely. Better for parameter checks when
-// values are likely to always be in range.
-
-/**
- * @brief Given n return the uint32_t next highest power of 2
- */
-static inline float_t ceiling_pow2(float n) {
-    return pow(2.0f, ceil(log2(n)));
-}
-
-/**
  * @brief Check if n is a power of 2
  */
 static inline bool is_pow2(uint32_t n) {
@@ -127,14 +56,12 @@ static inline bool is_pow2(uint32_t n) {
 }
 
 /**
- * @brief Check these two floats are appx equal
+ * @brief Check these two floats are appx equal to a tol of 1e-5f.
+ *
  */
 static inline bool check_float_equal(float a, float b) {
-    if (fabs(a - b) < FLT_EPSILON) {
-        return true;
-    } else {
-        return false;
-    }
+    float x = a - b;
+    return (x <= 1e-5f) && (x >= -1e-5f);
 }
 
 /**
@@ -161,28 +88,50 @@ static inline float zero_guard(float xn) {
 }
 
 /**
- * @brief calculate a semitone ratio
+ * @brief assure an incoming float that is <= 0.0 returns just above zero
  */
-static inline float semitone_ratio(float semitones) {
-    return powf(2.0f, semitones / 12.0f);
+static inline float assure_gt_zero(float xn) {
+    return xn > 0.0f ? xn : 1e-9f;
 }
 
 /**
- * @brief normalize the values in buf
+ * @brief normalize the values in buf in place.
  */
 static inline void normalize(float* buf, uint32_t buf_sz) {
     float max = 0.0;
     for (uint32_t i = 0; i < buf_sz; i++) {
-        float a = fabs(buf[i]);  // use absolute value (handle bipolar signals)
+        float a = fabsf(buf[i]);  // use absolute value (handle bipolar signals)
         if (a > max) {
             max = a;
         }
     }
-    if (DSP_LIKELY(max)) {
+    if ((int) max) {
         float s = 1.0f / max;
         for (uint32_t i = 0; i < buf_sz; i++) {
             buf[i] *= s;
         }
+    }
+}
+
+/**
+ * @brief add a guardpoint wraparound to a wavetable to handle cubic interpolation.
+ * wt_len is assumed to the wavetable buf_sz - 2.
+ */
+static inline void wavetable_cubic_guardpoint(float* wt, uint32_t wt_len) {
+    wt[wt_len] = wt[0];
+    wt[wt_len + 1] = wt[1];
+}
+
+/**
+ * @brief fills buf with a line between start and stop inclusive similar to np.linspace.
+ * @note buf_sz should be at least 2.
+ * */
+static inline void linspace(float* buf, uint32_t buf_sz, float start, float stop) {
+    dsp_assert(buf_sz >= 2, "buf size must be at least 2.");
+
+    float step = (stop - start) / (float) (buf_sz - 1);
+    for (uint32_t i = 0; i < buf_sz; i++) {
+        buf[i] = start + (float) i * step;
     }
 }
 

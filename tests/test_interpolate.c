@@ -20,7 +20,7 @@ MunitResult test_interpolate_cubic(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
-MunitResult test_npinterp_endpoints(const MunitParameter params[], void* data) {
+MunitResult test_lerp_endpoints(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
@@ -30,7 +30,7 @@ MunitResult test_npinterp_endpoints(const MunitParameter params[], void* data) {
     size_t out_sz = 7;
     float out[7];
 
-    npinterp(out, out_sz, in, in_sz);
+    table_lerp(out, out_sz, in, in_sz);
 
     munit_assert_float(out[0], ==, in[0]);
     munit_assert_float(out[out_sz - 1], ==, in[in_sz - 1]);
@@ -38,7 +38,7 @@ MunitResult test_npinterp_endpoints(const MunitParameter params[], void* data) {
     return MUNIT_OK;
 }
 
-MunitResult test_npinterp_exact_matches(const MunitParameter params[], void* data) {
+MunitResult test_lerp_exact_matches(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
@@ -48,7 +48,7 @@ MunitResult test_npinterp_exact_matches(const MunitParameter params[], void* dat
     size_t out_sz = 7;
     float out[7];
 
-    npinterp(out, out_sz, in, in_sz);
+    table_lerp(out, out_sz, in, in_sz);
 
     // NOTE: Only when out_sz-1 is a multiple of in_sz-1 will the grids line up exactly.
     // in this case alignment is staggered.
@@ -60,7 +60,7 @@ MunitResult test_npinterp_exact_matches(const MunitParameter params[], void* dat
     return MUNIT_OK;
 }
 
-MunitResult test_npinterp_linear_segments(const MunitParameter params[], void* data) {
+MunitResult test_lerp_linear_segments(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
@@ -70,7 +70,7 @@ MunitResult test_npinterp_linear_segments(const MunitParameter params[], void* d
     size_t out_sz = 5;
     float out[5];
 
-    npinterp(out, out_sz, in, in_sz);
+    table_lerp(out, out_sz, in, in_sz);
 
     float expected[5] = {2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
 
@@ -81,7 +81,7 @@ MunitResult test_npinterp_linear_segments(const MunitParameter params[], void* d
     return MUNIT_OK;
 }
 
-MunitResult test_npinterp_monotonic(const MunitParameter params[], void* data) {
+MunitResult test_lerp_monotonic(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
 
@@ -91,7 +91,7 @@ MunitResult test_npinterp_monotonic(const MunitParameter params[], void* data) {
     size_t out_sz = 11;
     float out[11];
 
-    npinterp(out, out_sz, in, in_sz);
+    table_lerp(out, out_sz, in, in_sz);
 
     for (size_t i = 1; i < out_sz; i++) {
         munit_assert_double(out[i], >=, out[i - 1]);

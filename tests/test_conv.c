@@ -208,7 +208,7 @@ void mpconv_destroy(mpconv* self,
     free(self);
 }
 
-zconv* zconv_new(float* ir, uint32_t ir_sz, uint32_t part_sz, uint32_t block_sz) {
+zconv* zconv_new(float* ir, uint32_t ir_sz, uint32_t part_sz) {
 
     // assert(is_pow2(part_sz));
 
@@ -226,9 +226,9 @@ zconv* zconv_new(float* ir, uint32_t ir_sz, uint32_t part_sz, uint32_t block_sz)
                    mock_inverse_ctor, mock_forward_execute, mock_inverse_execute);
 
     zconv* engine = malloc(sizeof(zconv));
-    float* tmp_out = calloc(block_sz, sizeof(float));
+    // float* tmp_out = calloc(block_sz, sizeof(float));
 
-    zconv_init(engine, head, mid, tail, tmp_out, block_sz);
+    zconv_init(engine, head, mid, tail);
 
     return engine;
 }
@@ -238,7 +238,7 @@ void zconv_destroy(zconv* self) {
     mpconv_destroy(self->mid, mock_forward_destroy, mock_inverse_destroy);
     dconv_destroy(self->head);
 
-    free(self->tmp_out_);
+    // free(self->tmp_out_);
     free(self);
 }
 
@@ -312,16 +312,15 @@ MunitResult test_zconv(const MunitParameter params[], void* data) {
     float ir[512] = {0.0f};
     uint32_t ir_sz = 512;
     uint32_t part_sz = 8;
-    uint32_t block_sz = 16;
 
-    zconv* engine = zconv_new(ir, ir_sz, part_sz, block_sz);
+    zconv* engine = zconv_new(ir, ir_sz, part_sz);
 
-    // NOTE that the current impl requires block_sz at init and runtime to be the
-    // same ..
+    // testing on block sz 16
     float out[16] = {0.0f};
     float in[16] = {0.0f};
+    float tmp[16] = {0.0f};
 
-    zconv_tick_block(engine, out, in, 0, 16);
+    zconv_tick_block(engine, out, in, tmp, 0, 16);
 
     zconv_destroy(engine);
 

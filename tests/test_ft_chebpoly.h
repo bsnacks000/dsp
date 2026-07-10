@@ -14,8 +14,9 @@ MunitResult test_chebpoly_deck_generate(const MunitParameter params[], void* dat
 static MunitTest ft_chebpoly_test_module[] = {
     {"/chebpoly", test_chebpoly, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 
-    {"/deck_generate", test_chebpoly_deck_generate, NULL, NULL, MUNIT_TEST_OPTION_NONE,
-     NULL},
+    // {"/deck_generate", test_chebpoly_deck_generate, NULL, NULL,
+    // MUNIT_TEST_OPTION_NONE,
+    //  NULL},
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };
 

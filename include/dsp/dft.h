@@ -1,3 +1,13 @@
+/**
+ * @file dft.h
+ *
+ * @brief Real Discrete Fourier Transform interfaces.
+ *
+ * Complex numbers are represented as float[2].
+ *
+ */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_DFT_H
 #define DSP_DFT_H
@@ -9,11 +19,22 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
+/**
+ * @brief rdft state
+ * */
 typedef struct rdft rdft;
+
+/**
+ * @brief inverse rdft state
+ * */
 typedef struct irdft irdft;
 
 typedef float dft_complex[2];
 
+/**
+ * @brief accumulate one frame of complex multiplication.
+ *
+ * */
 static inline void dft_complex_mult_frame_accumulate(dft_complex* out,
                                                      const dft_complex* a,
                                                      const dft_complex* b,

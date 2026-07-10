@@ -1,8 +1,11 @@
 /**
  * @file conversions.h
+ *
  * @brief Various conversion maths.
  *
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_CONVERSIONS_H
 #define DSP_CONVERSIONS_H
@@ -14,8 +17,6 @@ extern "C" {
 #include <dsp/assert.h>
 #include <math.h>
 #include <stdint.h>
-
-#include <dsp/rmap.h>
 
 /**
  * @brief Calculate the number of samples per millisecond given samplerate sr in samples
@@ -46,7 +47,7 @@ static inline float db_to_amp(float db) {
  *
  */
 static inline float db_to_power(float db) {
-    return pow(10.0f, db / 10.0f);
+    return powf(10.0f, db / 10.0f);
 }
 
 /**
@@ -55,7 +56,7 @@ static inline float db_to_power(float db) {
  */
 static inline float amp_to_db(float lin) {
     dsp_assert(lin > 0.0f, "lin must be > 0.");
-    return 20.0f * log10(lin);
+    return 20.0f * log10f(lin);
 }
 
 /**
@@ -64,7 +65,7 @@ static inline float amp_to_db(float lin) {
  */
 static inline float power_to_db(float power) {
     dsp_assert(power > 0.0f, "power must be > 0.");
-    return 10.0f * log10(power);
+    return 10.0f * log10f(power);
 }
 
 /**
@@ -92,6 +93,14 @@ static inline float db_peak_gain_for_q(float q) {
  */
 static inline float unipolar_to_bipolar(float val) {
     return 2.0f * val - 1.0f;
+}
+
+/**
+ * @brief convert unipolar to bipolar.
+ *
+ */
+static inline double unipolar_to_bipolar_d(double val) {
+    return 2.0 * val - 1.0;
 }
 
 /**
@@ -159,7 +168,7 @@ static inline uint8_t amp_to_midivel_lin(float v) {
  * @brief amp to midi velocity (pow)
  */
 static inline uint8_t amp_to_midivel_pow(float v) {
-    return powf(v, 0.5f) * 127.0f;
+    return (uint8_t) (powf(v, 0.5f) * 127.0f);
 }
 
 /**

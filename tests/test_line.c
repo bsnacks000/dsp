@@ -116,17 +116,11 @@ MunitResult test_line_adsr_tick_block(const MunitParameter params[], void* data)
     float atk_sec[NSMPS] = {0};
     fill_dc(atk_sec, block_total_dur_sec / 4.0, NSMPS);
 
-    float atk_crv[NSMPS] = {0};
-    fill_dc(atk_crv, 0.5, NSMPS);
-
     float atk_level[NSMPS] = {0};
     fill_dc(atk_level, 1.0, NSMPS);
 
     float dcy_sec[NSMPS] = {0};
     fill_dc(dcy_sec, block_total_dur_sec / 4.0, NSMPS);
-
-    float dcy_crv[NSMPS] = {0};
-    fill_dc(dcy_crv, block_total_dur_sec / 4.0, NSMPS);
 
     float sustain_level[NSMPS] = {0};
     fill_dc(sustain_level, 0.75, NSMPS);
@@ -134,17 +128,57 @@ MunitResult test_line_adsr_tick_block(const MunitParameter params[], void* data)
     float rel_sec[NSMPS] = {0};
     fill_dc(rel_sec, block_total_dur_sec / 2.0, NSMPS);
 
-    float rel_crv[NSMPS] = {0};
-    fill_dc(rel_crv, 0.5, NSMPS);
-
     float rel_level[NSMPS] = {0};
     fill_dc(rel_level, 0.0, NSMPS);
 
     line_adsr env;
     line_adsr_init(&env, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, sr);
 
-    line_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec, atk_level,
-                         dcy_sec, sustain_level, rel_sec, rel_level, 0, NSMPS);
+    // NOTE: 50 here will capture the release stage but we need seperate test
+    // cases to capture retrigger events
+    for (int i = 0; i < 100; i++) {
+        if (i >= 50) {
+            fill_dc(gate, 0.0, NSMPS);
+        }
+        line_adsr_tick_block(&env, out, gate, gate_thresh, start_level, atk_sec,
+                             atk_level, dcy_sec, sustain_level, rel_sec, rel_level, 0,
+                             NSMPS);
+    }
+
+    return MUNIT_OK;
+}
+
+MunitResult test_sampi(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    sampi state;
+    float sr = 4800.0f;
+    float start = -1.0f;
+    float stop = 1.0f;
+    float dur_sec_start = 0.01f;
+
+    float block_total_dur_sec = ms_per_samps(NSMPS, sr) / 1000.0;
+
+    // inits a line under the hood
+    sampi_init(&state, start, stop, dur_sec_start, sr);
+
+    float gate[NSMPS] = {0};
+    fill_dc(gate, 0.5, NSMPS);
+
+    float gate_thresh[NSMPS] = {0};
+    fill_dc(gate_thresh, 0.5, NSMPS);
+
+    float out[NSMPS] = {0};
+    fill_dc(out, 0.0, NSMPS);
+
+    float in[NSMPS] = {0};
+    fill_random_bipolar_signal(in, NSMPS);
+
+    float dur_sec[NSMPS] = {0};
+    fill_dc(dur_sec, block_total_dur_sec / 2.0, NSMPS);
+
+    sampi_tick_block(&state, out, in, dur_sec, gate, gate_thresh, 0, NSMPS);
 
     return MUNIT_OK;
 }
