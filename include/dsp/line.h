@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#include <dsp/utils.h>
+#include <dsp/stage.h>
 #include <stdbool.h>
 #include <stdint.h>
 

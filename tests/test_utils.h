@@ -9,13 +9,6 @@ extern "C" {
 
 MunitResult test_wavetable_cubic_guardpoint(const MunitParameter params[], void* data);
 
-MunitResult test_branchless_float_wrap_range(const MunitParameter params[], void* data);
-
-MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
-                                                void* data);
-
-MunitResult test_ceiling_pow2(const MunitParameter params[], void* data);
-
 MunitResult test_check_float_equal(const MunitParameter params[], void* data);
 
 MunitResult test_has_fractional_part(const MunitParameter params[], void* data);
@@ -32,11 +25,6 @@ MunitResult test_zero_buf(const MunitParameter params[], void* data);
 static MunitTest test_utils_module[] = {
     {"/wavetable_cubic_guardpoint", test_wavetable_cubic_guardpoint, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
-    {"/branchless_float_wrap_range", test_branchless_float_wrap_range, NULL, NULL,
-     MUNIT_TEST_OPTION_NONE, NULL},
-    {"/branchless_float_wrap_positive", test_branchless_float_wrap_positive, NULL, NULL,
-     MUNIT_TEST_OPTION_NONE, NULL},
-    {"/ceiling_pow2", test_ceiling_pow2, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/check_float_equal", test_check_float_equal, NULL, NULL, MUNIT_TEST_OPTION_NONE,
      NULL},
     {"/has_fractional_part", test_has_fractional_part, NULL, NULL,

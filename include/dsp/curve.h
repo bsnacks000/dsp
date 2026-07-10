@@ -16,9 +16,10 @@
 extern "C" {
 #endif
 
-#include <dsp/utils.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#include <dsp/stage.h>
 
 typedef struct {
     // public

@@ -1,12 +1,13 @@
 /**
  * @file utils.h
- * @brief general purpose helper functions / macros commonly shared across modules.
+ * @brief general purpose helper functions.
+ *
+ * - buffer copying / slicing / normalization
+ * - checks
+ * - zero guards
  */
 
 // SPDX-License-Identifier: MIT
-
-// TODO: combine with assert.h and all std lib imports to form common.h and use across
-// the library.
 
 #ifndef DSP_UTILS_H
 #define DSP_UTILS_H
@@ -21,31 +22,8 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 
-#define dsp_min(x, y) ((x) < (y) ? (x) : (y))
-#define dsp_max(x, y) ((x) > (y) ? (x) : (y))
-
 /**
- * @brief stages for an AR envelope.
- */
-typedef enum {
-    AR_IDLE = 0,
-    AR_ATK,
-    AR_REL,
-} ar_stage;
-
-/**
- * @brief stages for an ADSR envelope.
- */
-typedef enum {
-    ADSR_IDLE = 0,
-    ADSR_ATK,
-    ADSR_DCY,
-    ADSR_SUS,
-    ADSR_REL,
-} adsr_stage;
-
-/**
- * @brief copy nsmps of in to out (memcpy)
+ * @brief copy nsmps of in to out starting at start.
  */
 static inline void copy_nsmps(float* out,
                               const float* in,
@@ -58,7 +36,7 @@ static inline void copy_nsmps(float* out,
 /**
  * @brief sets nsmps of x into the buffer.
  */
-static inline void set_nsmps(float* out, float x, uint32_t nsmps) {
+static inline void set_nsmps(float* out, const float x, uint32_t nsmps) {
     for (uint32_t i = 0; i < nsmps; i++)
         out[i] = x;
 }
@@ -68,29 +46,6 @@ static inline void set_nsmps(float* out, float x, uint32_t nsmps) {
  */
 static inline void zero_buf(float* buf, uint32_t buf_sz) {
     memset(buf, 0, buf_sz * sizeof(float));
-}
-
-/**
- * @brief branchless wrap float over range.
- */
-static inline float wrap_float_range(float x, float min, float max) {
-    float range = max - min;
-    float wrapped = fmodf(x - min, range);
-    return wrapped + range * (wrapped < 0.0f) + min;
-}
-
-/**
- * @ brief branchless wrap float over 0 <= x < n
- */
-static inline float wrap_float_positive(float x, float n) {
-    return fmodf(fmodf(x, n) + n, n);
-}
-
-/**
- * @brief Given n return the uint32_t next highest power of 2
- */
-static inline float_t ceiling_pow2(float n) {
-    return powf(2.0f, ceilf(log2f(n)));
 }
 
 /**
@@ -137,13 +92,6 @@ static inline float zero_guard(float xn) {
  */
 static inline float assure_gt_zero(float xn) {
     return xn > 0.0f ? xn : 1e-9f;
-}
-
-/**
- * @brief calculate a semitone ratio
- */
-static inline float semitone_ratio(float semitones) {
-    return powf(2.0f, semitones / 12.0f);
 }
 
 /**

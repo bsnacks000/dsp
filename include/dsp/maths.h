@@ -39,6 +39,9 @@ extern "C" {
 
 // TODO: const correct variants? vectorized/unrolled variants?
 
+#define dsp_min(x, y) ((x) < (y) ? (x) : (y))
+#define dsp_max(x, y) ((x) > (y) ? (x) : (y))
+
 /**
  * @brief add two blocks
  */
@@ -654,8 +657,9 @@ static inline float linlin(float x,
                            float src_hi,
                            float dst_lo,
                            float dst_hi) {
-    float denom = ((src_hi - src_lo) * (dst_hi - dst_lo)) + 1e-9f;
-    return dst_lo + (x - src_lo) / denom;
+
+    float denom = (src_hi - src_lo) + 1e-9f;
+    return dst_lo + (x - src_lo) * (dst_hi - dst_lo) / denom;
 }
 
 /**
@@ -699,6 +703,38 @@ static inline float expexp(float x,
     src_lo += 1e-9f;
     float norm = logf(x / src_lo) / logf(src_hi / src_lo);
     return dst_lo * powf((dst_hi / dst_lo), norm);
+}
+
+// misc
+
+/**
+ * @brief calculate a semitone ratio
+ */
+static inline float semitone_ratio(float semitones) {
+    return powf(2.0f, semitones / 12.0f);
+}
+
+/**
+ * @ brief branchless wrap float. x is wrapped into the range (0, n)
+ */
+static inline float wrap_float_positive(float x, float n) {
+    return fmodf(fmodf(x, n) + n, n);
+}
+
+/**
+ * @brief branchless wrap float over range. x is wrapped into the range (min, max)
+ */
+static inline float wrap_float_range(float x, float min, float max) {
+    float range = max - min;
+    float wrapped = fmodf(x - min, range);
+    return wrapped + range * (wrapped < 0.0f) + min;
+}
+
+/**
+ * @brief Given n return the uint32_t next highest power of 2
+ */
+static inline float_t ceiling_pow2(float n) {
+    return powf(2.0f, ceilf(log2f(n)));
 }
 
 #ifdef __cplusplus

@@ -3,6 +3,41 @@
 #include <dsp/maths.h>
 #include <dsp/matrix.h>
 
+MunitResult test_branchless_float_wrap_range(const MunitParameter params[],
+                                             void* data) {
+    (void) params;
+    (void) data;
+
+    float x = wrap_float_range(-42.12345, -1.0, 1.0);
+    munit_assert_float(x, <=, 1.0);
+    munit_assert_float(x, >=, -1.0);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
+                                                void* data) {
+    (void) params;
+    (void) data;
+    float x = wrap_float_positive(-42.12345, 1.0);
+    munit_assert_float(x, <=, 1.0);
+    munit_assert_float(x, >=, 0.0);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_ceiling_pow2(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+    float x = ceiling_pow2(7.0);
+    munit_assert_float(x, ==, 8.0);
+
+    x = ceiling_pow2(513.0);
+    munit_assert_float(x, ==, 1024);
+
+    return MUNIT_OK;
+}
+
 MunitResult test_mult(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
@@ -493,6 +528,49 @@ MunitResult test_matrix_row_pair_freq_lookup(const MunitParameter params[],
     munit_assert_double_equal(b.high[0], 6.0, 5);
     munit_assert_double_equal(b.f0_low, 2.0, 5);
     munit_assert_double_equal(b.f0_high, 3.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_linlin(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+    float y = linlin(0.5, 0.0, 1.0, 0.0, 100.0);
+    munit_assert_double_equal(y, 50.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_linexp(const MunitParameter params[], void* data) {
+
+    (void) params;
+    (void) data;
+
+    // geometric mean
+    float y = linexp(0.5, 0.0, 1.0, 1.0, 100.0);
+    munit_assert_double_equal(y, 10.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_explin(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    // inverse geometric mean
+    float y = explin(10.0, 1.0, 100.0, 0.0, 1.0);
+    munit_assert_double_equal(y, 10.0, 5);
+
+    return MUNIT_OK;
+}
+
+MunitResult test_expexp(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    // log scale
+    float y = expexp(10.0, 1.0, 100.0, 100.0, 10000.0);
+    munit_assert_double_equal(y, 1000.0, 5);
 
     return MUNIT_OK;
 }

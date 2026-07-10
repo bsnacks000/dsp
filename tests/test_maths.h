@@ -60,6 +60,20 @@ MunitResult test_matrix_row_pair_positional_lookup(const MunitParameter params[]
 
 MunitResult test_matrix_row_pair_freq_lookup(const MunitParameter params[], void* data);
 
+MunitResult test_branchless_float_wrap_range(const MunitParameter params[], void* data);
+
+MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
+                                                void* data);
+MunitResult test_ceiling_pow2(const MunitParameter params[], void* data);
+
+MunitResult test_linlin(const MunitParameter params[], void* data);
+
+MunitResult test_explin(const MunitParameter params[], void* data);
+
+MunitResult test_linexp(const MunitParameter params[], void* data);
+
+MunitResult test_expexp(const MunitParameter params[], void* data);
+
 // register tests
 static MunitTest test_maths_module[] = {
     {"/mult", test_mult, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
@@ -93,8 +107,20 @@ static MunitTest test_maths_module[] = {
      MUNIT_TEST_OPTION_NONE, NULL},
     {"/matrix_row_freq", test_matrix_row_pair_freq_lookup, NULL, NULL,
      MUNIT_TEST_OPTION_NONE, NULL},
+
+    {"/branchless_float_wrap_range", test_branchless_float_wrap_range, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
+    {"/branchless_float_wrap_positive", test_branchless_float_wrap_positive, NULL, NULL,
+     MUNIT_TEST_OPTION_NONE, NULL},
+    {"/ceiling_pow2", test_ceiling_pow2, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/linlin", test_linlin, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/linexp", test_linexp, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/explin", test_explin, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/expexp", test_expexp, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+
     // need this NULL stub or we segfault
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+
 };
 
 // entrypoint

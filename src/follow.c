@@ -2,6 +2,7 @@
 
 #include <dsp/assert.h>
 #include <dsp/follow.h>
+#include <dsp/maths.h>
 #include <dsp/utils.h>
 
 static const float TLD_AUDIO_ENVELOPE_ANALOG_TC = -0.99967234081320612357829304641019f;

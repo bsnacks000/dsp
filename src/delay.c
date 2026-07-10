@@ -1,7 +1,7 @@
 #include <dsp/conversions.h>
 #include <dsp/delay.h>
 #include <dsp/interpolate.h>
-#include <dsp/utils.h>
+#include <dsp/maths.h>
 
 // TODO: unify with ftable ... better pow2 semantics
 

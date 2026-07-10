@@ -13,41 +13,6 @@ MunitResult test_wavetable_cubic_guardpoint(const MunitParameter params[], void*
     return MUNIT_OK;
 }
 
-MunitResult test_branchless_float_wrap_range(const MunitParameter params[],
-                                             void* data) {
-    (void) params;
-    (void) data;
-
-    float x = wrap_float_range(-42.12345, -1.0, 1.0);
-    munit_assert_float(x, <=, 1.0);
-    munit_assert_float(x, >=, -1.0);
-
-    return MUNIT_OK;
-}
-
-MunitResult test_branchless_float_wrap_positive(const MunitParameter params[],
-                                                void* data) {
-    (void) params;
-    (void) data;
-    float x = wrap_float_positive(-42.12345, 1.0);
-    munit_assert_float(x, <=, 1.0);
-    munit_assert_float(x, >=, 0.0);
-
-    return MUNIT_OK;
-}
-
-MunitResult test_ceiling_pow2(const MunitParameter params[], void* data) {
-    (void) params;
-    (void) data;
-    float x = ceiling_pow2(7.0);
-    munit_assert_float(x, ==, 8.0);
-
-    x = ceiling_pow2(513.0);
-    munit_assert_float(x, ==, 1024);
-
-    return MUNIT_OK;
-}
-
 MunitResult test_check_float_equal(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;
