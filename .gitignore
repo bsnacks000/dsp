@@ -1,3 +1,7 @@
+# doxygen output  
+docs/html
+docs/latex
+
 # python
 pyrightconfig.json
 __pycache__/
