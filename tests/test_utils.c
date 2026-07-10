@@ -1,6 +1,19 @@
 #include "test_utils.h"
 #include <dsp/utils.h>
 
+MunitResult test_linspace(const MunitParameter params[], void* data) {
+    (void) params;
+    (void) data;
+
+    float buf[10] = {0};
+    linspace(buf, 10, 1.0, 10.0);
+
+    float expected[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+    munit_assert_memory_equal(10, buf, expected);
+
+    return MUNIT_OK;
+}
+
 MunitResult test_wavetable_cubic_guardpoint(const MunitParameter params[], void* data) {
     (void) params;
     (void) data;

@@ -70,3 +70,6 @@ html-cov:
 
 run-test:
 	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;
+
+docs:
+	cd docs && doxygen

@@ -21,6 +21,8 @@ MunitResult test_set_nsmps(const MunitParameter params[], void* data);
 
 MunitResult test_zero_buf(const MunitParameter params[], void* data);
 
+MunitResult test_linspace(const MunitParameter params[], void* data);
+
 // register tests
 static MunitTest test_utils_module[] = {
     {"/wavetable_cubic_guardpoint", test_wavetable_cubic_guardpoint, NULL, NULL,
@@ -33,6 +35,7 @@ static MunitTest test_utils_module[] = {
     {"/copy_nsmps", test_copy_nsmps, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/set_nsmps", test_set_nsmps, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {"/zero_buf", test_zero_buf, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {"/linspace", test_linspace, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     // need this NULL stub or we segfault
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
 };

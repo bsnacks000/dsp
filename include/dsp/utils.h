@@ -95,7 +95,7 @@ static inline float assure_gt_zero(float xn) {
 }
 
 /**
- * @brief normalize the values in buf
+ * @brief normalize the values in buf in place.
  */
 static inline void normalize(float* buf, uint32_t buf_sz) {
     float max = 0.0;
@@ -120,6 +120,19 @@ static inline void normalize(float* buf, uint32_t buf_sz) {
 static inline void wavetable_cubic_guardpoint(float* wt, uint32_t wt_len) {
     wt[wt_len] = wt[0];
     wt[wt_len + 1] = wt[1];
+}
+
+/**
+ * @brief fills buf with a line between start and stop inclusive similar to np.linspace.
+ * @note buf_sz should be at least 2.
+ * */
+static inline void linspace(float* buf, uint32_t buf_sz, float start, float stop) {
+    dsp_assert(buf_sz >= 2, "buf size must be at least 2.");
+
+    float step = (stop - start) / (float) (buf_sz - 1);
+    for (uint32_t i = 0; i < buf_sz; i++) {
+        buf[i] = start + (float) i * step;
+    }
 }
 
 #ifdef __cpluplus
