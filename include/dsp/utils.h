@@ -1,13 +1,12 @@
 /**
- * @file ceiling_pow2.h
- * @author bsnacks000
- * @brief helper functions
- * @version 0.1
- * @date 2025-02-16
- *
- * @copyright Copyright (c) 2025
- *
+ * @file utils.h
+ * @brief general purpose helper functions / macros commonly shared across modules.
  */
+
+// SPDX-License-Identifier: MIT
+
+// TODO: combine with assert.h and all std lib imports to form common.h and use across
+// the library.
 
 #ifndef DSP_UTILS_H
 #define DSP_UTILS_H
@@ -16,6 +15,7 @@
 extern "C" {
 #endif
 
+#include <dsp/assert.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -83,12 +83,8 @@ static inline float wrap_float_range(float x, float min, float max) {
  * @ brief branchless wrap float over 0 <= x < n
  */
 static inline float wrap_float_positive(float x, float n) {
-    // TODO: assert 0 <= x < n
     return fmodf(fmodf(x, n) + n, n);
 }
-
-// TODO implement branched wrap using likely/unlikely. Better for parameter checks when
-// values are likely to always be in range.
 
 /**
  * @brief Given n return the uint32_t next highest power of 2
@@ -170,8 +166,8 @@ static inline void normalize(float* buf, uint32_t buf_sz) {
 }
 
 /**
- * @brief add a guardpoint wraparound to a wavetable to handle cubic. wt_len is assumed
- * to the wavetable buf_sz - 2.
+ * @brief add a guardpoint wraparound to a wavetable to handle cubic interpolation.
+ * wt_len is assumed to the wavetable buf_sz - 2.
  */
 static inline void wavetable_cubic_guardpoint(float* wt, uint32_t wt_len) {
     wt[wt_len] = wt[0];

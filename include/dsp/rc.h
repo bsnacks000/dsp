@@ -2,8 +2,13 @@
  * @file rc.h
  * @brief RC one pole and ladder (LP) filters.
  *
- *  - Based on Zavalishin and Pirkle.
- *  - Also Steven Yi's zdf_filter (csound)
+ * The implementation is based on the work of Zavalishin (2018). Pirkle (2019) was used
+ * as a reference.
+ *
+ * Steven Yi's Csound implementation of the zdf_ladder was used as a benchmark
+ * comparison of the lowpass ladder implementation which is also based on the above
+ * sources.
+ *
  */
 
 #ifndef DSP_RC_H

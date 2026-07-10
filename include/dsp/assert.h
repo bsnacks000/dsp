@@ -4,6 +4,9 @@
  *   - From Butenhof - Posix Threads I think ...
  *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_ASSERT_H
 #define DSP_ASSERT_H
 

@@ -1,11 +1,16 @@
 /**
  * @file svf.h
+ * @brief Zavalishin's 2nd order state variable filter. The drive paramater
+ * uses a fast monotonic saturator as described in the text.
  *
- * @brief Zavalishin's 2nd order state variable filter with drive.
-
- This only contains LPF, HPF, APF, BPF, BSF, and NBPF implementations.
- Shelving is not implemented.
+ * This only contains LPF, HPF, APF, BPF, BSF, and NBPF implementations.
+ * Shelving filters are not implemented though maybe in the future.
+ *
+ * - Based on Zavalishin (2018) and Pirkle (2019).
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_SVF_H
 #define DSP_SVF_H
 
@@ -15,6 +20,9 @@ extern "C" {
 
 #include <stdint.h>
 
+/**
+ * @brief svf state.
+ * */
 typedef struct {
     // public
     float freq, q, drive, sr;
@@ -30,7 +38,18 @@ typedef struct {
 void svf_init(svf* self, float freq, float q, float drive, float sr);
 
 /**
- * @brief Tick a block for svf. Passing a non-null pointer will cause a write.
+ * @brief Tick a block for svf. Passing a non-null pointer to
+ * any of the outputs will cause a write.
+ * @param out_lp lowpass output signal
+ * @param out_hp highpass output signal
+ * @param out_bp bandpass output signal
+ * @param out_bs bandstop output signal
+ * @param out_ap allpass output signal
+ * @param in input signal
+ * @param freq cutoff
+ * @param q resonance should be > 0 and probably < 20 but is implementation specific.
+ * @param drive amount should be clamped between 0 and 1
+ *
  */
 void svf_tick_block(svf* self,
                     float* out_lp,

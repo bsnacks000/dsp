@@ -1,8 +1,8 @@
 /**
- * @file bqf.h
+ * @file bq.h
  *
  * @brief Classic first and second order biquad filters.
- * - Most from Pirkle - Designing Audio Effect Plugins in C++
+ * - Most from Pirkle - Designing Audio Effect Plugins in C++ (2019)
  * - Second order shelving filters are directly from Bristow-Johnson Audio EQ Cookbook.
  *
  *  These use the transposed direct form II calculation
@@ -15,6 +15,8 @@
  * grouped by the allowed modulation parameters in the design equations.
  *
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef BQF_H
 #define BQF_H

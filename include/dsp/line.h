@@ -1,8 +1,10 @@
 /**
+ * @file line.h
+ *
  * @brief line - generate one segment of a line for dur seconds. This can create
  * a basic line similar to pure data/csound/sc3 and other dsp platforms.
  *
- * The sampi object is based on csound and Dodge/Jerse and can be used to create
+ * The sampi object is based on csound and Dodge/Jerse. It can be used to create
  * a RANDI when set up appropriately.
  *
  */

@@ -1,7 +1,10 @@
 /**
+ * @file lag.h
  * @brief lag - smoothing filter
- *  - based sc3 Lag class
+ *  - implementation based sc3 Lag class
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_LAG_H
 #define DSP_LAG_H

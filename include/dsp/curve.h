@@ -1,9 +1,13 @@
 /**
+ * @file curve.h
+ *
  * @brief curve - generate a segment for the specified dur with a curve factor
  *  - A curve factor of 0.0 is calculated as a straight line.
  *  - Negative and positive indicate log/exp shape depending on direction.
  *  - based on sc3 Env
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_CURVE_H
 #define DSP_CURVE_H

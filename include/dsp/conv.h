@@ -1,8 +1,13 @@
 /**
+ * @file conv.h
+ *
  * @brief direct and fast convolution kernels/engines.
  *
  * Based mainly on lazzarini - spectral music design (2023)
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_CONV_H
 #define DSP_CONV_H
 

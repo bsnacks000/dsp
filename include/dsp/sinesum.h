@@ -1,10 +1,16 @@
 /**
- * @brief sinesum
+ * @file sinesum.h
+ * @brief Functions for constructing wavetables based on a sum of sinusoids.
  *
- * Functions for constructing wavetables based on a sum of sinusoids.
+ * The current implementation is based on GEN10 in Csound. However there is currently
+ * no feature to adjust phases per harmonic amplitude.
  *
- * The current implementation is based on GEN10 in Csound. There is currently no
- * feature to adjust phases per harmonic amplitude
+ * Several utilities are provided to make amplitudes for the classic waveform shapes
+ * and help with generated band limited decks for use with blxoscil or similar
+ * implementations.
+ *
+ * The lanczos_smoothing function is from Pirkle (2019) and helps allievate some
+ * aliasing though it is not perfect.
  *
  */
 
@@ -39,15 +45,18 @@ static inline float lanczos_smoothing(uint32_t i, uint32_t n) {
 
 /**
  * @brief - sinesum. Fills a buf with a fourier series.
+ * @param amps - a list of weights for harmonic amplitudes between 0 and 1.
+ * @param phase - the initial phase between 0 and 1.
+ * @param smooth - whether to use the lanczos_smoothing function. Usually set to true.
  *
- *  - NOTE: Since the algorithm accumulates values in buf we clear using memset.
- */
+ **/
 static inline void sinesum(float* buf,
                            uint32_t buf_sz,
                            float* amps,
                            uint32_t amps_sz,
                            float phase,
                            bool smooth) {
+    //  NOTE: Since the algorithm accumulates values in buf we clear using memset.
 
     // NOTE: added here to assure that at least buf_sz is clear...
     // however if caller is expecting guard points then we

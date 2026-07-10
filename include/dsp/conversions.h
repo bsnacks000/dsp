@@ -1,8 +1,11 @@
 /**
  * @file conversions.h
+ *
  * @brief Various conversion maths.
  *
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_CONVERSIONS_H
 #define DSP_CONVERSIONS_H

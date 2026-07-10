@@ -1,3 +1,12 @@
+/**
+ * @file matrix.h
+ * @brief a simple matrix implementation stored and accessed in column major order.
+ *
+ *
+ * */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_MATRIX_H
 #define DSP_MATRIX_H
 

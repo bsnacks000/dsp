@@ -108,13 +108,13 @@ void oscil_init(oscil* self,
                 float* wt,
                 uint32_t wt_sz,
                 float freq,
-                float phase,
+                float iphs,
                 float sr) {
     dsp_assert(is_pow2(wt_sz - 2), "wt_sz must be pow2 + 2.");
 
     self->wt = wt;
     self->freq = freq;
-    self->phase = clamp(phase, 0.0, 1.0);
+    self->iphs = clamp(iphs, 0.0, 1.0);
     self->sr = assure_gt_zero(sr);
 
     self->wt_sz = wt_sz;              // pow2 + 2 (guardpoint)
@@ -122,7 +122,7 @@ void oscil_init(oscil* self,
     self->mask_ = self->wt_len_ - 1;  // pow2 - 1
 
     self->incr_ = 0.0;
-    self->index_ = (double) self->phase * (double) self->wt_len_;
+    self->index_ = (double) self->iphs * (double) self->wt_len_;
 
     oscil_update_(self);
 }
@@ -223,12 +223,14 @@ void oscil3_pm_tick_block(oscil* self,
 
 static inline void xoscil_update_(xoscil* self) {
     // update sub oscils
+    // NOTE: I don't think iphs reinit here is useful.
+    // Internally iphs is not used outside of oscil_init so removing
     self->l->freq = self->freq;
-    self->l->phase = self->phase;
+    // self->l->iphs = self->iphs;
     oscil_update_(self->l);
 
     self->r->freq = self->freq;
-    self->r->phase = self->phase;
+    // self->r->iphs = self->iphs;
     oscil_update_(self->r);
 
     frame_pair bpair = matrix_row_pair_positional_lookup(self->deck, self->pos);
@@ -252,21 +254,21 @@ void xoscil_init(xoscil* self,
                  oscil* r,
                  float freq,
                  float pos,
-                 float phase,
+                 float iphs,
                  float sr) {
+    iphs = clamp(iphs, 0.0f, 1.0f);
 
     dsp_assert(deck->n_cols >= 2, "xoscil_init: deck must have min 2 cols.");
-    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, phase, sr);
-    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, phase, sr);
+    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, iphs, sr);
+    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, iphs, sr);
 
-    phase = clamp(phase, 0.0f, 1.0f);
     pos = clamp(pos, 0.0f, 1.0f);
 
     self->deck = deck;
     self->l = l;
     self->r = r;
     self->freq = freq;
-    self->phase = phase;
+    self->iphs = iphs;
     self->pos = pos;
     self->sr = assure_gt_zero(sr);
 
@@ -333,11 +335,11 @@ static inline void blxoscil_update_(blxoscil* self) {
     // update the sub oscils
     // printf("self->l->freq: %f\n", self->l->freq);
     self->l->freq = self->freq;
-    self->l->phase = self->phase;
+    self->l->iphs = self->iphs;
     oscil_update_(self->l);
 
     self->r->freq = self->freq;
-    self->r->phase = self->phase;
+    self->r->iphs = self->iphs;
     oscil_update_(self->r);
 
     // draw the correct bandpair from the deck using freq..
@@ -369,24 +371,24 @@ void blxoscil_init(blxoscil* self,
                    oscil* r,
                    float* f0,
                    float freq,
-                   float phase,
+                   float iphs,
                    float sr) {
 
     dsp_assert(deck->n_cols >= 2, "xoscil_init: deck must have min 2 cols.");
-    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, phase, sr);
-    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, phase, sr);
+    iphs = clamp(iphs, 0.0, 1.0);
+
+    oscil_init(l, matrix_get_row(deck, 0), deck->n_cols, freq, iphs, sr);
+    oscil_init(r, matrix_get_row(deck, 1), deck->n_cols, freq, iphs, sr);
 
     self->f0 = f0;
 
     self->deck = deck;
     self->sr = l->sr;
 
-    phase = clamp(phase, 0.0, 1.0);
-
     self->l = l;
     self->r = r;
     self->freq = freq;
-    self->phase = phase;
+    self->iphs = iphs;
     self->sr = assure_gt_zero(sr);
 
     blxoscil_update_(self);

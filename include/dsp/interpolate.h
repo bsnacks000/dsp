@@ -1,11 +1,6 @@
 /**
  * @file interpolation.h
- * @author your name (you@domain.com)
- * @brief
- * @version 0.1
- * @date 2025-02-16
- *
- * @copyright Copyright (c) 2025
+ * @brief linear and cubic interpolation formulae
  *
  */
 
@@ -20,26 +15,21 @@ extern "C" {
 #include <math.h>
 #include <stdlib.h>
 
-/**
- * TODO: block based stateful interpolation. For use with signals not tables.
- * Those should be broken out into a module but can use these one ticks under the
- * hood.
- */
+// TODO: block based stateful interpolation. For use with signals not tables.
+// Those should be broken out into a module but can use these one ticks under the hood.
 
 /**
  * @brief Perform a linear interpolation for table lookup.
- *
- * @param a  y coordinate of first point
- * @param b  y coordinate of second point
- * @param frac  fractional distance between x1 and x2
- * @return float
+ * @param frac  fractional distance between a and b
  */
 static inline float interpolate_linear(float a, float b, float frac) {
     return (1.0f - frac) * a + frac * b;
 }
 
 /**
- * @brief Cubic Interpolation scheme. From Lazzarinni in Audio Programming Book.
+ * @brief Cubic Interpolation scheme.
+ *  - From Lazzarini in Audio Programming Book.
+ * @param frac fractional distance between b and c
  *
  */
 static inline float interpolate_cubic(float a, float b, float c, float d, float frac) {
@@ -53,9 +43,10 @@ static inline float interpolate_cubic(float a, float b, float c, float d, float 
 }
 
 /**
- * @brief linear interpolation based on loosely based on numpy.interp. Does not
- * require monotonic increasing input. Instead fills by doing linear interpolation
- * between adjacent samples.
+ * @brief linear interpolation loosely based on numpy.interp.
+ *  - Does not require monotonic increasing input. Instead fills by doing linear
+ *      interpolation between adjacent samples.
+ *  @warning in_sz should be <= out_sz
  */
 static inline void table_lerp(float* out,
                               size_t out_sz,
@@ -86,9 +77,7 @@ static inline void table_lerp(float* out,
             size_t idx = (size_t) floorf(pos);
             float frac = pos - (float) idx;
 
-            out[i] = interpolate_linear(
-                in[idx], in[idx + 1],
-                frac);  //(1.0f - frac) * in[idx] + frac * in[idx + 1];
+            out[i] = interpolate_linear(in[idx], in[idx + 1], frac);
         }
     }
 }

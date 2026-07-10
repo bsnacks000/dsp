@@ -1,7 +1,18 @@
 /**
- * @brief a unipolar phasor. The phase and incr are double precision to avoid drift.
- * TODO:
+ * @file phasor.h
+ * @brief a unipolar phasor ramp generator.
+ *
+ * The phase and incr are double precision to avoid timing drift.
+ *
+ * The impulse tick block produces 1 on wrap else 0 instead of a ramp.
+ *
+ * The rand impulse block jumps the phasor to produce stochastic impulses. This is
+ * based loosely on Dust2 from sc3.
+ *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_PHASOR_H
 #define DSP_PHASOR_H
 
@@ -14,16 +25,18 @@ extern "C" {
 typedef struct {
     float freq, iphase, sr;
     // private
-    double incr_, phase_;  // use double internally for better wrap around precision
+    double incr_, phase_;
 } phasor;
 
 /**
- * @brief init the phasor. iphs is guaranteed wrapped betwen 0 and 1
- */
+ * @brief initialize the phasor with an iphs between 0 and 1.
+ *
+ * */
 void phasor_init(phasor* self, float freq, float iphs, float sr);
 
 /**
  * @brief tick one block of phasor.
+ *
  */
 void phasor_tick_block(phasor* self,
                        float* out,
@@ -32,7 +45,8 @@ void phasor_tick_block(phasor* self,
                        uint32_t nsmps);
 
 /**
- * @brief a unipolar impulse generator. Outputs 1 or 0 at freq.
+ * @brief a unipolar impulse generator. Outputs 1 when the phasor signal wraps.
+ *
  */
 void impulse_tick_block(phasor* self,
                         float* out,

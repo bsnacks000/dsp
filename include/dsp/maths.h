@@ -2,6 +2,9 @@
  * @file maths.h
  * @brief basic maths on signals.
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_MATHS_H
 #define DSP_MATHS_H
 
@@ -96,15 +99,21 @@ static inline float sign_of(float xn) {
     return (float) ((float) (xn > 0) - (float) (xn < 0));
 }
 
+/**
+ * @brief generate a random unipolar value.
+ * */
 static inline float rand_unipolar(void) {
     return (float) rand() / (float) RAND_MAX;
 }
 
+/**
+ * @brief generate a random bipolar value.
+ * */
 static inline float rand_bipolar(void) {
     return ((float) rand() / (float) RAND_MAX) * 2.0f - 1.0f;
 }
 
-// // inverversions for unipolar / bipolar signals
+// inversions for unipolar / bipolar signals
 
 /**
  * @brief phase invert a single sample
@@ -211,8 +220,6 @@ static inline void abs_block(float* out, float* x, uint32_t start, uint32_t nsmp
 }
 
 // various logic gates
-//
-//
 
 /**
  * @brief *x > *y
@@ -370,13 +377,13 @@ static inline void ne_scalar_block(float* out,
     }
 }
 
-/**
- * Fast trig functions sine/cos shaping using bhaskara's formulas.
- *  - expect phase (x) to be normalized between 0 and 1
- */
+// NOTE: Fast trig functions sine/cos shaping using bhaskara's formulas.
+// Expected phase (x) should be normalized between 0 and 1 to make it easier
+// to work with phasors.
 
 /**
  * @brief fast quarter sin
+ * @note x should be a normalized unipolar signal
  */
 static inline float fast_qsinf(float x) {
     float pi_m_x = DSP_PI_F - x;
@@ -385,6 +392,7 @@ static inline float fast_qsinf(float x) {
 
 /**
  * @brief fast quarter cos
+ * @note x should be a normalized unipolar signal
  */
 static inline float fast_qcosf(float x) {
     return fast_qsinf(DSP_HALF_PI_F - x);
@@ -392,6 +400,7 @@ static inline float fast_qcosf(float x) {
 
 /**
  * @brief fast half sin
+ * @note x should be normalized unipolar signal
  */
 static inline float fast_hsinf(float x) {
     float theta = x * 2.0f;
@@ -406,6 +415,7 @@ static inline float fast_hsinf(float x) {
 
 /**
  * @brief fast half cos
+ * @note x should be normalized unipolar signal
  */
 static inline float fast_hcosf(float x) {
     return fast_hsinf(x + 0.5f);
@@ -413,6 +423,7 @@ static inline float fast_hcosf(float x) {
 
 /**
  * @brief fast sin
+ * @note x should be normalized unipolar signal
  */
 static inline float fast_sinf(float x) {
     float theta = x * 4.0f;
@@ -427,7 +438,8 @@ static inline float fast_sinf(float x) {
 }
 
 /**
- * @brief fast cosf;
+ * @brief fast cosf
+ * @note x should be normalized unipolar signal
  */
 static inline float fast_cosf(float x) {
     return fast_sinf(x + 0.25f);
@@ -435,8 +447,8 @@ static inline float fast_cosf(float x) {
 
 /**
  * @brief fast tanh.
- *  - x should be clamped [-1, 1]
- *  - See https://mathr.co.uk/blog/2017-09-06_approximating_hyperbolic_tangent.html
+ * @note x should be a normalized bipolar signal
+ * @note See https://mathr.co.uk/blog/2017-09-06_approximating_hyperbolic_tangent.html
  */
 static inline float fast_tanh(float x) {
     float xx = x * x;
@@ -453,7 +465,7 @@ static inline double fast_tanh_d(double x) {
 
 /**
  * @brief a softsign function.
- *  - x should be clamped [-1, 1]
+ * @note x should be normalized bipolar signal
  */
 static inline float softsign(float x) {
     return x / (1.0f + fabsf(x));
@@ -461,15 +473,15 @@ static inline float softsign(float x) {
 
 /**
  * @brief fast atan.
- *  - x should be clamped [-1,1]
- *  - Builder's method
+ * @note x should be a normalized bipolar signal
+ * @note See: https://personal.math.ubc.ca/~wetton/talks/archimedes22.pdf
  */
 static inline float fast_atan(float x) {
     return DSP_QTR_PI_F * softsign(x);
 }
 
-// Non-linear waveshaping functions
-// - clippers, clampers and saturators
+// NOTE: Non-linear waveshaping functions
+//  - clippers, clampers and saturators
 
 /**
  * @brief clamp xn between min and max
@@ -482,6 +494,9 @@ static inline float clamp(float xn, float min, float max) {
     return xn;
 }
 
+/**
+ * @brief clamp x between min and max.
+ * */
 static inline void clamp_block(float* out,
                                float* x,
                                float min,
@@ -513,7 +528,8 @@ static inline void hard_clip_block(float* out,
 }
 
 /**
- * @brief exp soft clip with pre-gain - from Pirkle via Reiss(2014)
+ * @brief exp soft clip with pre-gain
+ * @note from Pirkle via Reiss(2014)
  */
 static inline float exp_clip(float xn, float pregain) {
     return sign_of(xn) * (1.0f - expf(-fabsf(pregain * xn)));
@@ -529,11 +545,9 @@ static inline void exp_clip_block(float* out,
     }
 }
 
-/*
- * Zavalishin monotonic saturators - amt related to drive in the circuit.
- * - expensive bois but sound nice.
- * - amt controls the drive of the circuit
- */
+// NOTE: Zavalishin monotonic saturators - amt related to drive in the circuit.
+// expensive bois but sound nice.
+// amt controls the drive of the circuit
 
 /**
  * @brief hypertangent monotonic saturator
@@ -543,6 +557,9 @@ static inline float tanh_clip(float xn, float amt) {
     return tanhf(amt * xn) / tanhf(amt);
 }
 
+/**
+ * @brief hypertangent monotonic saturator
+ */
 static inline void tanh_clip_block(float* out,
                                    float* x,
                                    float* amt,
@@ -561,6 +578,9 @@ static inline float fast_tanh_clip(float xn, float amt) {
     return fast_tanh(amt * xn) / fast_tanh(amt);
 }
 
+/**
+ * @brief fast tanh saturator.
+ */
 static inline void fast_tanh_clip_block(float* out,
                                         float* x,
                                         float* amt,
@@ -587,6 +607,9 @@ static inline float atan_clip(float xn, float amt) {
     return atanf(xn * amt) / atanf(amt);
 }
 
+/**
+ * @brief arctangent monotonic saturator
+ */
 static inline void atan_clip_block(float* out,
                                    float* x,
                                    float* amt,
@@ -598,13 +621,18 @@ static inline void atan_clip_block(float* out,
 }
 
 /**
- * @brief arctangent monotonic saturator
+ * @brief fast arctangent monotonic saturator using the
+ * bhaskara approximation.
  */
 static inline float fast_atan_clip(float xn, float amt) {
     amt += 1e-9f;
     return fast_atan(xn * amt) / fast_atan(amt);
 }
 
+/**
+ * @brief fast arctangent monotonic saturator using the
+ * bhaskara approximation.
+ */
 static inline void fast_atan_clip_block(float* out,
                                         float* x,
                                         float* amt,
@@ -615,8 +643,8 @@ static inline void fast_atan_clip_block(float* out,
     }
 }
 
-/// Various range mapping functions
-///  - based on sc3 mappers.
+// NOTE: Various range scaling functions
+//  - based on the well known sc3 APIs
 
 /**
  * @brief map a value x from a linear range to a linear range.

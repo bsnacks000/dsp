@@ -1,5 +1,9 @@
 /**
- * @brief stft - short time fourier transform primitives
+ * @file stft.h
+ * @brief short time fourier transform primitives
+ *
+ * The rdft/irdft interfaces need to be implemented by the caller and are expected to
+ * be properly initialized (see dft.h).
  *
  * It should be noted that these are not in and of themselves an engine, but can be used
  * to make engines for spectral analysis, pvoc or other applications. See the tests for
@@ -24,6 +28,9 @@
  *  - Lazzarini - Audio Programming in C (2006) and Spectral Music Design (2023)
  *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_STFT_H
 #define DSP_STFT_H
 

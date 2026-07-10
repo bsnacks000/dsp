@@ -1,9 +1,13 @@
 /**
+ * @file chebpoly.h
+ *
  * @brief chebpoly - Fill a table with chebyshev polynomials of the Nth degree.
  *  - primarily for waveshaping synthesis purposes.
  *  - Based on various sources - csound / sc3 / Dodge + Jerse
  *
  */
+
+// SPDX-License-Identifier: MIT
 
 #ifndef DSP_CHEBPOLY_H
 #define DSP_CHEBPOLY_H

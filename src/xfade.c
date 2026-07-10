@@ -8,8 +8,8 @@ static inline void update_(xfade* self) {
     self->r_coeff_ = pair.right;
 }
 
-void xfade_init(xfade* self, float position) {
-    self->position = position;
+void xfade_init(xfade* self, float pos) {
+    self->position = pos;
     self->l_coeff_ = 0.0;
     self->r_coeff_ = 0.0;
 
@@ -20,11 +20,11 @@ void xfade_tick_block(xfade* self,
                       float* out,
                       float* in_l,
                       float* in_r,
-                      float* position,
+                      float* pos,
                       uint32_t start,
                       uint32_t nsmps) {
     for (uint32_t i = start; i < nsmps; i++) {
-        float position_ = position[i];
+        float position_ = pos[i];
         bool pos_eq = check_float_equal(position_, self->position);
         if (!pos_eq) {
             self->position = position_;

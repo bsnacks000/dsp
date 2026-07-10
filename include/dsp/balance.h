@@ -1,8 +1,14 @@
 /**
+ * @file balance.h
+ *
  * @brief balance - signal rescaling
  *  - use the RMS estimate of cmp signal to balance out
  *  - based on lazzarini - Audio Programming Book impl
+ *
  */
+
+// SPDX-License-Identifier: MIT
+
 #ifndef DSP_BALANCE_H
 #define DSP_BALANCE_H
 
