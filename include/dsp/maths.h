@@ -718,7 +718,7 @@ static inline float semitone_ratio(float semitones) {
  * @ brief branchless wrap float. x is wrapped into the range (0, n)
  */
 static inline float wrap_float_positive(float x, float n) {
-    return fmodf(fmodf(x, n) + n, n);
+    return x - n * floorf(x / n);
 }
 
 /**
@@ -726,8 +726,7 @@ static inline float wrap_float_positive(float x, float n) {
  */
 static inline float wrap_float_range(float x, float min, float max) {
     float range = max - min;
-    float wrapped = fmodf(x - min, range);
-    return wrapped + range * (wrapped < 0.0f) + min;
+    return x - range * floorf((x - min) / range);
 }
 
 /**
