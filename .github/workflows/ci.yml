@@ -137,7 +137,7 @@ jobs:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Install deps
-        run: sudo apt install -y valgrind
+        run: sudo apt update && sudo apt install -y valgrind
 
       - name: Build tests and run with valgrind
         run: make memcheck
