@@ -1,3 +1,6 @@
+#cachegrind out 
+cachegrind.out.*
+
 # doxygen output  
 docs/html
 docs/latex

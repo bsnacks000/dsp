@@ -71,5 +71,11 @@ html-cov:
 run-test:
 	./build/tests/dsp_tests --seed 0x526af79e --no-fork --fatal-failures;
 
+
+cachegrind: clean 
+	echo "Running cachegrind for RelWithDebugInfo..."
+	$(MAKE) build TESTS=1 BUILD_TYPE=RelWithDebInfo 
+	valgrind --tool=cachegrind --cache-sim=yes ./build/tests/dsp_tests --seed 0x526af79e --no-fork 
+
 docs:
 	cd docs && doxygen
