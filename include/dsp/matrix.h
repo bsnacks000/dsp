@@ -1,6 +1,6 @@
 /**
  * @file matrix.h
- * @brief a simple matrix implementation stored and accessed in column major order.
+ * @brief a simple matrix implementation stored and accessed in row major order.
  *
  *
  * */
@@ -21,7 +21,7 @@ extern "C" {
 #include <dsp/assert.h>
 
 /**
- * @brief a 2d matrix. data should be accessed in column major order.
+ * @brief a 2d matrix. data should be accessed in row major order.
  */
 typedef struct {
     float* data;
@@ -41,14 +41,14 @@ static inline void matrix_init(matrix* self,
 }
 
 /**
- * @brief col major order accessor.
+ * @brief row major order accessor.
  */
 static inline float matrix_at(matrix* self, uint32_t i, uint32_t j) {
     return self->data[i * self->n_cols + j];
 }
 
 /**
- * @brief col major order setter
+ * @brief row major order setter
  */
 static inline void matrix_set(matrix* self, float val, uint32_t i, uint32_t j) {
     self->data[i * self->n_cols + j] = val;
