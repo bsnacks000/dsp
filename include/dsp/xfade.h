@@ -69,11 +69,13 @@ static inline xfade_pair xfade_from_pos(float pos, uint32_t deck_sz) {
  */
 static inline xfade_pair xfade_from_freq(float freq, float lo, float hi) {
     if (freq < lo) {
-        return (xfade_pair) {.left = 1.0, .right = 0.0};
+        xfade_pair out = {.left = 1.0, .right = 0.0};
+        return out;
     }
 
     if (freq > hi) {
-        return (xfade_pair) {.left = 0.0, .right = 1.0};
+        xfade_pair out = {.left = 0.0, .right = 1.0};
+        return out;
     }
 
     float fader = linlin(freq, lo, hi, 0.0, 1.0);

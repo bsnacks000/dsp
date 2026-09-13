@@ -116,19 +116,18 @@ typedef struct {
 static inline frame_pair matrix_row_pair_positional_lookup(matrix* self, float pos) {
 
     // if matrix only has 1 row return it as both low and high
-    // TODO: maybe use DSP_UNLIKEY here ..
-    //   could move these to a check that gets called once at init time ?
+    frame_pair out;
+
     if (self->n_rows == 1) {
-        return (frame_pair) {
-            .low = matrix_get_row(self, 0),
-            .high = matrix_get_row(self, 0),
-        };
+
+        out.low = matrix_get_row(self, 0);
+        out.high = matrix_get_row(self, 0);
+        return out;
     }
     if (self->n_rows == 2) {
-        return (frame_pair) {
-            .low = matrix_get_row(self, 0),
-            .high = matrix_get_row(self, 1),
-        };
+        out.low = matrix_get_row(self, 0);
+        out.high = matrix_get_row(self, 1);
+        return out;
     }
 
     pos = clamp(pos, 0.0f, 1.0f);  // clamp [0-1]
@@ -142,10 +141,10 @@ static inline frame_pair matrix_row_pair_positional_lookup(matrix* self, float p
         idx = (uint32_t) self->n_rows - 2;
 
     // printf("idx: %d idx+1: %d\n", idx, idx + 1);
-    return (frame_pair) {
-        .low = matrix_get_row(self, idx),
-        .high = matrix_get_row(self, idx + 1),
-    };
+
+    out.low = matrix_get_row(self, idx);
+    out.high = matrix_get_row(self, idx + 1);
+    return out;
 }
 
 typedef struct {
@@ -168,68 +167,65 @@ static inline band_pair matrix_row_pair_freq_lookup(matrix* self,
                                                     float freq,
                                                     float* bands) {
     // if matrix only has 1 row return it as both low and high
-    // TODO: maybe use DSP_UNLIKEY here ..
-    //   could move these to a check that gets called once at init time ?
+
+    band_pair out;
+
     if (self->n_rows == 1) {
-        return (band_pair) {
-            .low = matrix_get_row(self, 0),
-            .high = matrix_get_row(self, 0),
-            .f0_low = 1.0f,
-            .f0_high = 15000.0f,
-        };
+
+        out.low = matrix_get_row(self, 0);
+        out.high = matrix_get_row(self, 0);
+        out.f0_low = 1.0f;
+        out.f0_high = 15000.0f;
+        return out;
     }
     if (self->n_rows == 2) {
-        return (band_pair) {
-            .low = matrix_get_row(self, 0),
-            .high = matrix_get_row(self, 1),
-            .f0_low = bands[0],
-            .f0_high = bands[1],
-        };
+        out.low = matrix_get_row(self, 0);
+        out.high = matrix_get_row(self, 1);
+        out.f0_low = bands[0];
+        out.f0_high = bands[1];
+        return out;
     }
     // lower then first band
     if (freq < bands[0]) {
-        return (band_pair) {
-            .low = matrix_get_row(self, 0),
-            .high = matrix_get_row(self, 1),
-            .f0_low = bands[0],
-            .f0_high = bands[1],
-        };
+
+        out.low = matrix_get_row(self, 0);
+        out.high = matrix_get_row(self, 1);
+        out.f0_low = bands[0];
+        out.f0_high = bands[1];
+        return out;
     }
 
     // higher then last band
     if (freq > bands[self->n_rows - 1]) {
-        return (band_pair) {
-            .low = matrix_get_row(self, self->n_rows - 2),
-            .high = matrix_get_row(self, self->n_rows - 1),
-            .f0_low = bands[self->n_rows - 2],
-            .f0_high = bands[self->n_rows - 1],
-        };
+
+        out.low = matrix_get_row(self, self->n_rows - 2);
+        out.high = matrix_get_row(self, self->n_rows - 1);
+        out.f0_low = bands[self->n_rows - 2];
+        out.f0_high = bands[self->n_rows - 1];
+        return out;
     }
 
     // we *should* always fall within some frequency region..
     // its on caller to make sure the deck
     for (uint32_t i = 1; i < self->n_rows; i++) {
         if ((bands[i - 1] <= freq) && (freq < bands[i])) {
-            return (band_pair) {
-                .low = matrix_get_row(self, i - 1),
-                .high = matrix_get_row(self, i),
-                .f0_low = bands[i - 1],
-                .f0_high = bands[i],
-            };
+            out.low = matrix_get_row(self, i - 1);
+            out.high = matrix_get_row(self, i);
+            out.f0_low = bands[i - 1];
+            out.f0_high = bands[i];
+            return out;
         }
     }
 
-    // NOTE: this is really to satisfy compiler.
-    // It should be unreachable since band pair lookup should be
-    // monotonically increasing, flat or decreasing.
+    // NOTE: This should be unreachable since band pair lookup should be
+    // monotonically increasing, flat or decreasing if properly configured.
     dsp_assert(1, "matrix_row_pair_freq_lookup: Unreachable!");
 
-    return (band_pair) {
-        .low = matrix_get_row(self, 0),
-        .high = matrix_get_row(self, 1),
-        .f0_low = bands[0],
-        .f0_high = bands[1],
-    };
+    out.low = matrix_get_row(self, 0);
+    out.high = matrix_get_row(self, 1);
+    out.f0_low = bands[0];
+    out.f0_high = bands[1];
+    return out;
 }
 #ifdef __cplusplus
 }
